@@ -1,0 +1,37 @@
+[alias]
+       co = checkout
+       ci = commit
+       st = status
+       df = diff	               
+       fileblame = log --diff-filter=A --pretty=short --
+       lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+       lol = log --pretty=oneline --abbrev-commit --graph --decorate	 
+
+[apply]
+      whitespace = nowarn
+
+[color]
+      branch = auto
+      diff = auto
+      grep = auto
+      interactive = auto
+      showbranch = auto
+      ui = auto
+
+[color "status"]
+      added = yellow
+      changed = green
+      untracked = cyan  
+
+[bash]
+      showDirtyState = true
+      showUnpushed = true
+
+[difftool]
+      prompt = true
+
+[push]
+	default = simple
+      
+[core]
+	editor = vim

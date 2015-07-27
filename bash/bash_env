@@ -1,0 +1,38 @@
+# Exports
+export GIT_PS1_SHOWDIRTYSTATE=1
+export GIT_PS1_SHOWUNPUSHED=1
+export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
+export MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=128m -Djava.awt.headless=true"
+
+# Make less more awesome
+export LESS_TERMCAP_mb=$'\E[01;31m' # begin blinking
+export LESS_TERMCAP_md=$'\E[0;34m' # begin bold
+export LESS_TERMCAP_me=$'\E[0m' # end bold
+export LESS_TERMCAP_so=$'\E[01;40;33m' # begin standout mode
+export LESS_TERMCAP_se=$'\E[0m' # end standout mode
+export LESS_TERMCAP_us=$'\E[0;36m' #begin underline
+export LESS_TERMCAP_ue=$'\E[0m' # end underline
+
+# Shell config
+
+LANG=en_GB.UTF-8
+LC_ALL=en_GB.UTF-8
+LC_CTYPE=en_GB.UTF-8
+
+EDITOR=subl
+
+PATH=/usr/local/bin:$PATH
+PATH=$PATH:~/bin
+PATH=$PATH:$DOTFILES/bin
+PATH=$PATH:/usr/local/sbin
+
+bind 'set completion-ignore-case on'
+TERM='xterm-256color'
+
+# Make the shell append history, not rewrite it.
+HISTFILESIZE=1000000
+HISTSIZE=1000000
+shopt -s histappend
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+
+

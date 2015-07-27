@@ -1,0 +1,176 @@
+function cdm() { # cd into and make path if it doesn't exist
+    mkdir -p "$1" && cd "$1"; 
+}
+
+function gpr() { # stash pull request for current branch
+    git push origin $(git branch | sed -n 's/\* \(.*\)/\1/p') && stash pull-request master
+}
+
+function dbify_list() { # add quotes and commas to piped list
+    awk '{print "\047" $1 "\047," }' | tr -d "\n"
+}
+
+function _sourced_files(){ # Helper for sourced_files
+    for f in $(sed -n 's/^[.|source] \(.*\)/\1/p' $1); do
+        expanded=${f/#\~/$HOME}        
+        echo $expanded
+        _sourced_files $expanded
+    done
+}
+
+function sourced_files() { # Lists files which (s/w)hould have been sourced to this shell
+    init_file=$(shell_init_file)
+    echo "$init_file"
+    _sourced_files "$init_file"
+}
+
+function list_functions() { # List all sourced functions
+    for f in $(sourced_files); do
+        sed -n "s/^function \(.*\)() { \(.*\)$/\1 \2/p" <(cat $f) | grep -v "^_" 
+    done | sort -u
+}
+
+function list_aliases() { # List all sourced aliases
+    for f in $(sourced_files); do
+        sed -n "s/^alias \(.*\)=.*#\(.*\)$/\1 #\2/p" <(cat $f) | sed "s/list_aliases=.*#/list_aliases #/"
+    done | sort -u
+}
+
+function shell_init_file() { # Returns what would be your initfile
+    if [[ $- == *i* ]]; then 
+        echo ~/.bashrc
+    elif [[ -f ~/.bash_profile ]]; then
+        echo ~/.bash_profile
+    elif [[ -f ~/.bash_login ]]; then
+        echo ~/.bash_login
+    elif [[ -f ~/.profile ]]; then
+        echo ~/.profile
+    else
+        echo "Could not find any config files.."
+        exit 1
+    fi
+}
+
+function gitinfo() { # show git info
+    if [[ $(git rev-parse --git-dir > /dev/null 2>&1; echo $?) -eq 0 ]]; then 
+        branch=$(__git_ps1 "%s")
+
+        if [ "${#branch}" -gt 10 ]; then
+            tail=$(echo $branch | sed -n 's/.*\([\*-+]\).*/\1/p')
+            branch=$(echo $branch | cut -c 1-10 | sed -n 's/\(.*\)/[\1../p')
+            branch="$branch$tail]"
+        else
+            branch=$(__git_ps1 "[%s]")
+        fi
+        echo $branch
+    fi
+}
+
+function grebase() { # git pull rebase with stash
+    if [ -z "$(git status --porcelain)" ]; then
+        git pull --rebase
+    else
+        echo -e "\033[1;36m# working tree dirty - stashing changes\033[0m"
+        git stash
+        echo -e "\033[1;36m# pull and rebase\033[0m"
+        git pull --rebase
+        echo -e "\033[1;36m# applying stash\033[0m"
+        git stash apply
+    fi
+}
+
+function gshow() { # git show commits from search filter 
+    filter=$1
+    if [[ ! -z "$filter" ]]; then
+        commits=$(git log --pretty=format:'%h - %s' --reverse | grep -i "$filter" | cut -d ' ' -f 1 | tr '\n' ' ')
+        if [[ ! -z "$commits" ]]; then
+            git show $commits
+        else
+            echo 'Sorry, no commits match that filter'
+        fi
+    else
+        echo 'I need something to search for!'
+    fi
+}
+
+function gupdate() { # git update with stash for all repos in $SRC
+    old_wd=$(pwd)
+
+	find $SRC_DIR -name .git -type d -print0 | while read -d $'\0' gitroot; do
+        echo -e "\033[1;30m\nUpdating ${gitroot%/*}:\033[0m"
+        cd "${gitroot%/*}"
+        branch=$(git branch | sed -n 's/^\* //p')
+
+        if [ -z "$(git status --porcelain)" ]; then
+            echo -e "\033[1;30mBranch is clean, rebasing master\033[0m"
+            git checkout master -q
+            git pull  > /dev/null
+            git checkout "$branch" -q
+        else
+            echo -e "\033[1;31mBranch is dirty, stashing\033[0m"
+            git stash -q
+            git checkout master -q
+            echo -e "\033[1;30mRebasing master\033[0m"
+            git pull > /dev/null
+            git checkout "$branch" -q
+            echo -e "\033[1;31mApplying stash\033[0m"
+            git stash apply -q
+        fi
+    done
+    cd "$old_wd"
+}
+
+
+function backto() { # Go back to folder in path
+    local path=$PWD;
+    while [[ $path ]]; do
+        if [[ "${path##*/}" == "$1" ]]; then
+            cd "$path"
+            break
+        else
+            path=${path%/*}
+        fi
+    done
+}
+
+function __backto() { # completion for backto
+    local cur
+    _get_comp_words_by_ref cur
+    COMPREPLY=( $( compgen -W "${PWD//\// }" -- "$cur" ) )
+}
+complete -o default -F __backto backto
+
+
+
+function src() { # cd into $SRC
+    cd ${SRC_DIR}/${1}
+}
+
+function _src_cd() { # completion for src
+    local cur temp_compreply dir
+
+    COMPREPLY=()
+    cur=`_get_cword`
+    dir=$SRC_DIR/
+
+    if [[ $dir != ${cur:0:${#dir}} ]]; then
+        cur=${dir}${cur}
+    fi
+
+    temp_compreply=$(compgen -d ${cur})
+    COMPREPLY=( ${temp_compreply[*]//$dir/} )
+}
+complete -o nospace -S "/" -F _src_cd src
+
+
+function setjdk() { # set the active jdk with param eg 1.8
+  if [ $# -ne 1 ]; then
+    export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+    export PATH=$JAVA_HOME/bin:$PATH
+  else
+   export JAVA_HOME=$(/usr/libexec/java_home -v $1)
+   export PATH=$JAVA_HOME/bin:$PATH
+  fi
+}
+
+

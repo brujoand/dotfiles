@@ -1,0 +1,28 @@
+# Navigation
+alias l='ls -allh' # Detailed ls 
+alias dirstat='find . -type f -not -path ".git/*" | sed "s/.*\.\(.*\)/\1/p" | grep -v "/" | sort | uniq -c | sort' # Show most common files in dir
+alias top15='cut -d " " -f 1 ~/.bash_history | sort | uniq -c | sort -n |  sed "s/^ *[0-9]* //" | tail -n 15' # Show your top 15 bash commands
+
+# Textmanipulation
+alias json_pp='python -mjson.tool' # PrettyPrint json
+alias xml_pp='xmllint --format -' # PrettyPrint xml
+alias strip='tr -d "\040\011\012\015"' # Remove spaces, newlines and tabs 
+
+# Common applications autocomplete from complete -p <application>
+alias g='git' # Git
+complete -F __git_wrap__git_main git g
+alias d='docker' # Docker
+complete -F _docker docker d
+alias c='curl' # Curl
+complete -F _longopt c
+
+# Application specific
+alias dkill='docker ps | grep -vi "container id" | cut -d " " -f1 | xargs docker stop' # Stop all running docker containers
+alias gwho='git log | sed -n "s/Author: \(.*\) <.*/\1/p" | sort | uniq -c | sort -nr | head' # Show most active commiters
+
+alias colors='printf "\e[%dm%d dark\e[0m  \e[%d;1m%d bold\e[0m\n" {30..37}{,,,}' # Show possible shell colors
+
+# Helpers
+alias myip='curl -s ifconfig.me' # Whats my ip?
+alias refresh='. $(shell_init_file)' # Source this shells init file
+alias halp='echo -e "Sourced files:\n$(sourced_files | sed "s#$HOME/#~/#")\n # \nFunctions:\n$(list_functions)\n # \nAliases:\n\n$(list_aliases)" | column -t -s "#"' # Show all custom aliases and functions
