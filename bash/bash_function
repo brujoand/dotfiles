@@ -2,20 +2,22 @@ function cdm() { # cd into and make path if it doesn't exist
     mkdir -p "$1" && cd "$1"; 
 }
 
-function _pvar() { # tab-completion for vhaco
-    local cur    
+function _pvar() { # tab-completion for vhaco with ignore case
+    local cur words hit
     _get_comp_words_by_ref cur
+    words=$(printenv | cut -d '=' -f 1 | grep -v '^_')
+    hit=$(grep -oi ^"$cur" <(echo "${words}") | sort -u)
+    if [[ ! -z "$hit" ]]; then
+        cur=$hit
+    fi
+    
     COMPREPLY=( $( compgen -W "$(printenv | cut -d '=' -f 1 | grep -v '^_')" -- "$cur" ) )
 }
-complete -o default -F _pvar pvar
+complete -F _pvar pvar
 
 function pvar() { # echo shell variable with tab-completion
-    eval var=\$$1
-    echo $var
-}
-
-function gpr() { # stash pull request for current branch
-    git push origin $(git branch | sed -n 's/\* \(.*\)/\1/p') && stash pull-request master
+    eval var="\$$1"
+    echo "$var"
 }
 
 function dbify_list() { # add quotes and commas to piped list
@@ -62,6 +64,18 @@ function shell_init_file() { # Returns what would be your initfile
         exit 1
     fi
 }
+
+function esc() { # Edit a shell config file
+    "${EDITOR:-vi}" $(grep "/$1$" <(sourced_files))
+}
+
+function _esc() { # Tabcompletion for esc
+    local cur
+    local config_files=$(for file in $(sourced_files); do echo ${file##*/}; done)
+    _get_comp_words_by_ref cur
+    COMPREPLY=( $( compgen -W "$config_files" -- "$cur" ) )
+}
+complete -o default -F _esc esc
 
 function gitinfo() { # show git info
     if [[ $(git rev-parse --git-dir > /dev/null 2>&1; echo $?) -eq 0 ]]; then 
@@ -150,7 +164,7 @@ function __backto() { # completion for backto
     _get_comp_words_by_ref cur
     COMPREPLY=( $( compgen -W "${PWD//\// }" -- "$cur" ) )
 }
-complete -o default -F __backto backto
+complete -F __backto backto
 
 
 
@@ -183,6 +197,10 @@ function setjdk() { # set the active jdk with param eg 1.8
    export JAVA_HOME=$(/usr/libexec/java_home -v $1)
    export PATH=$JAVA_HOME/bin:$PATH
   fi
+}
+
+function _error() { # Log an error
+    >&2 echo -e "\n[ERROR]: $1"
 }
 
 
