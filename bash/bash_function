@@ -2,6 +2,18 @@ function cdm() { # cd into and make path if it doesn't exist
     mkdir -p "$1" && cd "$1"; 
 }
 
+function _vhaco() { # tab-completion for vhaco
+    local cur    
+    _get_comp_words_by_ref cur
+    COMPREPLY=( $( compgen -W "$(printenv | cut -d '=' -f 1 | grep -v '^_')" -- "$cur" ) )
+}
+complete -o default -F _vhaco vhaco
+
+function vhaco() { # echo shell variable with tab-completion
+    eval r=\$$1
+    echo $r
+}
+
 function gpr() { # stash pull request for current branch
     git push origin $(git branch | sed -n 's/\* \(.*\)/\1/p') && stash pull-request master
 }
