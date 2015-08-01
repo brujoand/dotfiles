@@ -3,15 +3,14 @@ function cdm() { # cd into and make path if it doesn't exist
 }
 
 function _pvar() { # tab-completion for vhaco with ignore case
-    local cur words hit
+    local cur 
     _get_comp_words_by_ref cur
-    words=$(printenv | cut -d '=' -f 1 | grep -v '^_')
-    hit=$(grep -oi ^"$cur" <(echo "${words}") | sort -u)
-    if [[ ! -z "$hit" ]]; then
-        cur=$hit
+
+    if [[ -z "$cur" ]]; then
+        COMPREPLY=( $( compgen -W "$(printenv | cut -d '=' -f 1 | grep -v '^_')" ) )
+    else
+        COMPREPLY=( $(printenv | cut -d '=' -f 1 | grep -v '^_' | grep -i ^"$cur" | sort ) )
     fi
-    
-    COMPREPLY=( $( compgen -W "$(printenv | cut -d '=' -f 1 | grep -v '^_')" -- "$cur" ) )
 }
 complete -F _pvar pvar
 
@@ -25,10 +24,10 @@ function dbify_list() { # add quotes and commas to piped list
 }
 
 function _sourced_files(){ # Helper for sourced_files
-    for f in $(sed -n 's/^[.|source] \(.*\)/\1/p' $1); do
+    for f in $(sed -n 's/^[.|source] \(.*\)/\1/p' "$1"); do
         expanded=${f/#\~/$HOME}        
-        echo $expanded
-        _sourced_files $expanded
+        echo "$expanded"
+        _sourced_files "$expanded"
     done
 }
 
@@ -40,14 +39,14 @@ function sourced_files() { # Lists files which (s/w)hould have been sourced to t
 
 function list_functions() { # List all sourced functions
     for f in $(sourced_files); do
-        sed -n "s/^function \(.*\)() { \(.*\)$/\1 \2/p" <(cat $f) | grep -v "^_" 
-    done | sort -u
+        sed -n "s/^function \(.*\)() { \(.*\)$/\1 \2/p" <(cat "$f") | grep -v "^_" 
+    done | sort
 }
 
 function list_aliases() { # List all sourced aliases
     for f in $(sourced_files); do
-        sed -n "s/^alias \(.*\)=.*#\(.*\)$/\1 #\2/p" <(cat $f) | sed "s/list_aliases=.*#/list_aliases #/"
-    done | sort -u
+        sed -n "s/^alias \(.*\)=['|\"].*#\(.*\)$/\1 #\2/p" <(cat "$f") | sed "s/list_aliases=.*#/list_aliases #/"
+    done | sort
 }
 
 function shell_init_file() { # Returns what would be your initfile
@@ -65,32 +64,23 @@ function shell_init_file() { # Returns what would be your initfile
     fi
 }
 
-function esc() { # Edit a shell config file
-    "${EDITOR:-vi}" $(grep "/$1$" <(sourced_files))
+function esc() { # Edit a shell config file    
+    local file=$(grep "/$1$" <(sourced_files))
+    "${EDITOR:-vi}" "$file"
 }
 
-function _esc() { # Tabcompletion for esc
-    local cur
-    local config_files=$(for file in $(sourced_files); do echo ${file##*/}; done)
+function _esc() { # Fuzzy tabcompletion for esc
+    local cur config_files
     _get_comp_words_by_ref cur
-    COMPREPLY=( $( compgen -W "$config_files" -- "$cur" ) )
-}
-complete -o default -F _esc esc
-
-function gitinfo() { # show git info
-    if [[ $(git rev-parse --git-dir > /dev/null 2>&1; echo $?) -eq 0 ]]; then 
-        branch=$(__git_ps1 "%s")
-
-        if [ "${#branch}" -gt 10 ]; then
-            tail=$(echo $branch | sed -n 's/.*\([\*-+]\).*/\1/p')
-            branch=$(echo $branch | cut -c 1-10 | sed -n 's/\(.*\)/[\1../p')
-            branch="$branch$tail]"
-        else
-            branch=$(__git_ps1 "[%s]")
-        fi
-        echo $branch
+    config_files=$(for file in $(sourced_files); do echo "${file##*/}"; done)
+    
+    if [[ -z "$cur" ]]; then
+        COMPREPLY=( $( compgen -W "$config_files" ) )
+    else
+        COMPREPLY=( $(for file in $(sourced_files); do echo "${file##*/}"; done | grep -i "$cur") )
     fi
 }
+complete -o nospace -F _esc esc
 
 function grebase() { # git pull rebase with stash
     if [ -z "$(git status --porcelain)" ]; then
@@ -110,7 +100,7 @@ function gshow() { # git show commits from search filter
     if [[ ! -z "$filter" ]]; then
         commits=$(git log --pretty=format:'%h - %s' --reverse | grep -i "$filter" | cut -d ' ' -f 1 | tr '\n' ' ')
         if [[ ! -z "$commits" ]]; then
-            git show $commits
+            git show "$commits"
         else
             echo 'Sorry, no commits match that filter'
         fi
@@ -119,26 +109,25 @@ function gshow() { # git show commits from search filter
     fi
 }
 
-function gupdate() { # git update with stash for all repos in $SRC
+function gpdate() { # do git update on master with stash for all repos in $SRC
     old_wd=$(pwd)
 
-	find $SRC_DIR -name .git -type d -print0 | while read -d $'\0' gitroot; do
+	find "$SRC_DIR" -name .git -type d -print0 | while read -d $'\0' gitroot; do
         echo -e "\033[1;30m\nUpdating ${gitroot%/*}:\033[0m"
-        cd "${gitroot%/*}"
-        branch=$(git branch | sed -n 's/^\* //p')
+        cd "${gitroot%/*}"        
 
         if [ -z "$(git status --porcelain)" ]; then
-            echo -e "\033[1;30mBranch is clean, rebasing master\033[0m"
+            echo -e "\033[1;30mBranch is clean, pulling master\033[0m"
             git checkout master -q
             git pull  > /dev/null
-            git checkout "$branch" -q
+            git checkout - -q
         else
             echo -e "\033[1;31mBranch is dirty, stashing\033[0m"
             git stash -q
             git checkout master -q
             echo -e "\033[1;30mRebasing master\033[0m"
             git pull > /dev/null
-            git checkout "$branch" -q
+            git checkout - -q
             echo -e "\033[1;31mApplying stash\033[0m"
             git stash apply -q
         fi
@@ -159,31 +148,35 @@ function backto() { # Go back to folder in path
     done
 }
 
-function __backto() { # completion for backto
-    local cur
+function _backto() { # completion for backto
+    local cur dir
     _get_comp_words_by_ref cur
-    COMPREPLY=( $( compgen -W "${PWD//\// }" -- "$cur" ) )
+    dir=${PWD##*/} 
+    if [[ -z "$cur" ]]; then
+        COMPREPLY=( $( compgen -W "${PWD//\// }") )
+    else
+        COMPREPLY=( $(PWD | cut -c 2- | tr '/' '\n' | grep -i "^$cur" | sort -u) )
+    fi    
 }
-complete -F __backto backto
+complete -o nospace -F _backto backto
 
 
 
 function src() { # cd into $SRC
-    cd ${SRC_DIR}/${1}
+    cd "$SRC_DIR/$1"
 }
 
 function _src_cd() { # completion for src
     local cur temp_compreply dir
 
-    COMPREPLY=()
-    cur=`_get_cword`
+    _get_comp_words_by_ref cur
     dir=$SRC_DIR/
 
     if [[ $dir != ${cur:0:${#dir}} ]]; then
         cur=${dir}${cur}
     fi
 
-    temp_compreply=$(compgen -d ${cur})
+    temp_compreply=$(compgen -d "${cur}")
     COMPREPLY=( ${temp_compreply[*]//$dir/} )
 }
 complete -o nospace -S "/" -F _src_cd src
@@ -194,7 +187,7 @@ function setjdk() { # set the active jdk with param eg 1.8
     export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
     export PATH=$JAVA_HOME/bin:$PATH
   else
-   export JAVA_HOME=$(/usr/libexec/java_home -v $1)
+   export JAVA_HOME=$(/usr/libexec/java_home -v "$1")
    export PATH=$JAVA_HOME/bin:$PATH
   fi
 }
