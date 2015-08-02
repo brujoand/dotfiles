@@ -3,13 +3,14 @@ function cdm() { # cd into and make path if it doesn't exist
 }
 
 function _pvar() { # tab-completion for vhaco with ignore case
-    local cur 
+    local cur vars
     _get_comp_words_by_ref cur
+    vars=$(printenv | cut -d '=' -f 1 | grep -v '^_')
 
     if [[ -z "$cur" ]]; then
-        COMPREPLY=( $( compgen -W "$(printenv | cut -d '=' -f 1 | grep -v '^_')" ) )
+        COMPREPLY=( $( compgen -W "$vars" ) )
     else
-        COMPREPLY=( $(printenv | cut -d '=' -f 1 | grep -v '^_' | grep -i ^"$cur" | sort ) )
+        COMPREPLY=( $( grep -i ^"$cur" <(echo "${vars}") ) )
     fi
 }
 complete -F _pvar pvar
@@ -17,10 +18,6 @@ complete -F _pvar pvar
 function pvar() { # echo shell variable with tab-completion
     eval var="\$$1"
     echo "$var"
-}
-
-function dbify_list() { # add quotes and commas to piped list
-    awk '{print "\047" $1 "\047," }' | tr -d "\n"
 }
 
 function _sourced_files(){ # Helper for sourced_files
@@ -82,6 +79,23 @@ function _esc() { # Fuzzy tabcompletion for esc
 }
 complete -o nospace -F _esc esc
 
+function pp_bash() { # Pretty print bash script
+    echo "${1}" | pygmentize -f terminal -l bash
+}
+
+function wat() { # show help and location of a custom function or alias
+    local query
+    query="$1"
+    for file in $(sourced_files); do
+        f_body=$(awk '/^function '"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file")
+        [[ ! -z "${f_body// }" ]] && pp_bash "${f_body}"
+        f_helper=$(awk '/^function \_'"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file")
+        [[ ! -z "${f_helper// }" ]] && pp_bash "${f_helper}"
+        a_body=$(awk '/^alias '"$query"'=/,/$/ {print "# " FILENAME ":" FNR RS $0}' $file)
+        [[ ! -z "${a_body// }" ]] && pp_bash "${a_body}"
+    done    
+}
+
 function grebase() { # git pull rebase with stash
     if [ -z "$(git status --porcelain)" ]; then
         git pull --rebase
@@ -137,7 +151,7 @@ function gpdate() { # do git update on master with stash for all repos in $SRC
 
 
 function backto() { # Go back to folder in path
-    local path=$PWD;
+    local path=${PWD%/*}
     while [[ $path ]]; do
         if [[ "${path##*/}" == "$1" ]]; then
             cd "$path"
@@ -149,13 +163,14 @@ function backto() { # Go back to folder in path
 }
 
 function _backto() { # completion for backto
-    local cur dir
+    local cur dir all
     _get_comp_words_by_ref cur
-    dir=${PWD##*/} 
+    dir=${PWD##*/}
+    all=$(PWD | cut -c 2- | tr '/' '\n')
     if [[ -z "$cur" ]]; then
-        COMPREPLY=( $( compgen -W "${PWD//\// }") )
+        COMPREPLY=( $( compgen -W "$all") )
     else
-        COMPREPLY=( $(PWD | cut -c 2- | tr '/' '\n' | grep -i "^$cur" | sort -u) )
+        COMPREPLY=( $(grep -i "^$cur" <(echo "${all}") | sort -u) )
     fi    
 }
 complete -o nospace -F _backto backto
@@ -166,7 +181,7 @@ function src() { # cd into $SRC
     cd "$SRC_DIR/$1"
 }
 
-function _src_cd() { # completion for src
+function _src() { # completion for src
     local cur temp_compreply dir
 
     _get_comp_words_by_ref cur
@@ -179,7 +194,7 @@ function _src_cd() { # completion for src
     temp_compreply=$(compgen -d "${cur}")
     COMPREPLY=( ${temp_compreply[*]//$dir/} )
 }
-complete -o nospace -S "/" -F _src_cd src
+complete -o nospace -S "/" -F _src src
 
 
 function setjdk() { # set the active jdk with param eg 1.8
