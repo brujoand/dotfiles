@@ -4,7 +4,7 @@ function timer_start {
   timer=${timer:-$SECONDS}
 }
 
-function timer_stop {
+function timer_stop {  
   local timer_total=$((SECONDS - timer))
   unset timer
   timer_minutes=$(( timer_total / 60 ))
@@ -70,4 +70,5 @@ function set_prompt {
   PS1="\n$pre_host \u@\h $path_seg $git_seg$fill_seg$time_seg\n $promtp_que "    
 }
 
-PROMPT_COMMAND="set_prompt;$PROMPT_COMMAND"
+# set_prompt needs to be a part of $PROMPT_COMMAND
+export PROMPT_COMMAND="set_prompt"
