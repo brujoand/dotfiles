@@ -42,7 +42,7 @@ function list_functions() { # List all sourced functions
 
 function list_aliases() { # List all sourced aliases
     for f in $(sourced_files); do
-        sed -n "s/^alias \(.*\)=['|\"].*#\(.*\)$/\1 #\2/p" <(cat "$f") | sed "s/list_aliases=.*#/list_aliases #/"
+        sed -n "s/^alias \(.*\)=['|\"].*#\(.*\)$/\1 #\2/p" "$f" | sed "s/list_aliases=.*#/list_aliases #/"
     done | sort
 }
 
@@ -83,6 +83,15 @@ function pp_bash() { # Pretty print bash script
     echo "${1}" | pygmentize -f terminal -l bash
 }
 
+function _wat() { # Completion for wat
+    local cur words
+    _get_comp_words_by_ref cur
+    words=$(echo "$(list_aliases; list_functions)" | cut -d ' ' -f 1)
+    COMPREPLY=( $( compgen -W "$words" -- "$cur") )
+}
+
+complete -o nospace -F _wat wat
+
 function wat() { # show help and location of a custom function or alias
     local query
     query="$1"
@@ -91,9 +100,10 @@ function wat() { # show help and location of a custom function or alias
         [[ ! -z "${f_body// }" ]] && pp_bash "${f_body}"
         f_helper=$(awk '/^function \_'"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file")
         [[ ! -z "${f_helper// }" ]] && pp_bash "${f_helper}"
-        a_body=$(awk '/^alias '"$query"'=/,/$/ {print "# " FILENAME ":" FNR RS $0}' $file)
+        a_body=$(awk '/^alias '"$query"'=/,/$/ {print "# " FILENAME ":" FNR RS $0 RS;}' $file)
         [[ ! -z "${a_body// }" ]] && pp_bash "${a_body}"
-    done    
+    done
+    complete -p "$query" 2> /dev/null
 }
 
 function grebase() { # git pull rebase with stash
