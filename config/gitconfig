@@ -2,13 +2,14 @@
        co = checkout
        ci = commit
        st = status
-       df = diff	               
+       df = diff
+       who = shortlog --summary --numbered   
        fileblame = log --diff-filter=A --pretty=short --
        lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
        lol = log --pretty=oneline --abbrev-commit --graph --decorate	 
 
 [apply]
-      whitespace = nowarn
+      whitespace = fix
 
 [color]
       branch = auto
