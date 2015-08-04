@@ -5,7 +5,7 @@ function cdm() { # cd into and make path if it doesn't exist
 function _pvar() { # tab-completion for vhaco with ignore case
     local cur vars
     _get_comp_words_by_ref cur
-    vars=$(printenv | cut -d '=' -f 1 | grep -v '^_')
+    vars=$(compgen -A variable | grep -v '^_')
 
     if [[ -z "$cur" ]]; then
         COMPREPLY=( $( compgen -W "$vars" ) )

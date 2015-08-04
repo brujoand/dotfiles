@@ -13,7 +13,6 @@ function timer_stop {
 
 trap 'timer_start' DEBUG
 
-GREY='\[\033[01;30m\]'
 DEFAULT='\[\033[00m\]'
 
 seg_sep=$'\uE0B0'
@@ -25,7 +24,7 @@ function set_git_seg {
   local pre_git=$'\001\e[48;5;148m\002\001\e[38;5;237m\002'
   local post_git=$'\001\e[38;5;148m\002'
   local git_status=$(__git_ps1 "%s")
-  if [ -z "$git_status" ]; then
+  if [[ -z "$git_status" ]]; then
     git_seg="$reset$end_path$seg_sep"
   else
     git_seg="$post_path$seg_sep$pre_git $git_status $reset$post_git$seg_sep"
