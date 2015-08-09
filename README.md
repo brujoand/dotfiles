@@ -31,5 +31,7 @@ run ```bin/install_dotfiles.sh``` to get sauce.
 	- PrettyPath, GitInfo, user+host, execution time of last command and current time.
 		- Make sure to have __git_ps1 available if you want state of current branch.
 
+![Screenshot of prompt](https://raw.github.com/brujoand/dotfiles/master/meta/prompt.png)
+
 
 
