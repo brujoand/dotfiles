@@ -37,4 +37,13 @@ HISTFILESIZE=1000000
 HISTSIZE=1000000
 shopt -s histappend
 
+# Check if this if we are logged in via ssh
+if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
+  SESSION_TYPE=remote/ssh
+else
+  case $(ps -o comm= -p $PPID) in
+    sshd|*/sshd) SESSION_TYPE=remote/ssh;;
+  esac
+fi
+
 
