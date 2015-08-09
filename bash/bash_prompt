@@ -1,73 +1,104 @@
-# Prompt
-# Powerline font required, utf-8 support and git
-function timer_start {
-  timer=${timer:-$SECONDS}
-}
+#################################
+# Super awesome kick ass prompt #
+#################################
 
-function timer_stop {  
-  local timer_total=$((SECONDS - timer))
-  unset timer
-  timer_minutes=$(( timer_total / 60 ))
-  timer_seconds=$(( timer_total - (60 * timer_minutes) ))
-}
+# Colors named by foreground_background
+_color_lgrey_grey='\[\e[38;5;250m\e[48;5;238m\]'
+_color_grey_magenta='\[\e[48;5;31m\e[38;5;238m\]'
+_color_white_magenta='\[\e[38;5;15m\e[48;5;31m\]'
+_color_lgray_magenta='\[\e[48;5;31m\e[38;5;244m\]'
+_color_magenta_green='\[\e[48;5;148m\e[38;5;31m\]'
+_color_gray_green='\[\e[48;5;148m\e[38;5;237m\]'
+_color_green='\[\e[38;5;148m\]'
+_color_dblue='\[\e[38;5;31m\]'
+_color_grey='\[\e[01;30m\]'
+_color_reset='\[\e[00m\]'
 
-trap 'timer_start' DEBUG
-
-DEFAULT='\[\033[00m\]'
-
-seg_sep=$'\uE0B0'
-
-function set_git_seg {
-  local reset=$'\001\033[00m\002'
-  local post_path=$'\001\e[48;5;148m\002\001\e[38;5;31m\002'
-  local end_path=$'\001\e[38;5;31m\002'
-  local pre_git=$'\001\e[48;5;148m\002\001\e[38;5;237m\002'
-  local post_git=$'\001\e[38;5;148m\002'
-  local git_status=$(__git_ps1 "%s")
-  if [[ -z "$git_status" ]]; then
-    git_seg="$reset$end_path$seg_sep"
+# Not using powerline font if this file exists
+function _prompt_generate_chars() {
+  if [[ -f "$HOME/.disable_powerline_prompt" ]]; then
+    _prompt_segment_char=" "
+    _prompt_path_char="/"
+    _prompt_ready_char="->"
   else
-    git_seg="$post_path$seg_sep$pre_git $git_status $reset$post_git$seg_sep"
+    _prompt_segment_char=$'\uE0B0'
+    _prompt_path_char=$'\uE0B1'
+    _prompt_ready_char=$'\u279C'
+  fi
+}
+function prompt_toggle_powerline() { # Enable/Disable the use of powerline font in prompt
+  if [[ -f "$HOME/.disable_powerline_prompt" ]]; then
+    rm "$HOME/.disable_powerline_prompt"
+  else
+    touch "$HOME/.disable_powerline_prompt"
   fi
 }
 
-function set_path_seg {
-  local post_host=$'\001\e[48;5;31m\002\001\e[38;5;238m\002'
-  local pre_path=$'\001\e[38;5;15m\002\001\e[48;5;31m\002'
-  local pre_sep=$'\001\e[48;5;31m\002\001\e[38;5;244m\002'  
-  local post_sep=$'\001\e[38;5;15m\002\001\e[48;5;31m\002'
-  local sep=$pre_sep$'\uE0B1'$post_sep
+# Timer
+function _prompt_start_timer {
+  _prompt_timer=${_prompt_timer:-$SECONDS}
+}
+
+function _prompt_stop_timer {
+  local seconds=$((SECONDS - _prompt_timer))
+  unset _prompt_timer
+  _prompt_time_m=$(( seconds / 60 ))
+  _prompt_time_s=$(( seconds - (60 * _prompt_time_m) ))
+}
+
+trap '_prompt_start_timer' DEBUG
+
+function _prompt_generate_git_status() {
+  if [[ -n "$(declare -F __git_ps1)" ]]; then
+    _prompt_git_status=$(__git_ps1 '%s')
+  elif [[ -n "$(git rev-parse --git-dir 2> /dev/null)" ]]; then
+    _prompt_git_status=$(git symbolic-ref HEAD | sed -e 's,.*/\(.*\),\1,')
+  fi
+}
+
+# Filling up the segments of the prompt
+function _prompt_generate_git {
+  if [[ -z "$_prompt_git_status" ]]; then
+    _prompt_git="$_color_reset$_color_dblue$_prompt_segment_char"
+  else
+    _prompt_git="$_color_magenta_green$_prompt_segment_char$_color_gray_green $_prompt_git_status $_color_reset$_color_green$_prompt_segment_char"
+  fi
+}
+
+function _prompt_generate_path {
+  local sep=$_color_lgray_magenta$_prompt_path_char$_color_white_magenta
   wdir=$(pwd | sed "s|$HOME|~|")
-  path_seg="$post_host$seg_sep$pre_path ${wdir//\// $sep }"
+  _prompt_path="$_color_grey_magenta$_prompt_segment_char$_color_white_magenta ${wdir//\// $sep }"
 }
 
-function set_fill_seg {
-  local left_prompt=" $(whoami)@$(hostname -s) ; ${wdir//\// / } ; $(__git_ps1 '..%s ');"
-  local right_prompt="[last: ${timer_minutes}m ${timer_seconds}s][$(date +%H:%M:%S)]"
-  local columns=$(tput cols)
-  local fillsize=${columns}-${#left_prompt}-${#right_prompt}-1
-  local spaces=$(printf ' %.0s' {1..400})
-  fill_seg=$DEFAULT${spaces:0:$fillsize}
+function _prompt_generate_filler {
+  local left_prompt right_prompt columns fillsize spaces
+
+  left_prompt=" $(whoami)@$(hostname -s) ; ${wdir//\// / } ; "
+  [[ -n "$_prompt_git_status" ]] && left_prompt+="$_prompt_git_status ; "
+  right_prompt="[last: ${_prompt_time_m}m ${_prompt_time_s}s][$(date +%H:%M:%S)]"
+  columns=$(tput cols)
+  fillsize=$(( columns - ${#left_prompt} - ${#right_prompt} ))
+
+  spaces=$(printf ' %.0s' {1..400})
+  _prompt_filler=$_color_reset${spaces:0:$fillsize}
 }
 
-function set_time_seg {
-  timer_stop
-  local pre_time=$'\001\033[01;30m\002'
-  time_seg="$pre_time[last: ${timer_minutes}m ${timer_seconds}s][\t]"
+function _prompt_generate_time {
+  _prompt_stop_timer
+  _prompt_time="$_color_grey[last: ${_prompt_time_m}m ${_prompt_time_s}s][\t]"
 }
 
-
+# The applying of our prompt
 function set_prompt {
-  local pre_host="\[\e[38;5;250m\]\[\e[48;5;238m\]"
-  local promtp_que=$'\u279C'$DEFAULT
+  _prompt_generate_chars
+  _prompt_generate_time
+  _prompt_generate_path
+  _prompt_generate_git_status
+  _prompt_generate_git
+  _prompt_generate_filler
 
-  set_time_seg
-  set_path_seg
-  set_git_seg
-  set_fill_seg
-  
-  PS1="\n$pre_host \u@\h $path_seg $git_seg$fill_seg$time_seg\n $promtp_que "    
+  PS1="\n$_color_lgrey_grey \u@\h $_prompt_path $_prompt_git$_prompt_filler$_prompt_time\n $_prompt_ready_char$_color_reset "
 }
 
-# set_prompt needs to be a part of $PROMPT_COMMAND
-export PROMPT_COMMAND="set_prompt"
+[[ "$PROMPT_COMMAND" == *set_prompt* ]] ||  export PROMPT_COMMAND="set_prompt;$PROMPT_COMMAND"
