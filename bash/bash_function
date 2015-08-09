@@ -80,7 +80,11 @@ function _esc() { # Fuzzy tabcompletion for esc
 complete -o nospace -F _esc esc
 
 function pp_bash() { # Pretty print bash script
-  echo "${1}" | pygmentize -f terminal -l bash
+  if [[ -n "$(type pygmentize 2> /dev/null)" ]]; then
+   echo "${1}" | pygmentize -f terminal -l bash
+  else
+    echo "${1}"
+  fi
 }
 
 function _wat() { # Completion for wat
@@ -229,10 +233,17 @@ function setjdk() { # set the active jdk with param eg 1.8
 }
 
 function notification() { # Notification for osx only atm
-  if [[ "$(uname -s)" == "Darwin" ]]; then
-    message=$2
-    title=$2  
+  [[ -z "$2" ]] && echo "I need a title and a message" && return
+  
+  title=$1
+  message=$2
+  
+if [[ -n "$(type terminal-notifier 2> /dev/null)" ]]; then
+    (terminal-notifier -title "$title" -message "$message" &) 
+  elif [[ "$(uname -s)" == "Darwin" ]]; then
     osascript -e "display notification \"$message\" with title \"$title\""
+  elif [[ -n "$(type notify-send 2> /dev/null)" ]]; then
+    (notify-send "$title" "$message" &)
   fi
 }
 
