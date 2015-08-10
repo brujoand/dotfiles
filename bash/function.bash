@@ -16,6 +16,7 @@ function _pvar() { # tab-completion for vhaco with ignore case
 complete -F _pvar pvar
 
 function pvar() { # echo shell variable with tab-completion
+  local var
   eval var="\$$1"
   echo "$var"
 }
@@ -62,7 +63,8 @@ function shell_init_file() { # Returns what would be your initfile
 }
 
 function esc() { # Edit a shell config file  
-  local file=$(grep "/$1$" <(sourced_files))
+  local file
+  file=$(grep "/$1$" <(sourced_files))
   "${EDITOR:-vi}" "$file"
 }
 

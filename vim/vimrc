@@ -1,14 +1,30 @@
 runtime bundle/vim-pathogen/autoload/pathogen.vim " Loading pathogen 
 execute pathogen#infect()
-set backspace=indent,eol,start " So that backspace will 'work'
 
 let g:airline_powerline_fonts = 1 " use powerline fonts
 set laststatus=2            " make airline show up with at once
 
 syntax enable
 set background=dark
-let g:solarized_termcolors=256
+"let g:solarized_termcolors=256 fix for not having solarized terminal palette
 colorscheme solarized
+
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+let g:syntastic_sh_shellcheck_args = "-s bash"
+
+" Allow color schemes to do bright colors without forcing bold.
+if &t_Co == 8 && $TERM !~# '^linux'
+  set t_Co=16
+endif
+
+set backspace=indent,eol,start " So that backspace will 'work'
 
 set tabstop=2           	" 4 space tab
 set expandtab           	" use spaces for tabs
