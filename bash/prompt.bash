@@ -51,7 +51,7 @@ trap '_prompt_start_timer' DEBUG
 function _prompt_generate_git_status() {
   if [[ -n "$(git rev-parse --git-dir 2> /dev/null)" ]]; then
     local git_head=$(sed -e 's,.*/\(.*\),\1,' <(git symbolic-ref HEAD 2>/dev/null || git rev-parse --short HEAD))
-    local git_state=" $(git status --porcelain | sed -Ee 's/^(.M|M.) .*/\*/' -e 's/^(.A|A.) .*/\+/' -e 's/^(.D|H.) .*/\-/' | grep -oE '^(\*|\+|\?|\-)' | sort -u | tr -d '\n')"
+    local git_state=" $(git status --porcelain | sed -Ee 's/^(.M|M.|.R|R.) .*/\*/' -e 's/^(.A|A.) .*/\+/' -e 's/^(.D|D.) .*/\-/' | grep -oE '^(\*|\+|\?|\-)' | sort -u | tr -d '\n')"
     _prompt_git_status=$git_head$git_state
   else
     _prompt_git_status=""
