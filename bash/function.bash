@@ -216,8 +216,7 @@ function vimstall(){
     >&2 echo -e "We need a git repo"
     return
   else
-    echo "$repo" >> "$HOME/.pathogens"
-    (cd "$HOME/.vim/bundle/" && git clone "$repo")
+    (cd "$HOME/.vim/bundle/" && git submodule add "$repo")
   fi
 }
 
