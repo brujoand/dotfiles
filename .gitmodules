@@ -1,0 +1,21 @@
+[submodule "vim/vim/bundle/dracula-theme"]
+	path = vim/vim/bundle/dracula-theme
+	url = git@github.com:zenorocha/dracula-theme.git
+[submodule "vim/vim/bundle/ctrlp.vim"]
+	path = vim/vim/bundle/ctrlp.vim
+	url = git@github.com:kien/ctrlp.vim.git
+[submodule "vim/vim/bundle/vim-airline"]
+	path = vim/vim/bundle/vim-airline
+	url = git@github.com:bling/vim-airline.git
+[submodule "vim/vim/bundle/vim-colors-solarized"]
+	path = vim/vim/bundle/vim-colors-solarized
+	url = git@github.com:altercation/vim-colors-solarized.git
+[submodule "vim/vim/bundle/vim-gitgutter"]
+	path = vim/vim/bundle/vim-gitgutter
+	url = git@github.com:airblade/vim-gitgutter.git
+[submodule "vim/vim/bundle/vim-fugitive"]
+	path = vim/vim/bundle/vim-fugitive
+	url = git@github.com:tpope/vim-fugitive.git
+[submodule "vim/vim/bundle/vim-pathogen"]
+	path = vim/vim/bundle/vim-pathogen
+	url = git@github.com:tpope/vim-pathogen.git

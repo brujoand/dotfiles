@@ -1,0 +1,34 @@
+runtime bundle/vim-pathogen/autoload/pathogen.vim " Loading pathogen 
+execute pathogen#infect()
+set backspace=indent,eol,start " So that backspace will 'work'
+
+let g:airline_powerline_fonts = 1 " use powerline fonts
+set laststatus=2            " make airline show up with at once
+
+syntax enable
+set background=dark
+let g:solarized_termcolors=256
+colorscheme solarized
+
+set tabstop=2           	" 4 space tab
+set expandtab           	" use spaces for tabs
+set softtabstop=2       	" 4 space tab
+set shiftwidth=2
+filetype plugin on          " detect filetype
+filetype indent on          " and indent accordingly
+set number                  " show line numbers
+set showcmd                 " show command in bottom bar
+set cursorline              " highlight current line
+
+set foldmethod=syntax       " fold based on indent level
+set foldnestmax=10          " max 10 depth
+set foldenable              " don't fold files by default on open
+
+set backupdir=~/.vimtmp/backup// " don't make a mess
+set directory=~/.vimtmp/swp//    " not even for swap files
+
+" Have vim put the cursor where it was the last time we viewed this file
+autocmd BufReadPost *
+  \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+  \   exe "normal! g`\"" |
+  \ endif
