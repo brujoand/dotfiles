@@ -28,3 +28,6 @@
 [submodule "vim/vim/bundle/base16-vim"]
 	path = vim/vim/bundle/base16-vim
 	url = git@github.com:chriskempson/base16-vim.git
+[submodule "vim/vim/bundle/Apprentice"]
+	path = vim/vim/bundle/Apprentice
+	url = git@github.com:romainl/Apprentice.git
