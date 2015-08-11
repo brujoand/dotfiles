@@ -6,7 +6,7 @@ set laststatus=2            " make airline show up with at once
 
 syntax enable
 set background=dark
-colorscheme solarized
+colorscheme apprentice
 
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
