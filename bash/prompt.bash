@@ -3,16 +3,22 @@
 #################################
 
 # Colors named by foreground_background
-_color_lgrey_grey='\[\e[38;5;250m\e[48;5;238m\]'
-_color_grey_magenta='\[\e[48;5;31m\e[38;5;238m\]'
-_color_white_magenta='\[\e[38;5;15m\e[48;5;31m\]'
-_color_lgray_magenta='\[\e[48;5;31m\e[38;5;244m\]'
-_color_magenta_green='\[\e[48;5;148m\e[38;5;31m\]'
-_color_gray_green='\[\e[48;5;148m\e[38;5;237m\]'
-_color_green='\[\e[38;5;148m\]'
-_color_dblue='\[\e[38;5;31m\]'
-_color_grey='\[\e[01;30m\]'
+function ansi_colors() { # prints ansi escape codes for fg and bg (optional)
+  [[ -n "$2" ]] && echo -e "\[\e[38;5;${1}m\e[48;5;${2}m\]" && return
+  [[ -n "$1" ]] && echo -e "\[\e[38;5;${1}m\]"
+}
+
+_color_lgrey_grey=$(ansi_colors "250" "238")
+_color_grey_magenta=$(ansi_colors "238" "31")
+_color_white_magenta=$(ansi_colors "15" "31")
+_color_lgray_magenta=$(ansi_colors "244" "31")
+_color_magenta_green=$(ansi_colors "31" "148")
+_color_gray_green=$(ansi_colors "237" "148")
+_color_green=$(ansi_colors "148")
+_color_dblue=$(ansi_colors "31")
+_color_grey=$(ansi_colors "238")
 _color_reset='\[\e[00m\]'
+
 
 # Not using powerline font if this file exists
 function _prompt_generate_chars() {
@@ -26,6 +32,7 @@ function _prompt_generate_chars() {
     _prompt_ready_char=$'\u279C'
   fi
 }
+
 function prompt_toggle_powerline() { # Enable/Disable the use of powerline font in prompt
   if [[ -f "$HOME/.disable_powerline_prompt" ]]; then
     rm "$HOME/.disable_powerline_prompt"
