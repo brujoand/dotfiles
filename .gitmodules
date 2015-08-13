@@ -31,3 +31,6 @@
 [submodule "vim/vim/bundle/vim-puppet"]
 	path = vim/vim/bundle/vim-puppet
 	url = git@github.com:rodjek/vim-puppet.git
+[submodule "vim/vim/bundle/Apprentice"]
+	path = vim/vim/bundle/Apprentice
+	url = git@github.com:romainl/Apprentice.git

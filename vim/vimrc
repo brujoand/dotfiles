@@ -6,8 +6,7 @@ set laststatus=2            " make airline show up with at once
 
 syntax enable
 set background=dark
-"let g:solarized_termcolors=256 fix for not having solarized terminal palette
-colorscheme base16-twilight " Remember to add terminal palette
+colorscheme apprentice
 
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
