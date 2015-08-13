@@ -28,3 +28,6 @@
 [submodule "vim/vim/bundle/base16-vim"]
 	path = vim/vim/bundle/base16-vim
 	url = git@github.com:chriskempson/base16-vim.git
+[submodule "vim/vim/bundle/vim-puppet"]
+	path = vim/vim/bundle/vim-puppet
+	url = git@github.com:rodjek/vim-puppet.git

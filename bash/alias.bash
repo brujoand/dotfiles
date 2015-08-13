@@ -23,6 +23,8 @@ alias d='docker' # Docker
 complete -o nospace -F _docker docker d
 alias c='curl' # Curl
 complete -o nospace -F _longopt c
+alias v='vim' # Vim
+complete -o bashdefault -o default -F _fzf_file_completion v
 
 # Application specific
 alias dkill='docker ps | grep -vi "container id" | cut -d " " -f1 | xargs docker stop' # Stop all running docker containers
