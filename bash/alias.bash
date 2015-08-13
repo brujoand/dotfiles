@@ -39,3 +39,6 @@ alias localip='ifconfig | sed -En "s/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}
 alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"' # Urlencode a string
 alias reload='exec $SHELL $([[ $- == *i* ]] && echo -l)' # Reload the shell
 alias halp='echo -e "Sourced files:\n$(sourced_files | sed "s#$HOME/#~/#")\n # \nFunctions:\n$(list_functions)\n # \nAliases:\n\n$(list_aliases)" | column -t -s "#"' # Show all custom aliases and functions
+
+# Moron
+alias :q='exit'

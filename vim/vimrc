@@ -7,10 +7,16 @@ set laststatus=2            " make airline show up with at once
 syntax enable
 set background=dark
 colorscheme apprentice
+set guifont=Source\ Code\ Pro\ for\ Powerline "make sure to escape the spaces in the name properly
 
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
+
+set hlsearch " higlight searces
+" But when i press Enter you stop that shit
+nnoremap <CR> :nohlsearch<CR><CR>
+
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1

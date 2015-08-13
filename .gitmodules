@@ -34,3 +34,6 @@
 [submodule "vim/vim/bundle/Apprentice"]
 	path = vim/vim/bundle/Apprentice
 	url = git@github.com:romainl/Apprentice.git
+[submodule "vim/vim/bundle/supertab"]
+	path = vim/vim/bundle/supertab
+	url = git@github.com:ervandew/supertab.git
