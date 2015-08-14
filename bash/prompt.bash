@@ -68,47 +68,47 @@ function _prompt_generate_git_status() {
 # Filling up the segments of the prompt
 function _prompt_generate_git {
   if [[ -z "$_prompt_git_status" ]]; then
-    local path_color=$(print_color "$_color_path_bg")
+    local -r path_color=$(print_color "$_color_path_bg")
     _prompt_git="$_color_reset$path_color$_prompt_segment_char"
   else
-    local path_git_color=$(print_color "$_color_path_bg" "$_color_git_bg")
-    local git_color=$(print_color "$_color_git_fg" "$_color_git_bg")
-    local git_end_color=$(print_color "$_color_git_bg")
+    local -r path_git_color=$(print_color "$_color_path_bg" "$_color_git_bg")
+    local -r git_color=$(print_color "$_color_git_fg" "$_color_git_bg")
+    local -r git_end_color=$(print_color "$_color_git_bg")
     _prompt_git="$path_git_color$_prompt_segment_char$git_color $_prompt_git_status $_color_reset$git_end_color$_prompt_segment_char"
   fi
 }
 
 
 function _prompt_generate_path {
-  local host_path_color=$(print_color "$_color_host_bg" "$_color_path_bg")
-  local path_color=$(print_color "$_color_path_fg" "$_color_path_bg")
-  local host_sep_color=$(print_color "$_color_path_sep" "$_color_path_bg")
-  local sep=$host_sep_color$_prompt_path_char$path_color
-  local wdir=$(pwd | sed "s|$HOME|~|")
+  local -r host_path_color=$(print_color "$_color_host_bg" "$_color_path_bg")
+  local -r path_color=$(print_color "$_color_path_fg" "$_color_path_bg")
+  local -r host_sep_color=$(print_color "$_color_path_sep" "$_color_path_bg")
+  local -r sep=$host_sep_color$_prompt_path_char$path_color
+  local -r wdir=$(pwd | sed "s|$HOME|~|")
   _prompt_path="$host_path_color$_prompt_segment_char$path_color ${wdir//\// $sep }"
 }
 
 function _prompt_generate_host {
-  local host_color=$(print_color "$_color_host_fg" "$_color_host_bg")
+  local -r host_color=$(print_color "$_color_host_fg" "$_color_host_bg")
   _prompt_host="$host_color \u@\h"
 }
 
 function _prompt_generate_filler {
-  local left_prompt right_prompt columns fillsize spaces wdir needed
-  wdir=$(pwd | sed "s|$HOME|~|")
+  local left_prompt
+  local -r wdir=$(pwd | sed "s|$HOME|~|")
   left_prompt=" $(whoami)@$(hostname -s) ; ${wdir//\// / } ; "
   [[ -n "$_prompt_git_status" ]] && left_prompt+="$_prompt_git_status ; "
-  right_prompt="[last: ${_prompt_time_m}m ${_prompt_time_s}s][$(date +%H:%M:%S)]"
-  columns=$(tput cols)
-  needed=$(( ${#left_prompt} + ${#right_prompt} ))
-  fillsize=$(( columns - needed ))
-  spaces=$(printf ' %.0s' {1..400})
+  local -r right_prompt="[last: ${_prompt_time_m}m ${_prompt_time_s}s][$(date +%H:%M:%S)]"
+  local -r columns=$(tput cols)
+  local -r needed=$(( ${#left_prompt} + ${#right_prompt} ))
+  local -r fillsize=$(( columns - needed ))
+  local -r spaces=$(printf ' %.0s' {1..400})
   _prompt_filler="$_color_reset${spaces:0:$fillsize}"
 }
 
 function _prompt_generate_time {
   _prompt_stop_timer 
-  local time_color=$(print_color "$_color_time_fg")
+  local -r time_color=$(print_color "$_color_time_fg")
   _prompt_time="$time_color[last: ${_prompt_time_m}m ${_prompt_time_s}s][\t]"
 }
 
