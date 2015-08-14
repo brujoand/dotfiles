@@ -9,7 +9,12 @@ _color_path_bg="31"
 _color_path_sep="244"
 _color_git_fg="238"
 _color_git_bg="148"
-_color_time_fg="238"
+_color_time_fg=$_color_host_fg
+_color_time_bg=$_color_host_bg
+_color_last_fg=$_color_host_bg
+_color_last_bg=$_color_host_fg
+_color_filler_fg=0
+_color_filler_bg=0
 
 # Colors named by foreground_background
 function print_color() { # prints ansi escape codes for fg and bg (optional)
@@ -25,10 +30,12 @@ function _prompt_generate_chars() {
     _prompt_segment_char=" "
     _prompt_path_char="/"
     _prompt_ready_char=">"
+    _prompt_segrev_char=" "
   else
     _prompt_segment_char=$'\uE0B0'
     _prompt_path_char=$'\uE0B1'
     _prompt_ready_char=$'\u279C'
+    _prompt_segrev_char=$'\uE0B2'
   fi
 }
 
@@ -78,7 +85,6 @@ function _prompt_generate_git {
   fi
 }
 
-
 function _prompt_generate_path {
   local -r host_path_color=$(print_color "$_color_host_bg" "$_color_path_bg")
   local -r path_color=$(print_color "$_color_path_fg" "$_color_path_bg")
@@ -98,18 +104,22 @@ function _prompt_generate_filler {
   local -r wdir=$(pwd | sed "s|$HOME|~|")
   left_prompt=" $(whoami)@$(hostname -s) ; ${wdir//\// / } ; "
   [[ -n "$_prompt_git_status" ]] && left_prompt+="$_prompt_git_status ; "
-  local -r right_prompt="[last: ${_prompt_time_m}m ${_prompt_time_s}s][$(date +%H:%M:%S)]"
+  local -r right_prompt="; last: ${_prompt_time_m}m ${_prompt_time_s}s ; $(date +%H:%M:%S) "
   local -r columns=$(tput cols)
   local -r needed=$(( ${#left_prompt} + ${#right_prompt} ))
   local -r fillsize=$(( columns - needed ))
   local -r spaces=$(printf ' %.0s' {1..400})
-  _prompt_filler="$_color_reset${spaces:0:$fillsize}"
+  local -r color_filler=$(print_color "$_color_filler_fg" "$_color_filler_bg")
+  _prompt_filler="$color_filler${spaces:0:$fillsize}"
 }
 
 function _prompt_generate_time {
   _prompt_stop_timer 
-  local -r time_color=$(print_color "$_color_time_fg")
-  _prompt_time="$time_color[last: ${_prompt_time_m}m ${_prompt_time_s}s][\t]"
+  local -r time_color=$(print_color "$_color_time_fg" "$_color_time_bg")
+  local -r last_color=$(print_color "$_color_last_fg" "$_color_last_bg")
+  local -r last_time_color=$(print_color "$_color_last_fg" "$_color_time_fg")
+  local -r fill_last_color=$(print_color "$_color_last_bg")
+  _prompt_time="$fill_last_color$_prompt_segrev_char$last_color last: ${_prompt_time_m}m ${_prompt_time_s}s $last_time_color$_prompt_segrev_char$time_color \t $_color_reset$fill_last_color"
 }
 
 # The applying of our prompt
