@@ -13,11 +13,14 @@ export LESS_TERMCAP_se=$'\E[0m' # end standout mode
 export LESS_TERMCAP_us=$'\E[0;36m' #begin underline
 export LESS_TERMCAP_ue=$'\E[0m' # end underline
 
-# Always enable colored grep output.
-export GREP_OPTIONS='--color=auto'
+if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
+  export TERM='gnome-256color';
+elif infocmp xterm-256color >/dev/null 2>&1; then
+  export TERM='xterm-256color';
+fi;
 
-# Don’t clear the screen after quitting a manual page.
-export MANPAGER='less -X'
+export GREP_OPTIONS='--color=auto' # Enable colored grep output.
+export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
 
 # Shell config
 LANG=en_GB.UTF-8
@@ -29,8 +32,9 @@ PATH=/usr/local/bin:$PATH
 PATH=$PATH:$DOTFILES/bin
 PATH=$PATH:/usr/local/sbin
 
-bind 'set completion-ignore-case on'
-TERM='xterm-256color'
+bind 'set completion-ignore-case on' # Case-insensitive autocompletion
+shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
+shopt -s cdspell # Autocorrect typos in path names when using `cd`
 
 # Make the shell append history, not rewrite it.
 HISTFILESIZE=1000000
@@ -39,10 +43,10 @@ shopt -s histappend
 
 # Check if this if we are logged in via ssh
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-  SESSION_TYPE=remote/ssh
+  export SESSION_TYPE=ssh
 else
   case $(ps -o comm= -p $PPID) in
-    sshd|*/sshd) SESSION_TYPE=remote/ssh;;
+    sshd|*/sshd) export SESSION_TYPE=ssh;;
   esac
 fi
 
