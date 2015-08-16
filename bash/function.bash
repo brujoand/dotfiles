@@ -16,9 +16,8 @@ function _pvar() { # tab-completion for vhaco with ignore case
 complete -F _pvar pvar
 
 function pvar() { # echo shell variable with tab-completion
-  local var
-  eval var="\$$1"
-  echo "$var"
+  local var="$1"
+  echo "${!var}"
 }
 
 function _sourced_files(){ # Helper for sourced_files

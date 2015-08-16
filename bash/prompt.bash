@@ -1,6 +1,9 @@
 #################################
-# Super awesome kick ass prompt #
+#   Simple Bash Prompt (SBP)    #
 #################################
+
+_prompt_alert_threshold=1
+_prompt_alert_ignore="vim;ssh;screen;irssi;"
 
 _color_host_fg="250"
 _color_host_bg="238"
@@ -15,11 +18,33 @@ _color_last_fg=$_color_host_bg
 _color_last_bg=$_color_host_fg
 _color_filler_fg=0
 _color_filler_bg=0
+_color_prompt_ready=$_color_last_fg
+
+
+if [[ "${USER}" == "root" ]]; then
+  _color_host_fg="0"
+  _color_host_bg="1"
+fi
 
 # Colors named by foreground_background
 function print_color() { # prints ansi escape codes for fg and bg (optional)
   [[ -n "$2" ]] && echo -e "\[\e[38;5;${1}m\e[48;5;${2}m\]" && return
   [[ -n "$1" ]] && echo -e "\[\e[38;5;${1}m\]"
+}
+
+function _prompt_alert() { # Notification for osx only atm
+  [[ -z "$2" ]] && echo "I need a title and a message" && return
+
+  title=$1
+  message=$2
+
+  if [[ -n "$(type terminal-notifier 2> /dev/null)" ]]; then
+    (terminal-notifier -title "$title" -message "$message" &)
+  elif [[ "$(uname -s)" == "Darwin" ]]; then
+    osascript -e "display notification \"$message\" with title \"$title\""
+  elif [[ -n "$(type notify-send 2> /dev/null)" ]]; then
+    (notify-send "$title" "$message" &)
+  fi
 }
 
 _color_reset='\[\e[00m\]'
@@ -38,6 +63,7 @@ function _prompt_generate_chars() {
     _prompt_segrev_char=$'\uE0B2'
   fi
 }
+
 
 function prompt_toggle_powerline() { # Enable/Disable the use of powerline font in prompt
   if [[ -f "$HOME/.disable_powerline_prompt" ]]; then
@@ -95,14 +121,34 @@ function _prompt_generate_path {
 }
 
 function _prompt_generate_host {
+  if [[ -n "$SSH_CLIENT" ]]; then
+    _prompt_host_value="${USER}@${HOSTNAME}"
+  else
+    _prompt_host_value="${USER}"
+  fi
+
   local -r host_color=$(print_color "$_color_host_fg" "$_color_host_bg")
-  _prompt_host="$host_color \u@\h"
+  _prompt_host="$host_color $_prompt_host_value"
+}
+
+function _prompt_generate_env {
+  local env
+  if [[ -n "$SSH_CLIENT" ]]; then
+    env="ssh"
+  fi
+  if [[ -n "$STY" ]]; then
+    if [[ -n "$env" ]]; then
+      env=+"+screen"
+    else
+      env="screen"
+    fi
+  fi
 }
 
 function _prompt_generate_filler {
   local left_prompt
   local -r wdir=$(pwd | sed "s|$HOME|~|")
-  left_prompt=" $(whoami)@$(hostname -s) ; ${wdir//\// / } ; "
+  left_prompt=" $_prompt_host_value ; ${wdir//\// / } ; "
   [[ -n "$_prompt_git_status" ]] && left_prompt+="$_prompt_git_status ; "
   local -r right_prompt="; last: ${_prompt_time_m}m ${_prompt_time_s}s ; $(date +%H:%M:%S) "
   local -r columns=$(tput cols)
@@ -122,17 +168,39 @@ function _prompt_generate_time {
   _prompt_time="$fill_last_color$_prompt_segrev_char$last_color last: ${_prompt_time_m}m ${_prompt_time_s}s $last_time_color$_prompt_segrev_char$time_color \t $_color_reset$fill_last_color"
 }
 
+function _prompt_generate_alert {
+  [[ -z "$_prompt_alert_threshold" ]] && return
+  if [[ "$_prompt_alert_threshold" -le "$_prompt_time_m" ]]; then
+    local -r last_command=$(history 1 | awk '{print $2}')
+    local title
+
+    [[ "$_prompt_alert_ignore;" =~ $last_command ]] && return
+
+    if [[ "$_prompt_last_command_status" -eq "0" ]]; then
+      title="Command '$last_command' Succeded"
+    else
+      title="Command '$last_command' Failed"
+    fi
+
+    _prompt_alert "$title" "Time spent: ${_prompt_time_m}m ${_prompt_time_s}s"
+  fi
+}
+
 # The applying of our prompt
 function set_prompt {
+  _prompt_last_command_status="$?"
+
   _prompt_generate_host
   _prompt_generate_chars
   _prompt_generate_time
+  _prompt_generate_alert
   _prompt_generate_path
   _prompt_generate_git_status
   _prompt_generate_git
   _prompt_generate_filler
-
-  PS1="\n$_prompt_host $_prompt_path $_prompt_git$_prompt_filler$_prompt_time\n $_prompt_ready_char$_color_reset "
+  
+  PS1="\n\[\033]0;\w\007\]$_prompt_host $_prompt_path $_prompt_git$_prompt_filler$_prompt_time\n $_prompt_ready_char$_color_reset "
+  PS2="$(print_color $_color_prompt_ready) \$_prompt_ready_char $_color_reset"
 }
 
 [[ "$PROMPT_COMMAND" == *set_prompt* ]] ||  export PROMPT_COMMAND="set_prompt;$PROMPT_COMMAND"
