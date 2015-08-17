@@ -1,5 +1,5 @@
 function cdm() { # cd into and make path if it doesn't exist
-  mkdir -p "$1" && cd "$1"; 
+  mkdir -p "$1" && cd "$1";
 }
 
 function _pvar() { # tab-completion for vhaco with ignore case
@@ -22,7 +22,7 @@ function pvar() { # echo shell variable with tab-completion
 
 function _sourced_files(){ # Helper for sourced_files
   for f in $(sed -n 's/^[.|source] \(.*\)/\1/p' "$1"); do
-    expanded=${f/#\~/$HOME}    
+    expanded=${f/#\~/$HOME}
     echo "$expanded"
     _sourced_files "$expanded"
   done
@@ -36,7 +36,7 @@ function sourced_files() { # Lists files which (s/w)hould have been sourced to t
 
 function list_functions() { # List all sourced functions
   for f in $(sourced_files); do
-    sed -n "s/^function \(.*\)() { \(.*\)$/\1 \2/p" <(cat "$f") | grep -v "^_" 
+    sed -n "s/^function \(.*\)() { \(.*\)$/\1 \2/p" <(cat "$f") | grep -v "^_"
   done | sort
 }
 
@@ -47,7 +47,7 @@ function list_aliases() { # List all sourced aliases
 }
 
 function shell_init_file() { # Returns what would be your initfile
-  if [[ $- == *i* ]]; then 
+  if [[ $- == *i* ]]; then
     echo ~/.bashrc
   elif [[ -f ~/.bash_profile ]]; then
     echo ~/.bash_profile
@@ -61,7 +61,7 @@ function shell_init_file() { # Returns what would be your initfile
   fi
 }
 
-function esc() { # Edit a shell config file  
+function esc() { # Edit a shell config file
   local file
   file=$(grep "/$1$" <(sourced_files))
   "${EDITOR:-vi}" "$file"
@@ -71,7 +71,7 @@ function _esc() { # Fuzzy tabcompletion for esc
   local cur config_files
   _get_comp_words_by_ref cur
   config_files=$(for file in $(sourced_files); do echo "${file##*/}"; done)
-  
+
   if [[ -z "$cur" ]]; then
     COMPREPLY=( $( compgen -W "$config_files" ) )
   else
@@ -124,7 +124,7 @@ function grebase() { # git pull rebase with stash
   fi
 }
 
-function gshow() { # git show commits from search filter 
+function gshow() { # git show commits from search filter
   filter=$1
   if [[ ! -z "$filter" ]]; then
     commits=$(git log --pretty=format:'%h - %s' --reverse | grep -i "$filter" | cut -d ' ' -f 1 | tr '\n' ' ')
@@ -143,7 +143,7 @@ function gpdate() { # do git update on master with stash for all repos in $SRC
 
 	find "$SRC_DIR" -name .git -type d -print0 | while read -d $'\0' gitroot; do
     echo -e "\033[1;30m\nUpdating ${gitroot%/*}:\033[0m"
-    cd "${gitroot%/*}"    
+    cd "${gitroot%/*}"
 
     if [ -z "$(git status --porcelain)" ]; then
       echo -e "\033[1;30mBranch is clean, pulling master\033[0m"
@@ -186,7 +186,7 @@ function _backto() { # completion for backto
     COMPREPLY=( $( compgen -W "$all") )
   else
     COMPREPLY=( $(grep -i "^$cur" <(echo "${all}") | sort -u) )
-  fi  
+  fi
 }
 complete -o nospace -F _backto backto
 
@@ -234,12 +234,12 @@ function setjdk() { # set the active jdk with param eg 1.8
 
 function notification() { # Notification for osx only atm
   [[ -z "$2" ]] && echo "I need a title and a message" && return
-  
+
   title=$1
   message=$2
-  
+
 if [[ -n "$(type terminal-notifier 2> /dev/null)" ]]; then
-    (terminal-notifier -title "$title" -message "$message" &) 
+    (terminal-notifier -title "$title" -message "$message" &)
   elif [[ "$(uname -s)" == "Darwin" ]]; then
     osascript -e "display notification \"$message\" with title \"$title\""
   elif [[ -n "$(type notify-send 2> /dev/null)" ]]; then

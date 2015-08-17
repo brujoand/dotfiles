@@ -13,7 +13,7 @@ function woke() { # When this machine woke last
     gtac /var/log/system.log | grep -m1 "System Wake" | sed "s/\(.*\) ${HOSTNAME/.*} .*/\1/"
 }
 
-function _complete_ssh_hosts() { # ssh tab-completion sux on osx. 
+function _complete_ssh_hosts() { # ssh tab-completion sux on osx.
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
     known=$(cut -d ' ' -f 1 ~/.ssh/known_hosts | sed -e s/,.*//g | sed 's/\[\(.*\)\].*/\1/' | sort -u)

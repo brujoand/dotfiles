@@ -37,3 +37,6 @@
 [submodule "vim/vim/bundle/jellybeans.vim"]
 	path = vim/vim/bundle/jellybeans.vim
 	url = git@github.com:nanotech/jellybeans.vim.git
+[submodule "vim/vim/bundle/vim-trailing-whitespace"]
+	path = vim/vim/bundle/vim-trailing-whitespace
+	url = git@github.com:bronson/vim-trailing-whitespace.git

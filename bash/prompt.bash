@@ -175,7 +175,7 @@ function _prompt_generate_filler {
 }
 
 function _prompt_generate_time {
-  _prompt_stop_timer 
+  _prompt_stop_timer
   local -r time_color=$(print_color "$_color_time_fg" "$_color_time_bg")
   local -r last_color=$(print_color "$_color_last_fg" "$_color_last_bg")
   local -r last_time_color=$(print_color "$_color_last_fg" "$_color_time_fg")
@@ -206,14 +206,14 @@ function set_prompt {
   _prompt_last_command_status="$?"
 
   _prompt_generate_chars
-  _prompt_generate_host  
-  _prompt_generate_time  
+  _prompt_generate_host
+  _prompt_generate_time
   _prompt_generate_path
   _prompt_generate_git_status
   _prompt_generate_git
   _prompt_generate_filler
   _prompt_generate_alert
-  
+
   PS1="\n\[\033]0;\w\007\]$_prompt_host $_prompt_path $_prompt_git$_prompt_filler$_prompt_time\n $_prompt_ready_char$_color_reset "
   PS2="$(print_color $_color_prompt_ready) \$_prompt_ready_char $_color_reset"
 }
