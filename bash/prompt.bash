@@ -133,7 +133,7 @@ function _prompt_generate_path {
   local -r path_color=$(print_color "$_color_path_fg" "$_color_path_bg")
   local -r host_sep_color=$(print_color "$_color_path_sep" "$_color_path_bg")
   local -r sep=$host_sep_color$_prompt_path_char$path_color
-  local -r wdir=$(pwd | sed "s|$HOME|~|")
+  local -r wdir=$(pwd | sed -e "s|$HOME|~|" -e 's|^/||')
   _prompt_path="$host_path_color$_prompt_segment_char$path_color ${wdir//\// $sep }"
 }
 
