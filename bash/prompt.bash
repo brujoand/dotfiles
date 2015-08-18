@@ -8,7 +8,7 @@
 # Comment the line out to disable
 _prompt_alert_threshold=1
 # Do not generate alerts for the following programs:
-_prompt_alert_ignore="vim;ssh;screen;irssi;"
+_prompt_alert_ignore="vim;ssh;screen;irssi;vc;docker;v;"
 
 _color_host_fg="250" # host text color
 _color_host_bg="238" # host background color
