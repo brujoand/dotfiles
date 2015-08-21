@@ -203,7 +203,8 @@ function _prompt_generate_alert {
 # The applying of our prompt
 function set_prompt {
   _prompt_last_command_status="$?"
-  _prompt_last_command=$(history 1 | awk '{print $2}')
+  # todo use 'type <command>' to find the actual command
+  _prompt_last_command=$(history 1 | tr -d '$' | awk '{print substr($2,0,10)}')
 
   _prompt_generate_chars
   _prompt_generate_host
