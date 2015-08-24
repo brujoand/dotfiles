@@ -204,7 +204,12 @@ function _prompt_generate_alert {
 function set_prompt {
   _prompt_last_command_status="$?"
   # todo use 'type <command>' to find the actual command
-  _prompt_last_command=$(history 1 | tr -d '$' | awk '{print substr($2,0,10)}')
+  last=$(type "$(history 1 | cut -d ' ' -f 4)" 2> /dev/null)
+    if [[ -z "$last" ]]; then
+    _prompt_last_command="last"
+  else
+    _prompt_last_command=$(echo "$last" | tr -cd '[[:alnum:]] ._-' | sed -e 's/.* is aliased to \(.*\)/\1/' -e 's/.*(.*\/bin\/\(.*\))/\1/' -e 's/^\(.*\) .*/\1/' | cut -d ' ' -f 1)
+  fi
 
   _prompt_generate_chars
   _prompt_generate_host
