@@ -4,7 +4,8 @@ function cdm() { # cd into and make path if it doesn't exist
 
 function timer() { # takes number of minutes + message and notifies you
   min=$1
-  message=$2
+  shift
+  message=$*
   re='^[0-9]+$'
   if ! [[ "$min" =~ $re ]] ; then
     echo "error: $min is not a number" >&2; return 1
@@ -14,7 +15,7 @@ function timer() { # takes number of minutes + message and notifies you
     echo "error: We need a message as well " >&2; return 1
   fi
 
-  (sleep "$(( min * 60 ))" && terminal-notifier -title "Timer is done" -sound default -message "$message" &)
+  (sleep "$(( min * 60 ))" && terminal-notifier -title "${min}m has passed" -sound default -message "$message" &)
 }
 
 function _pvar() { # tab-completion for vhaco with ignore case
