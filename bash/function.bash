@@ -2,6 +2,21 @@ function cdm() { # cd into and make path if it doesn't exist
   mkdir -p "$1" && cd "$1";
 }
 
+function timer() { # takes number of minutes + message and notifies you
+  min=$1
+  message=$2
+  re='^[0-9]+$'
+  if ! [[ "$min" =~ $re ]] ; then
+    echo "error: $min is not a number" >&2; return 1
+  fi
+
+  if [[ -z "$message" ]]; then
+    echo "error: We need a message as well " >&2; return 1
+  fi
+
+  (sleep "$(( min * 60 ))" && terminal-notifier -title "Timer is done" -sound default -message "$message" &)
+}
+
 function _pvar() { # tab-completion for vhaco with ignore case
   local cur vars
   _get_comp_words_by_ref cur

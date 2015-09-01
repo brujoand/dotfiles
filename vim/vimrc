@@ -23,9 +23,15 @@ set hlsearch " higlight searces
 " But when i press Enter you stop that shit
 nnoremap <CR> :nohlsearch<CR><CR>
 " Ignore case of searches
-set ignorecase
+" set ignorecase
 " Highlight dynamically as pattern is typed
 set incsearch
+
+" Remappings
+let mapleader=","
+noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
+" ,s to search and replace word under cursor
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
@@ -70,6 +76,3 @@ autocmd BufReadPost *
   \   exe "normal! g`\"" |
   \ endif
 
-" Remappings
-let mapleader=","
-noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
