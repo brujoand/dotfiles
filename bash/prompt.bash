@@ -7,8 +7,8 @@
 # Alerts user if command takse longer than 'n' minutes
 # Comment the line out to disable
 _prompt_alert_threshold=1
-# Do not generate alerts for the following programs:
-_prompt_alert_ignore="vim;ssh;screen;irssi;vc;docker;v;"
+# Do not generate alerts for the following commands:
+_prompt_alert_ignore="vim;ssh;screen;irssi;vc;docker;v;g;d;esc;"
 
 _color_host_fg="250" # host text color
 _color_host_bg="238" # host background color
@@ -165,7 +165,7 @@ function _prompt_generate_filler {
   local -r wdir=$(pwd | sed "s|$HOME|~|")
   left_prompt=" $_prompt_host_value ; ${wdir//\// / } ; "
   [[ -n "$_prompt_git_status" ]] && left_prompt+="$_prompt_git_status ; "
-  local -r right_prompt="; $_prompt_last_command: ${_prompt_time_m}m ${_prompt_time_s}s ; $(date +%H:%M:%S) "
+  local -r right_prompt="; last: ${_prompt_time_m}m ${_prompt_time_s}s ; $(date +%H:%M:%S) "
   local -r columns=$(tput cols)
   local -r needed=$(( ${#left_prompt} + ${#right_prompt} ))
   local -r fillsize=$(( columns - needed ))
@@ -180,7 +180,7 @@ function _prompt_generate_time {
   local -r last_color=$(print_color "$_color_last_fg" "$_color_last_bg")
   local -r last_time_color=$(print_color "$_color_last_fg" "$_color_time_fg")
   local -r fill_last_color=$(print_color "$_color_last_bg")
-  _prompt_time="$fill_last_color$_prompt_segrev_char$last_color $_prompt_last_command: ${_prompt_time_m}m ${_prompt_time_s}s $last_time_color$_prompt_segrev_char$time_color \t $_color_reset$fill_last_color"
+  _prompt_time="$fill_last_color$_prompt_segrev_char$last_color last: ${_prompt_time_m}m ${_prompt_time_s}s $last_time_color$_prompt_segrev_char$time_color \t $_color_reset$fill_last_color"
 }
 
 function _prompt_generate_alert {
@@ -200,12 +200,14 @@ function _prompt_generate_alert {
   fi
 }
 
+function _prompt_generate_last_command {
+  _prompt_last_command_status="$?"
+  _prompt_last_command=$(history 1 | awk '{print $2}' | tr '\n' ' ' | cut -c1-30)
+}
+
 # The applying of our prompt
 function set_prompt {
-  _prompt_last_command_status="$?"
-  # todo use 'type <command>' to find the actual command
-  _prompt_last_command=$(history 1 | tr -d '$' | awk '{print substr($2,0,10)}')
-
+  _prompt_generate_last_command
   _prompt_generate_chars
   _prompt_generate_host
   _prompt_generate_time

@@ -40,3 +40,9 @@
 [submodule "vim/vim/bundle/vim-trailing-whitespace"]
 	path = vim/vim/bundle/vim-trailing-whitespace
 	url = git@github.com:bronson/vim-trailing-whitespace.git
+[submodule "vim/vim/bundle/vim-peekaboo"]
+	path = vim/vim/bundle/vim-peekaboo
+	url = git@github.com:junegunn/vim-peekaboo.git
+[submodule "vim/vim/bundle/vim-bufferline"]
+	path = vim/vim/bundle/vim-bufferline
+	url = https://github.com/bling/vim-bufferline
