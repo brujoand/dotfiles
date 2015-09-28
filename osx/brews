@@ -1,0 +1,29 @@
+terminal-notifier
+caskroom/cask/brew-cask
+coreutils
+moreutils
+findutils
+bash
+bash-completion2
+wget --with-iri
+vim --override-system-vi
+nmap
+pngcheck
+socat
+sqlmap
+tcpflow
+tcpreplay
+tcptrace
+ucspi-tcp # `tcpserver` etc.
+xpdf
+git
+git-lfs
+rename
+speedtest_cli
+tree
+irssi
+httpie
+docker
+docker-machine
+docker-compose
+
