@@ -23,9 +23,9 @@ export GREP_OPTIONS='--color=auto' # Enable colored grep output.
 export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
 
 # Shell config
-LANG=en_GB.UTF-8
-LC_ALL=en_GB.UTF-8
-LC_CTYPE=en_GB.UTF-8
+export LANG=en_GB.UTF-8
+export LC_ALL=en_GB.UTF-8
+export LC_CTYPE=en_GB.UTF-8
 
 PATH=/usr/local/bin:$PATH
 [[ -d $HOME/bin ]] && PATH=$PATH:$HOME/bin
