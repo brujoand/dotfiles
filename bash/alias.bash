@@ -19,15 +19,12 @@ alias strip='tr -d "\040\011\012\015"' # Remove spaces, newlines and tabs
 # Common applications autocomplete from complete -p <application>
 alias g='git' # Git
 complete -o nospace -F __git_wrap__git_main git g
-alias d='docker' # Docker
-complete -o nospace -F _docker docker d
 alias c='curl' # Curl
 complete -o nospace -F _longopt c
 alias v='vim' # Vim
 complete -o bashdefault -o default -F _fzf_file_completion v
 
 # Application specific
-alias dkill='docker ps | grep -vi "container id" | cut -d " " -f1 | xargs docker stop' # Stop all running docker containers
 alias gwho='git log | sed -n "s/Author: \(.*\) <.*/\1/p" | sort | uniq -c | sort -nr | head' # Show most active commiters
 alias gpb='git push origin $(git symbolic-ref HEAD | sed -e "s,.*/\(.*\),\1,")' # Push changes to current branch
 alias vc='vim ~/.vimrc'

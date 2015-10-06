@@ -221,4 +221,5 @@ function set_prompt {
   PS2="$(print_color $_color_prompt_ready) \$_prompt_ready_char $_color_reset"
 }
 
-[[ "set_prompt;" =~ $PROMPT_COMMAND ]] ||  export PROMPT_COMMAND="set_prompt;$PROMPT_COMMAND"
+
+[[ "$PROMPT_COMMAND" == *set_prompt* ]] ||  export PROMPT_COMMAND="set_prompt;$PROMPT_COMMAND"
