@@ -1,8 +1,8 @@
-runtime bundle/vim-pathogen/autoload/pathogen.vim " Loading pathogen 
+runtime bundle/vim-pathogen/autoload/pathogen.vim " Loading pathogen
 execute pathogen#infect()
 
-set nocompatible " No old fuzz
-set clipboard=unnamed " Us the OS clipboard
+" Save often, cry less
+autocmd InsertLeave * write
 
 set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
 set list
@@ -19,14 +19,6 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
-set hlsearch " higlight searces
-" But when i press Enter you stop that shit
-nnoremap <CR> :nohlsearch<CR><CR>
-" Ignore case of searches
-" set ignorecase
-" Highlight dynamically as pattern is typed
-set incsearch
-
 " Remappings
 let mapleader=","
 noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
@@ -39,11 +31,9 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 let g:syntastic_sh_shellcheck_args = "-s bash"
 " Disable for puppet
-let g:syntastic_mode_map = { 
+let g:syntastic_mode_map = {
     \ "mode": "active",
-    \ "passive_filetypes": ["puppet", "eruby"] } 
-
-set rtp+=~/.fzf " Enable fuzzy search
+    \ "passive_filetypes": ["puppet", "eruby"] }
 
 " Allow color schemes to do bright colors without forcing bold.
 if &t_Co == 8 && $TERM !~# '^linux'
@@ -57,7 +47,6 @@ set expandtab           	" use spaces for tabs
 set softtabstop=2       	" 4 space tab
 set shiftwidth=2
 filetype plugin on          " detect filetype
-filetype indent on          " and indent accordingly
 set number                  " show line numbers
 set ruler                   " show cursor position
 set showcmd                 " show command in bottom bar
