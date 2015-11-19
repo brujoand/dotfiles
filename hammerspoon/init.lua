@@ -12,27 +12,38 @@ function stretch(x,y,w,h)
   local win = hs.window.focusedWindow()
   if (win == nil) then
     hs.alert.show("Can't rezise nothing..")
-    return
+    do return end
   end
 
-  local f = win:frame()
+  local current = win:frame()
   local screen = win:screen()
-  local max = screen:frame()
+  local framesize = screen:frame()
+  local target = hs.geometry.new((framesize.w * x) + framesize.x, (framesize.h * y) + framesize.y, framesize.w * w, framesize.h * h):floor()
 
-  f.x = max.w * x
-  f.y = max.h * y
-  f.w = max.w * w
-  f.h = max.h * h
-  win:setFrame(f)
+  if (current:equals(target)) then
+    throw()
+  else
+    win:setFrame(target)
+  end
 end
 
+function throw()
+  if (#hs.screen.allScreens() > 1) then
+    local current = hs.screen.mainScreen()
+    local win = hs.window.focusedWindow()
+    if (win ~= nil) then
+      local target = win:screen():next()
+      win:moveToScreen(target)
+    end
+  end
+end
 
+-- Renize and move windows. Same key twice throws to next display
 hs.hotkey.bind(move, "H", function() stretch(0,0,0.5,0.5) end)
 hs.hotkey.bind(move, "T", function() stretch(0,0.5,0.5,0.5) end)
 hs.hotkey.bind(move, "N", function() stretch(0.5,0.5,0.5,0.5) end)
 hs.hotkey.bind(move, "S", function() stretch(0.5,0,0.5,0.5) end)
 hs.hotkey.bind(move, "M", function() stretch(0,0,1,1) end)
-
 
 function brightness(change)
   local current = hs.brightness.get()
@@ -41,6 +52,7 @@ function brightness(change)
   hs.alert.show("Brightness: " .. target)
 end
 
+-- Control brightness
 hs.hotkey.bind(control, "N", function() brightness(-10) end)
 hs.hotkey.bind(control, "S", function() brightness(10) end)
 
@@ -63,6 +75,7 @@ function volume(change)
   end
 end
 
+-- Control volume
 hs.hotkey.bind(control, "H", function() volume(-10) end)
 hs.hotkey.bind(control, "T", function() volume(10) end)
 hs.hotkey.bind(control, "C", function() volume() end)

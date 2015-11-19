@@ -46,3 +46,6 @@
 [submodule "vim/vim/bundle/vim-bufferline"]
 	path = vim/vim/bundle/vim-bufferline
 	url = https://github.com/bling/vim-bufferline
+[submodule "vim/vim/bundle/neomake"]
+	path = vim/vim/bundle/neomake
+	url = https://github.com/benekastah/neomake.git

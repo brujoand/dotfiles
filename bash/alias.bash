@@ -21,7 +21,7 @@ alias g='git' # Git
 complete -o nospace -F __git_wrap__git_main git g
 alias c='curl' # Curl
 complete -o nospace -F _longopt c
-alias v='vim' # Vim
+alias v='nvim' # Vim
 complete -o bashdefault -o default -F _fzf_file_completion v
 
 # Application specific
