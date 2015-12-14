@@ -4,6 +4,9 @@ execute pathogen#infect()
 " Save often, cry less
 autocmd InsertLeave * write
 
+" Fix broken clipboard
+set clipboard=unnamed
+
 set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
 set list
 

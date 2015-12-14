@@ -23,6 +23,7 @@ alias c='curl' # Curl
 complete -o nospace -F _longopt c
 alias v='nvim' # Vim
 complete -o bashdefault -o default -F _fzf_file_completion v
+alias vim='nvim'
 
 # Application specific
 alias gwho='git log | sed -n "s/Author: \(.*\) <.*/\1/p" | sort | uniq -c | sort -nr | head' # Show most active commiters
