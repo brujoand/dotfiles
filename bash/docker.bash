@@ -17,10 +17,18 @@ function _dm() { # Completion for wat
 }
 
 function _dm_start_and_use() {
-  name=$1
-  docker-machine start "$name"
-  eval "$(docker-machine env "$name")"
+  machines=($(docker-machine ls -q))
+  if [[ "${#machines[@]}" -eq 1 ]]; then
+    machine=${machines[0]}
+    echo "Found a machine $machine, starting it"
+    docker-machine start "$machine"
+    echo "Running 'eval "$(docker-machine env "$machine")"'
+    eval "$(docker-machine env "$machine")"
+  else
+    ehco "I don't know what to do here."
+  fi
 }
+
 
 function _dm_use_running() { # a wrapper for a virtual docker
   running=($(docker-machine ls --filter state=Running -q))
@@ -30,8 +38,9 @@ function _dm_use_running() { # a wrapper for a virtual docker
     eval "$(docker-machine env "$name")"
   elif [[ "${#running[@]}" -gt 1 ]]; then
     echo "Found more than one running machine"
-    echo "Which one should we pick?"
-    _dm_start_and_use "$name"
+    echo "You should implement something"
+  else
+    _dm_start_and_use
   fi
 }
 
