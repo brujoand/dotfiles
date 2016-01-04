@@ -1,4 +1,8 @@
 alias dkill='docker ps | grep -vi "container id" | cut -d " " -f1 | xargs docker stop' # Stop all running docker containers
+function clean_docker() {
+  docker ps -a --filter 'exited=0' -q | xargs docker rm
+  docker images --filter "dangling=true" -q | xargs docker rmi
+}
 
 alias d='dm_wrapper && docker' # Docker
 complete -o nospace -F _docker docker d
@@ -22,7 +26,7 @@ function _dm_start_and_use() {
     machine=${machines[0]}
     echo "Found a machine $machine, starting it"
     docker-machine start "$machine"
-    echo "Running 'eval $(docker-machine env "$machine")'"
+    echo "Running 'eval $(docker-machine env $machine)'"
     eval "$(docker-machine env "$machine")"
   else
     ehco "I don't know what to do here."
