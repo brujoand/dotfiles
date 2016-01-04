@@ -22,7 +22,7 @@ function _dm_start_and_use() {
     machine=${machines[0]}
     echo "Found a machine $machine, starting it"
     docker-machine start "$machine"
-    echo "Running 'eval "$(docker-machine env "$machine")"'
+    echo "Running 'eval $(docker-machine env "$machine")'"
     eval "$(docker-machine env "$machine")"
   else
     ehco "I don't know what to do here."
@@ -61,7 +61,7 @@ function dm_wrapper() {
   [[ -n "$DOCKER_HOST" ]] && return
 
   if ! docker-machine &> /dev/null; then
-    echo "Can't find docker-machine on path. :("
+    echo "Can't find docker-machine on path. "
     return 1
   fi
   _dm_use_running || _dm_use_stopped
