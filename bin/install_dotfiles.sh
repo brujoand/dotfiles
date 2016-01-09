@@ -27,8 +27,8 @@ echo -e "#Just guessing here...\nSRC_DIR=$src_dir" >> "$HOME/.bash_private" || e
 echo ". $HOME/.bash_private" >> "$bashrc" || exit 1
 touch "$HOME/.hushlogin"
 
-ln -s $dotfiles/vim/vim $HOME/.vim
-ln -s $dotfiles/vim/vimrc $HOME/.vimrc
+mkdir -f "$HOME/.config"
+ln -s "$dotfiles/nvim/" "$HOME/.config/nvim"
 
 if [[ $- == *i* ]]; then 
 	echo -e "\nRelaunch bash or run '. ~/.bashrc' for changes to take effect"

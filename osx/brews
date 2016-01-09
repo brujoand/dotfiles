@@ -6,15 +6,10 @@ findutils
 bash
 bash-completion2
 wget --with-iri
-vim --override-system-vi
 nmap
+nvim
 pngcheck
 socat
-sqlmap
-tcpflow
-tcpreplay
-tcptrace
-ucspi-tcp # `tcpserver` etc.
 xpdf
 git
 git-lfs
@@ -25,5 +20,3 @@ irssi
 httpie
 docker
 docker-machine
-docker-compose
-
