@@ -4,7 +4,7 @@ coreutils
 moreutils
 findutils
 bash
-bash-completion2
+homebrew/versions/bash-completion2
 wget --with-iri
 nmap
 nvim
