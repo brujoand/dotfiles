@@ -1,5 +1,12 @@
-runtime bundle/vim-pathogen/autoload/pathogen.vim " Loading pathogen
-execute pathogen#infect()
+call plug#begin('~/.config/nvim/plugged')
+
+Plug 'romainl/Apprentice'
+Plug 'scrooloose/nerdtree'
+Plug 'bling/vim-airline'
+Plug 'airblade/vim-gitgutter'
+Plug 'scrooloose/syntastic'
+
+call plug#end()
 
 " Save often, cry less
 autocmd InsertLeave * write
@@ -59,8 +66,8 @@ set foldmethod=syntax       " fold based on indent level
 set foldnestmax=10          " max 10 depth
 set nofoldenable            " fold files by default on open
 
-set backupdir=~/.vim/.backup// " don't make a mess
-set directory=~/.vim/.swp//    " not even for swap files
+set backupdir=~/.config/nvim/.backup// " don't make a mess
+set directory=~/.config./nvim/.swp//    " not even for swap files
 
 " Have vim put the cursor where it was the last time we viewed this file
 autocmd BufReadPost *

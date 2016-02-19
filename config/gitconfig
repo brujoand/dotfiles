@@ -36,3 +36,6 @@
       
 [core]
 	editor = vim
+[user]
+	name = brujoand
+	email = anders@brujordet.no
