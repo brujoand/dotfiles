@@ -1,6 +1,7 @@
 call plug#begin('~/.config/nvim/plugged')
 
 Plug 'romainl/Apprentice'
+Plug 'chriskempson/vim-tomorrow-theme'
 Plug 'scrooloose/nerdtree'
 Plug 'bling/vim-airline'
 Plug 'airblade/vim-gitgutter'
