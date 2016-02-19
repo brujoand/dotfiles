@@ -1,4 +1,5 @@
 alias dkill='docker ps | grep -vi "container id" | cut -d " " -f1 | xargs docker stop' # Stop all running docker containers
+
 function clean_docker() {
   docker ps -a --filter 'exited=0' -q | xargs docker rm
   docker images --filter "dangling=true" -q | xargs docker rmi
@@ -10,10 +11,10 @@ complete -o nospace -F _docker docker d
 alias dm='docker-machine'
 complete -F _dm dm
 
-alias dc='docke-compose'
+alias dc='docker-compose'
 complete -F _docker-compose dc
 
-function _dm() { # Completion for wat
+function _dm() { # Completion for dm
   local cur words
   _get_comp_words_by_ref cur
   words=$(docker-machine | grep -oE '^  ([a-z]+)' | sed 's/  \(.*\)/\1/')
