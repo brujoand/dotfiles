@@ -1,7 +1,3 @@
-function cdm() { # cd into and make path if it doesn't exist
-  mkdir -p "$1" && cd "$1";
-}
-
 function timer() { # takes number of minutes + message and notifies you
   time_string=$1
   if [[ "$time_string" =~ ^[0-9]+[:][0-9]+$ ]]; then
@@ -10,7 +6,7 @@ function timer() { # takes number of minutes + message and notifies you
     seconds=$(( ( (hours * 60) + minutes ) * 60 ))
     time_hm="${hours}h:${minutes}m"
   elif [[ "$time_string" =~ ^[0-9]+$ ]]; then
-    seconds=$(( $time_string * 60 ))
+    seconds=$(( time_string * 60 ))
     time_hm="${time_string}m"
   else
     echo "error: $time_string is not a number" >&2; return 1
@@ -45,7 +41,7 @@ function pvar() { # echo shell variable with tab-completion
 }
 
 function _sourced_files(){ # Helper for sourced_files
-  for f in $(sed -n 's/^[.|source] \(.*\)/\1/p' "$1"); do
+  sed -n 's/^[.|source] \(.*\)/\1/p' "$1" | while IFS= read -r f; do
     expanded=${f/#\~/$HOME}
     echo "$expanded"
     _sourced_files "$expanded"
@@ -115,7 +111,7 @@ function pp_bash() { # Pretty print bash script
 function _wat() { # Completion for wat
   local cur words
   _get_comp_words_by_ref cur
-  words=$(echo "$(list_aliases; list_functions)" | cut -d ' ' -f 1)
+  words=$(list_aliases; list_functions | cut -d ' ' -f 1)
   COMPREPLY=( $( compgen -W "$words" -- "$cur") )
 }
 
@@ -129,7 +125,7 @@ function wat() { # show help and location of a custom function or alias
     [[ ! -z "${f_body// }" ]] && pp_bash "${f_body}"
     f_helper=$(awk '/^function \_'"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file")
     [[ ! -z "${f_helper// }" ]] && pp_bash "${f_helper}"
-    a_body=$(awk '/^alias '"$query"'=/,/$/ {print "# " FILENAME ":" FNR RS $0 RS;}' $file)
+    a_body=$(awk '/^alias '"$query"'=/,/$/ {print "# " FILENAME ":" FNR RS $0 RS;}' "$file")
     [[ ! -z "${a_body// }" ]] && pp_bash "${a_body}"
   done
   complete -p "$query" 2> /dev/null
@@ -165,9 +161,9 @@ function gshow() { # git show commits from search filter
 function gpdate() { # do git update on master with stash for all repos in $SRC
   old_wd=$(pwd)
 
-	find "$SRC_DIR" -name .git -type d -print0 | while read -d $'\0' gitroot; do
+  find "$SRC_DIR" -name .git -type d -print0 | while read -r -d $'\0' gitroot; do
     echo -e "\033[1;30m\nUpdating ${gitroot%/*}:\033[0m"
-    cd "${gitroot%/*}"
+    cd "${gitroot%/*}" || return 1
 
     if [ -z "$(git status --porcelain)" ]; then
       echo -e "\033[1;30mBranch is clean, pulling master\033[0m"
@@ -185,7 +181,7 @@ function gpdate() { # do git update on master with stash for all repos in $SRC
       git stash apply -q
     fi
   done
-  cd "$old_wd"
+  cd "$old_wd" || return 1
 }
 
 
@@ -193,7 +189,7 @@ function backto() { # Go back to folder in path
   local path=${PWD%/*}
   while [[ $path ]]; do
     if [[ "${path##*/}" == "$1" ]]; then
-      cd "$path"
+      cd "$path" || return 1
       break
     else
       path=${path%/*}
@@ -217,7 +213,7 @@ complete -o nospace -F _backto backto
 
 
 function src() { # cd into $SRC
-  cd "$SRC_DIR/$1"
+  cd "$SRC_DIR/$1" || return 1
 }
 
 function _src() { # completion for src
@@ -226,7 +222,7 @@ function _src() { # completion for src
   _get_comp_words_by_ref cur
   dir=$SRC_DIR/
 
-  if [[ $dir != ${cur:0:${#dir}} ]]; then
+  if [[ $dir != "${cur:0:${#dir}}" ]]; then
     cur=${dir}${cur}
   fi
 
@@ -235,25 +231,16 @@ function _src() { # completion for src
 }
 complete -o nospace -S "/" -F _src src
 
-function vimstall(){
-  repo="$1"
-  if [[ -z "$1" ]]; then
-    >&2 echo -e "We need a git repo"
-    return
-  else
-    (cd "$HOME/.vim/bundle/" && git submodule add "$repo")
-  fi
-}
-
-
 function setjdk() { # set the active jdk with param eg 1.8
   if [ $# -ne 1 ]; then
-   export JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
-   export PATH=$JAVA_HOME/bin:$PATH
+   JAVA_HOME=$(/usr/libexec/java_home -v 1.8)
+   PATH=$JAVA_HOME/bin:$PATH
   else
-   export JAVA_HOME=$(/usr/libexec/java_home -v "$1")
-   export PATH=$JAVA_HOME/bin:$PATH
+   JAVA_HOME=$(/usr/libexec/java_home -v "$1")
+   PATH=$JAVA_HOME/bin:$PATH
   fi
+  export JAVA_HOME
+  export PATH
 }
 
 function notification() { # Notification for osx only atm
