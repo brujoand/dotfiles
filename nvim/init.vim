@@ -6,6 +6,13 @@ Plug 'scrooloose/nerdtree'
 Plug 'bling/vim-airline'
 Plug 'airblade/vim-gitgutter'
 Plug 'scrooloose/syntastic'
+Plug 'Shougo/deoplete.nvim'
+
+let g:deoplete#enable_at_startup = 1
+let g:deoplete#disable_auto_complete = 1
+inoremap <silent><expr><Tab> deoplete#mappings#manual_complete()
+inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
+inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
 
 call plug#end()
 
