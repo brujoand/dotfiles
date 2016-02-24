@@ -14,11 +14,11 @@ if [[ -z "$(brew cask 2> /dev/null)" ]]; then
   brew install caskroom/cask/brew-cask
 fi
 
-while read b; do
+while read -r b; do
     brew install "$b"
 done <brews
 
-while read c; do
+while read -r c; do
     brew cask install "$c"
 done <casks
 
