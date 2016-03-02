@@ -4,7 +4,7 @@
 
 #### Settings ####
 
-# Alerts user if command takse longer than 'n' minutes
+# Alerts user if command tasks longer than 'n' minutes
 # Comment the line out to disable
 _prompt_alert_threshold=1
 # Do not generate alerts for the following commands:
@@ -202,7 +202,7 @@ function _prompt_generate_alert {
 
 function _prompt_generate_last_command {
   _prompt_last_command_status="$?"
-  _prompt_last_command=$(history 1 | awk '{print $2}' | tr '\n' ' ' | cut -c1-30)
+  _prompt_last_command=$(history 1 | awk '{print $2}' | cut -c1-10 | head -n 1)
 }
 
 # The applying of our prompt
