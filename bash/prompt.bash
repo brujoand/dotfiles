@@ -4,26 +4,34 @@
 
 #### Settings ####
 
+_color_blue=31
+_color_white=15
+_color_grey=244
+_color_dgrey=238
+_color_lgrey=250
+_color_green=148
+_color_empty=0
+
 # Alerts user if command tasks longer than 'n' minutes
 # Comment the line out to disable
 _prompt_alert_threshold=1
 # Do not generate alerts for the following commands:
 _prompt_alert_ignore="vim;ssh;screen;irssi;vc;docker;v;g;d;esc;"
 
-_color_host_fg="250" # host text color
-_color_host_bg="238" # host background color
-_color_path_fg="15" # path text color
-_color_path_bg="31" # path background color
-_color_path_sep="244" # path seperator color
-_color_git_fg="238" # git text color
-_color_git_bg="148" # git background color
-_color_time_fg="250" # clock text color
-_color_time_bg="238" # clock background color
-_color_last_fg="238" # last command time text color
-_color_last_bg="250" # last command time background color
-_color_filler_fg=0 # the text color of the empty space (lol)
-_color_filler_bg=0 # the background color of the empty space
-_color_prompt_ready="238" # the color of the prompt character
+_color_host_fg=$_color_lgrey # host text color
+_color_host_bg=$_color_dgrey # host background color
+_color_path_fg=$_color_white # path text color
+_color_path_bg=$_color_blue # path background color
+_color_path_sep=$_color_grey # path seperator color
+_color_git_fg=$_color_dgrey # git text color
+_color_git_bg=$_color_green # git background color
+_color_time_fg=$_color_lgrey # clock text color
+_color_time_bg=$_color_dgrey # clock background color
+_color_last_fg=$_color_dgrey # last command time text color
+_color_last_bg=$_color_lgrey # last command time background color
+_color_filler_fg=$_color_empty # the text color of the empty space (lol)
+_color_filler_bg=$_color_empty # the background color of the empty space
+_color_prompt_ready=$_color_dgrey # the color of the prompt character
 
 
 #### End of settings ###
