@@ -165,7 +165,7 @@ function _prompt_generate_filler {
   local -r wdir=$(pwd | sed "s|$HOME|~|")
   left_prompt=" $_prompt_host_value ; ${wdir//\// / } ; "
   [[ -n "$_prompt_git_status" ]] && left_prompt+="$_prompt_git_status ; "
-  local -r right_prompt="; last: ${_prompt_time_m}m ${_prompt_time_s}s ; $(date +%H:%M:%S) "
+  local -r right_prompt="; ${_prompt_last_command}: ${_prompt_time_m}m ${_prompt_time_s}s ; $(date +%H:%M:%S) "
   local -r columns=$(tput cols)
   local -r needed=$(( ${#left_prompt} + ${#right_prompt} ))
   local -r fillsize=$(( columns - needed ))
@@ -180,7 +180,7 @@ function _prompt_generate_time {
   local -r last_color=$(print_color "$_color_last_fg" "$_color_last_bg")
   local -r last_time_color=$(print_color "$_color_last_fg" "$_color_time_fg")
   local -r fill_last_color=$(print_color "$_color_last_bg")
-  _prompt_time="$fill_last_color$_prompt_segrev_char$last_color last: ${_prompt_time_m}m ${_prompt_time_s}s $last_time_color$_prompt_segrev_char$time_color \t $_color_reset$fill_last_color"
+  _prompt_time="$fill_last_color$_prompt_segrev_char$last_color ${_prompt_last_command}: ${_prompt_time_m}m ${_prompt_time_s}s $last_time_color$_prompt_segrev_char$time_color \t $_color_reset$fill_last_color"
 }
 
 function _prompt_generate_alert {
