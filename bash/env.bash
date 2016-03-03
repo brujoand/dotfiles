@@ -21,7 +21,7 @@ fi;
 
 export GREP_OPTIONS='--color=auto' # Enable colored grep output.
 export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
-export EDITOR=vim
+export EDITOR=nvim
 
 # Shell config
 export LANG=en_GB.UTF-8

@@ -1,8 +1,11 @@
 # osx specific stuff
 
-export BYOBU_PREFIX=$(brew --prefix)
-if [ -f $(brew --prefix)/share/bash-completion/bash_completion ]; then
-  . $(brew --prefix)/share/bash-completion/bash_completion
+BYOBU_PREFIX=$(brew --prefix)
+export BYOBU_PREFIX
+
+if [ -f "$(brew --prefix)/share/bash-completion/bash_completion" ]; then
+  # shellcheck source=/dev/null
+  . "$(brew --prefix)/share/bash-completion/bash_completion"
 fi
 
 function tac() { # A hack to have tac
