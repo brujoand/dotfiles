@@ -1,7 +1,3 @@
-function cdm() { # cd into and make path if it doesn't exist
-  mkdir -p "$1" && cd "$1";
-}
-
 function timer() { # takes number of minutes + message and notifies you
   time_string=$1
   if [[ "$time_string" =~ ^[0-9]+[:][0-9]+$ ]]; then
