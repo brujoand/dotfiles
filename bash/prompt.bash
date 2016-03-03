@@ -18,6 +18,7 @@ _prompt_alert_threshold=1
 _prompt_alert_ignore="vim;ssh;screen;irssi;vc;docker;v;g;d;esc;"
 _prompt_left_segments=('host' 'path' 'git')
 _prompt_right_segments=('command' 'timestamp')
+_prompt_trigger_hooks=('command' 'alert')
 
 _color_host_fg=$_color_lgrey # host text color
 _color_host_bg=$_color_dgrey # host background color
@@ -162,13 +163,24 @@ function _generate_host_segment {
 function _generate_path_segment {
   _append_segment_sep "$_color_path_bg"
   local path_color host_sep_color sep wdir
+  local path_length=0
+  local path_value=
   path_color=$(print_color_escapes "$_color_path_fg" "$_color_path_bg")
   host_sep_color=$(print_color_escapes "$_color_path_sep" "$_color_path_bg")
-  sep=$host_sep_color$_prompt_path_char$path_color
-  wdir=$(pwd | sed -e "s|$HOME|~|" -e 's|^/||')
-
-  _segment_last_length=$(( ${#wdir} + 2 ))
-  _segment_last_value=" $path_color${wdir//\// $sep } "
+  sep=" $host_sep_color$_prompt_path_char$path_color "
+  wdir=$(pwd | sed "s|$HOME|~|")
+  if [[ ${#wdir} -gt 1 ]]; then
+    for folder in $(echo "$wdir" | tr '/' '\n'); do
+      path_length=$(( path_length + ${#folder} + 2 + 2 ))
+    done
+    path_length=$(( path_length - 2 ))
+    path_value=" $path_color${wdir//\// $sep } "
+  else
+    path_length=1
+    path_value="$wdir"
+  fi
+  _segment_last_length=$(( path_length + 2 ))
+  _segment_last_value=" $path_color${path_value} "
 }
 
 function _generate_git_segment() {
@@ -205,6 +217,12 @@ function _generate_prompt_segments() {
     _segment_last_value=''
   done
   _generate_filler_segment
+}
+
+function _perform_trigger_hooks() {
+  for hook in "${_prompt_trigger_hooks[@]}"; do
+    "_trigger_${hook}_hook"
+  done
 }
 
 function _generate_filler_segment {
@@ -255,13 +273,13 @@ function _generate_command_segment {
   command_color=$(print_color_escapes "$_color_command_fg" "$_color_command_bg")
   command_value="${command_color} last: ${_prompt_time_m}m ${_prompt_time_s}s"
   
-  _segment_last_length=$(( ${#command_value} ))
-  _segment_last_value="${command_color}${command_value} "
+  _segment_last_length=$(( ${#command_value} + 2 ))
+  _segment_last_value="${command_color} ${command_value} "
 }
 
 # The applying of our prompt
 function set_prompt {
-  _trigger_command_hook
+  _perform_trigger_hooks
   _prompt_left_length=0
   _prompt_left_value=
   _prompt_right_length=0
@@ -269,7 +287,6 @@ function set_prompt {
   _prompt_generate_chars
   _generate_prompt_segments
   PS1="\n${_prompt_left_value}${_prompt_filler_value}${_prompt_right_value}${_color_reset} \n$(print_color_escapes $_color_prompt_ready) ${_prompt_ready_char} ${_color_reset}"
-#  PS2="$(print_color_escapes $_color_prompt_ready) hei ${_prompt_ready_char} ${_color_reset}"
 }
 
 [[ "$PROMPT_COMMAND" == *set_prompt* ]] ||  export PROMPT_COMMAND="set_prompt;$PROMPT_COMMAND"
