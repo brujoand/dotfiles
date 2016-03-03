@@ -280,7 +280,7 @@ function _generate_command_segment {
 # The applying of our prompt
 function set_prompt {
   _perform_trigger_hooks
-  _prompt_left_length=0
+  _prompt_left_length=-10
   _prompt_left_value=
   _prompt_right_length=0
   _prompt_right_value=
