@@ -19,6 +19,17 @@ elif infocmp xterm-256color >/dev/null 2>&1; then
   export TERM='xterm-256color';
 fi;
 
+shopt -s checkwinsize # Update window size after every command
+shopt -s histappend # Append to the history file, don't overwrite it
+shopt -s cmdhist # Save multi-line commands as one command
+
+HISTSIZE=500000 # Much history
+HISTFILESIZE=100000 # Such size of it
+HISTTIMEFORMAT='%F %T ' # Useful timestamp format
+
+# Record each line as it gets issued
+[[ "$PROMPT_COMMAND" == *'history -a'* ]] ||  export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+
 export GREP_OPTIONS='--color=auto' # Enable colored grep output.
 export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
 export EDITOR=nvim
@@ -36,11 +47,6 @@ PATH=$PATH:/usr/local/sbin
 bind 'set completion-ignore-case on' # Case-insensitive autocompletion
 shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
 shopt -s cdspell # Autocorrect typos in path names when using `cd`
-
-# Make the shell append history, not rewrite it.
-HISTFILESIZE=1000000
-HISTSIZE=1000000
-shopt -s histappend
 
 # Check if this if we are logged in via ssh
 if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
