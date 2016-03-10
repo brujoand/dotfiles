@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+
+echo "Installing brew.. "
+ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+(crontab -l 2>/dev/null; echo "* 5 * * * /usr/local/bin/brew update && /usr/local/bin/brew cask update > /dev/null") | crontab -
+
+brew update
+brew upgrade --all
+brew install pyenv ansible
+
+ssh_folder="$HOME"/.ssh
+[[ -d "$ssh_folder" ]] || mkdir -p "$ssh_folder"
+
+if [[ ! -f "$ssh_folder"/id_rsa ]]; then
+  ssh-keygen -N "" -f "$ssh_folder"/id_rsa
+fi
+
+ansible-playbook -i osx.yml
+
+brew cleanup
+brew cask cleanup
+
+./set_sane_defaults.sh
