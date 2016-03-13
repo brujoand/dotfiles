@@ -39,7 +39,7 @@ for file in "$dotfiles"/dotfiles/*; do
 done
 
 echo "Installing SimpleBashPrompt"
-[[ -d "$src_dir"/sbp ]] || git clone git@github.com:brujoand/brujoand/sbp.git
+[[ -d "$src_dir"/sbp ]] || git clone git@github.com:brujoand/brujoand/sbp.git "$src_dir"/sbp
 "$src_dir"/sbp/install
 
 echo "Sourcing ~/.bashrc in ~/.profile to handle login shells as well."

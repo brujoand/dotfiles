@@ -22,3 +22,6 @@ brew cleanup
 brew cask cleanup
 
 ./set_sane_defaults.sh
+
+../karabiner/karabiner_import
+../bin/install_dotfiles
