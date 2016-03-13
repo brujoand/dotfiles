@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
-echo "Installing brew.. "
-ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-(crontab -l 2>/dev/null; echo "* 5 * * * /usr/local/bin/brew update && /usr/local/bin/brew cask update > /dev/null") | crontab -
+if ! type brew &>/dev/null; then
+  ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+  (crontab -l 2>/dev/null; echo "* 5 * * * /usr/local/bin/brew update && /usr/local/bin/brew cask update > /dev/null") | crontab -
+fi
 
 brew update
 brew upgrade --all
