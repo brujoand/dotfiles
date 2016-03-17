@@ -1,30 +1,78 @@
-local move = {"cmd", "shift", "ctrl"}
-local control = {"option", "shift", "ctrl"}
-
-
 hs.window.animationDuration = 0
+local vw = hs.inspect.inspect
+local configFileWatcher = nil
+hs.grid.setMargins({0, 0})
+hs.grid.setGrid('8x5', nil)
 
-hs.hotkey.bind(control, "'", function()
-  hs.reload()
-end)
+local modNone  = {}
+local mAlt     = {"⌥"}
+local modCmd   = {"⌘"}
+local modShift = {"⇧"}
+local modHyper = {"⌘", "⌃", "⇧"}
 
-function stretch(x,y,w,h)
+local modalKeys = {}
+local modalActive = false
+
+function modalBind( mods, key, callback )
+  table.insert( modalKeys, hs.hotkey.new( mods, key, callback ) )
+end
+
+function disableModal()
+  modalActive = false
+  for keyCount = 1, #modalKeys do
+    modalKeys[ keyCount ]:disable()
+  end
+  hs.alert.closeAll()
+end
+
+function enableModal()
+  modalActive = true
+  for keyCount = 1, #modalKeys do
+      modalKeys[ keyCount ]:enable()
+  end
+  hs.alert.show( "Window manager active", 999999 )
+end
+
+hs.hotkey.bind( modHyper, 'h', function()
+  if( modalActive ) then
+      disableModal()
+  else
+      enableModal()
+  end
+end )
+modalBind( modNone, 'escape', function() disableModal() end )
+modalBind( modNone, 'return', function() disableModal() end )
+
+modalBind( modNone, 'j', function() stretch(0, 0, 0, 1) end )
+modalBind( modShift, 'j', function() stretch(0, 1, 0, -1) end )
+modalBind( modNone, 'k', function() stretch(0, -1, 0, 1) end )
+modalBind( modShift, 'k', function() stretch(0, 0, 0, -1) end )
+modalBind( modNone, 'h', function() stretch(-1, 0, 1, 0) end )
+modalBind( modShift, 'h', function() stretch(0, 0, -1, 0) end )
+modalBind( modNone, 'l', function() stretch(0, 0, 1, 0) end )
+modalBind( modShift, 'l', function() stretch(1, 0, -1, 0) end )
+modalBind( modNone, 'z', function() stretch(-1, -1, 1, 1) end )
+modalBind( modShift, 'z', function() stretch(1, 1, -1, -1) end )
+
+function stretch(x, y, w, h)
   local win = hs.window.focusedWindow()
   if (win == nil) then
     hs.alert.show("Can't rezise nothing..")
     do return end
   end
-
-  local current = win:frame()
+  
   local screen = win:screen()
-  local framesize = screen:frame()
-  local target = hs.geometry.new((framesize.w * x) + framesize.x, (framesize.h * y) + framesize.y, framesize.w * w, framesize.h * h):floor()
-
-  if (current:equals(target)) then
-    throw()
-  else
-    win:setFrame(target)
-  end
+  local screenRect = screen:frame()
+  local windowRect = win:frame()
+  local wSteps = math.floor(screenRect.w / 10)
+  local hSteps = math.floor(screenRect.h / 10)
+  
+  local windowsize = win:frame()
+  local target_x = math.max(math.floor(windowRect.x + (x * wSteps)), 0)
+  local target_y = math.max(math.floor(windowRect.y + (y * hSteps)), 0)
+  local target_w = math.min(math.floor(windowRect.w + (w * wSteps)), screenRect.w)
+  local target_h = math.min(math.floor(windowRect.h + (h * hSteps)), screenRect.h)
+  win:setFrame(hs.geometry.new(target_x, target_y, target_w, target_h))
 end
 
 function throw()
@@ -39,11 +87,11 @@ function throw()
 end
 
 -- Renize and move windows. Same key twice throws to next display
-hs.hotkey.bind(move, "H", function() stretch(0,0,0.5,0.5) end)
-hs.hotkey.bind(move, "T", function() stretch(0,0.5,0.5,0.5) end)
-hs.hotkey.bind(move, "N", function() stretch(0.5,0.5,0.5,0.5) end)
-hs.hotkey.bind(move, "S", function() stretch(0.5,0,0.5,0.5) end)
-hs.hotkey.bind(move, "M", function() stretch(0,0,1,1) end)
+--hs.hotkey.bind(move, "H", function() stretch(0,0,0.5,0.5) end)
+--hs.hotkey.bind(move, "T", function() stretch(0,0.5,0.5,0.5) end)
+--hs.hotkey.bind(move, "N", function() stretch(0.5,0.5,0.5,0.5) end)
+--hs.hotkey.bind(move, "S", function() stretch(0.5,0,0.5,0.5) end)
+--hs.hotkey.bind(move, "M", function() stretch(0,0,1,1) end)
 
 function brightness(change)
   local current = hs.brightness.get()
@@ -53,8 +101,8 @@ function brightness(change)
 end
 
 -- Control brightness
-hs.hotkey.bind(control, "N", function() brightness(-10) end)
-hs.hotkey.bind(control, "S", function() brightness(10) end)
+--hs.hotkey.bind(control, "N", function() brightness(-10) end)
+--hs.hotkey.bind(control, "S", function() brightness(10) end)
 
 function volume(change)
   local systemsound = hs.audiodevice.current().device
@@ -76,9 +124,9 @@ function volume(change)
 end
 
 -- Control volume
-hs.hotkey.bind(control, "H", function() volume(-10) end)
-hs.hotkey.bind(control, "T", function() volume(10) end)
-hs.hotkey.bind(control, "C", function() volume() end)
+--hs.hotkey.bind(control, "H", function() volume(-10) end)
+--hs.hotkey.bind(control, "T", function() volume(10) end)
+--hs.hotkey.bind(control, "C", function() volume() end)
 
 
 hs.alert.show("Config loaded")
