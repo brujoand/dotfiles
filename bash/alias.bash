@@ -41,3 +41,7 @@ alias halp='echo -e "Sourced files:\n$(sourced_files | sed "s#$HOME/#~/#")\n # \
 
 # Moron
 alias :q='exit'
+
+# Environment
+alias s='bash_install'
+alias vimrc="$EDITOR $HOME/.config/nvim/init.vim"

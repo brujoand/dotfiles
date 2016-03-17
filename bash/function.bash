@@ -1,3 +1,11 @@
+function bash_install() { # Takes one argument, a file to add to bashrc
+  if [[ -z "$1" ]]; then
+    echo "No file provided"
+  else
+    echo "source $(realpath "$1")" >> "$HOME/.bashrc"
+  fi
+}
+
 function timer() { # takes number of minutes + message and notifies you
   time_string=$1
   if [[ "$time_string" =~ ^[0-9]+[:][0-9]+$ ]]; then
@@ -41,7 +49,7 @@ function pvar() { # echo shell variable with tab-completion
 }
 
 function _sourced_files(){ # Helper for sourced_files
-  sed -n 's/^[.|source] \(.*\)/\1/p' "$1" | while IFS= read -r f; do
+  sed -En 's/^[.|source]+ (.*)/\1/p' "$1" | while IFS= read -r f; do
     expanded=${f/#\~/$HOME}
     echo "$expanded"
     _sourced_files "$expanded"
@@ -130,60 +138,6 @@ function wat() { # show help and location of a custom function or alias
   done
   complete -p "$query" 2> /dev/null
 }
-
-function grebase() { # git pull rebase with stash
-  if [ -z "$(git status --porcelain)" ]; then
-    git pull --rebase
-  else
-    echo -e "\033[1;36m# working tree dirty - stashing changes\033[0m"
-    git stash
-    echo -e "\033[1;36m# pull and rebase\033[0m"
-    git pull --rebase
-    echo -e "\033[1;36m# applying stash\033[0m"
-    git stash apply
-  fi
-}
-
-function gshow() { # git show commits from search filter
-  filter=$1
-  if [[ ! -z "$filter" ]]; then
-    commits=$(git log --pretty=format:'%h - %s' --reverse | grep -i "$filter" | cut -d ' ' -f 1 | tr '\n' ' ')
-    if [[ ! -z "$commits" ]]; then
-      git show "$commits"
-    else
-      echo 'Sorry, no commits match that filter'
-    fi
-  else
-    echo 'I need something to search for!'
-  fi
-}
-
-function gpdate() { # do git update on master with stash for all repos in $SRC
-  old_wd=$(pwd)
-
-  find "$SRC_DIR" -name .git -type d -print0 | while read -r -d $'\0' gitroot; do
-    echo -e "\033[1;30m\nUpdating ${gitroot%/*}:\033[0m"
-    cd "${gitroot%/*}" || return 1
-
-    if [ -z "$(git status --porcelain)" ]; then
-      echo -e "\033[1;30mBranch is clean, pulling master\033[0m"
-      git checkout master -q
-      git pull  > /dev/null
-      git checkout - -q
-    else
-      echo -e "\033[1;31mBranch is dirty, stashing\033[0m"
-      git stash -q
-      git checkout master -q
-      echo -e "\033[1;30mRebasing master\033[0m"
-      git pull > /dev/null
-      git checkout - -q
-      echo -e "\033[1;31mApplying stash\033[0m"
-      git stash apply -q
-    fi
-  done
-  cd "$old_wd" || return 1
-}
-
 
 function backto() { # Go back to folder in path
   local path=${PWD%/*}
