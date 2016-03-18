@@ -19,9 +19,20 @@ configFileWatcher:start()
 
 local modalKeys = {}
 local modalActive = false
+local windowMode = ""
 
 function modalBind( mods, key, callback )
   table.insert( modalKeys, hs.hotkey.new( mods, key, callback ) )
+end
+
+function toggleMode(targetMode)
+  if (targetMode == windowMode) then
+    windowMode = 'move'
+  else
+    windowMode = targetMode
+  end
+  hs.alert.closeAll()
+  hs.alert.show( "Window manager: " .. windowMode, 999999 )
 end
 
 function disableModal()
@@ -34,11 +45,10 @@ end
 
 function enableModal()
   modalActive = true
-  windowMode = 'move'
+  toggleMode('move')
   for keyCount = 1, #modalKeys do
       modalKeys[ keyCount ]:enable()
   end
-  hs.alert.show( "Window manager active", 999999 )
 end
 
 function toggelModal()
@@ -49,13 +59,6 @@ function toggelModal()
   end
 end
 
-function toggleMode(targetMode)
-  if (targetMode == windowMode) then
-    windowMode = 'move'
-  else
-    windowMode = targetMode
-  end
-end
 
 function windowDown()
   if (windowMode == 'extend') then
@@ -114,29 +117,12 @@ modalBind( modNone, 'e', function() toggleMode('extend') end )
 modalBind( modNone, 's', function() toggleMode('shrink') end )
 
 modalBind( modNone, 'j', function() windowDown() end )
---modalBind( modNone, 'j', function() stretch(0, 0, 0, 1) end )
---modalBind( modShift, 'j', function() stretch(0, 1, 0, -1) end )
---modalBind( modCmd, 'j', function() stretch(0, -1, 0, 0) end )
-
 modalBind( modNone, 'k', function() windowUp() end )
---modalBind( modNone, 'k', function() stretch(0, -1, 0, 1) end )
---modalBind( modShift, 'k', function() stretch(0, 0, 0, -1) end )
---modalBind( modCmd, 'k', function() stretch(0, 1, 0, 0) end )
-
 modalBind( modNone, 'h', function() windowLeft() end )
---modalBind( modNone, 'h', function() stretch(-1, 0, 1, 0) end )
---modalBind( modShift, 'h', function() stretch(0, 0, -1, 0) end )
---modalBind( modCmd, 'h', function() stretch(-1, 0, 0, 0) end )
-
 modalBind( modNone, 'l', function() windowRight() end )
---modalBind( modNone, 'l', function() stretch(0, 0, 1, 0) end )
---modalBind( modShift, 'l', function() stretch(1, 0, -1, 0) end )
---modalBind( modCmd, 'l', function() stretch(1, 0, 0, 0) end )
 
 modalBind( modNone, 'z', function() windowResize() end )
---modalBind( modNone, 'z', function() stretch(-1, -1, 1, 1) end )
 modalBind( modShift, 'z', function() windowResize() end )
---modalBind( modShift, 'z', function() stretch(1, 1, -1, -1) end )
 
 function stretch(x, y, w, h)
   local win = hs.window.focusedWindow()
@@ -169,13 +155,6 @@ function throw()
     end
   end
 end
-
--- Renize and move windows. Same key twice throws to next display
---hs.hotkey.bind(move, "H", function() stretch(0,0,0.5,0.5) end)
---hs.hotkey.bind(move, "T", function() stretch(0,0.5,0.5,0.5) end)
---hs.hotkey.bind(move, "N", function() stretch(0.5,0.5,0.5,0.5) end)
---hs.hotkey.bind(move, "S", function() stretch(0.5,0,0.5,0.5) end)
---hs.hotkey.bind(move, "M", function() stretch(0,0,1,1) end)
 
 function brightness(change)
   local current = hs.brightness.get()
