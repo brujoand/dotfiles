@@ -68,10 +68,6 @@ set ruler                   " show cursor position
 set showcmd                 " show command in bottom bar
 set cursorline              " highlight current line
 
-set foldmethod=syntax       " fold based on indent level
-set foldnestmax=10          " max 10 depth
-set nofoldenable            " fold files by default on open
-
 set backupdir=~/.config/nvim/.backup// " don't make a mess
 set directory=~/.config./nvim/.swp//    " not even for swap files
 

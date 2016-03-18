@@ -4,6 +4,5 @@
   gather_facts: no
   sudo: no
   roles:
-    - dotfiles
     - homebrew
     - homebrew-cask

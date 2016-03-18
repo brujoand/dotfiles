@@ -18,7 +18,7 @@ alias strip='tr -d "\040\011\012\015"' # Remove spaces, newlines and tabs
 
 # Common applications autocomplete from complete -p <application>
 alias g='git' # Git
-complete -o nospace -F __git_wrap__git_main git g
+complete -o bashdefault -o default -o nospace -F _fzf_path_completion g
 alias c='curl' # Curl
 complete -o nospace -F _longopt c
 alias v='nvim' # Vim

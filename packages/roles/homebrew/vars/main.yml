@@ -16,7 +16,6 @@
   - { name: bash }
   - { name: bash-completion2 }
   - { name: socat }
-  - { name: xpdf }
   - { name: git }
   - { name: rename }
   - { name: speedtest_cli }
