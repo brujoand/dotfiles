@@ -1,14 +1,21 @@
 hs.window.animationDuration = 0
 local vw = hs.inspect.inspect
 local configFileWatcher = nil
-hs.grid.setMargins({0, 0})
-hs.grid.setGrid('8x5', nil)
 
 local modNone  = {}
 local mAlt     = {"⌥"}
 local modCmd   = {"⌘"}
 local modShift = {"⇧"}
 local modHyper = {"⌘", "⌃", "⇧"}
+
+function reloadConfig()
+  configFileWatcher:stop()
+  configFileWatcher = nil
+  hs.reload()
+end
+
+configFileWatcher = hs.pathwatcher.new(os.getenv("HOME") .. "/.hammerspoon/", reloadConfig)
+configFileWatcher:start()
 
 local modalKeys = {}
 local modalActive = false
@@ -27,32 +34,109 @@ end
 
 function enableModal()
   modalActive = true
+  windowMode = 'move'
   for keyCount = 1, #modalKeys do
       modalKeys[ keyCount ]:enable()
   end
   hs.alert.show( "Window manager active", 999999 )
 end
 
-hs.hotkey.bind( modHyper, 'h', function()
+function toggelModal()
   if( modalActive ) then
-      disableModal()
+    disableModal()
   else
-      enableModal()
+    enableModal()
   end
-end )
+end
+
+function toggleMode(targetMode)
+  if (targetMode == windowMode) then
+    windowMode = 'move'
+  else
+    windowMode = targetMode
+  end
+end
+
+function windowDown()
+  if (windowMode == 'extend') then
+    stretch(0, 0, 0, 1)
+  elseif (windowMode == 'shrink') then
+    stretch(0, 1, 0, -1)
+  elseif (windowMode == 'move') then
+    stretch(0, 1, 0, 0)
+  end
+end
+
+function windowUp()
+  if (windowMode == 'extend') then
+    stretch(0, -1, 0, 1)
+  elseif (windowMode == 'shrink') then
+    stretch(0, 0, 0, -1)
+  elseif (windowMode == 'move') then
+    stretch(0, -1, 0, 0)
+  end
+end
+
+function windowLeft()
+  if (windowMode == 'extend') then
+    stretch(-1, 0, 1, 0)
+  elseif (windowMode == 'shrink') then
+    stretch(0, 0, -1, 0)
+  elseif (windowMode == 'move') then
+    stretch(-1, 0, 0, 0)
+  end
+end
+
+function windowRight()
+  if (windowMode == 'extend') then
+    stretch(0, 0, 1, 0)
+  elseif (windowMode == 'shrink') then
+    stretch(1, 0, -1, 0)
+  elseif (windowMode == 'move') then
+    stretch(1, 0, 0, 0)
+  end
+end
+
+function windowResize()
+  if (windowMode == 'extend') then
+    stretch(-1, -1, 1, 1)
+  elseif (windowMode == 'shrink') then
+    stretch(1, 1, -1, -1)
+  end
+end
+
+hs.hotkey.bind( modHyper, 'h', function() toggelModal() end )
 modalBind( modNone, 'escape', function() disableModal() end )
 modalBind( modNone, 'return', function() disableModal() end )
 
-modalBind( modNone, 'j', function() stretch(0, 0, 0, 1) end )
-modalBind( modShift, 'j', function() stretch(0, 1, 0, -1) end )
-modalBind( modNone, 'k', function() stretch(0, -1, 0, 1) end )
-modalBind( modShift, 'k', function() stretch(0, 0, 0, -1) end )
-modalBind( modNone, 'h', function() stretch(-1, 0, 1, 0) end )
-modalBind( modShift, 'h', function() stretch(0, 0, -1, 0) end )
-modalBind( modNone, 'l', function() stretch(0, 0, 1, 0) end )
-modalBind( modShift, 'l', function() stretch(1, 0, -1, 0) end )
-modalBind( modNone, 'z', function() stretch(-1, -1, 1, 1) end )
-modalBind( modShift, 'z', function() stretch(1, 1, -1, -1) end )
+modalBind( modNone, 'm', function() toggleMode('move') end )
+modalBind( modNone, 'e', function() toggleMode('extend') end )
+modalBind( modNone, 's', function() toggleMode('shrink') end )
+
+modalBind( modNone, 'j', function() windowDown() end )
+--modalBind( modNone, 'j', function() stretch(0, 0, 0, 1) end )
+--modalBind( modShift, 'j', function() stretch(0, 1, 0, -1) end )
+--modalBind( modCmd, 'j', function() stretch(0, -1, 0, 0) end )
+
+modalBind( modNone, 'k', function() windowUp() end )
+--modalBind( modNone, 'k', function() stretch(0, -1, 0, 1) end )
+--modalBind( modShift, 'k', function() stretch(0, 0, 0, -1) end )
+--modalBind( modCmd, 'k', function() stretch(0, 1, 0, 0) end )
+
+modalBind( modNone, 'h', function() windowLeft() end )
+--modalBind( modNone, 'h', function() stretch(-1, 0, 1, 0) end )
+--modalBind( modShift, 'h', function() stretch(0, 0, -1, 0) end )
+--modalBind( modCmd, 'h', function() stretch(-1, 0, 0, 0) end )
+
+modalBind( modNone, 'l', function() windowRight() end )
+--modalBind( modNone, 'l', function() stretch(0, 0, 1, 0) end )
+--modalBind( modShift, 'l', function() stretch(1, 0, -1, 0) end )
+--modalBind( modCmd, 'l', function() stretch(1, 0, 0, 0) end )
+
+modalBind( modNone, 'z', function() windowResize() end )
+--modalBind( modNone, 'z', function() stretch(-1, -1, 1, 1) end )
+modalBind( modShift, 'z', function() windowResize() end )
+--modalBind( modShift, 'z', function() stretch(1, 1, -1, -1) end )
 
 function stretch(x, y, w, h)
   local win = hs.window.focusedWindow()
