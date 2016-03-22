@@ -1,12 +1,28 @@
 call plug#begin('~/.config/nvim/plugged')
 
+
 Plug 'romainl/Apprentice'
 Plug 'chriskempson/vim-tomorrow-theme'
 Plug 'scrooloose/nerdtree'
 Plug 'bling/vim-airline'
-Plug 'airblade/vim-gitgutter'
-Plug 'scrooloose/syntastic'
-Plug 'Shougo/deoplete.nvim'
+
+
+let mapleader=","
+map <Leader>/ :let @/ = ""<CR>
+noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
+" ,s to search and replace word under cursor
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+
+set rtp+=/usr/local/Cellar/fzf/0.11.3/
+nnoremap <silent> <leader><space> :FZF<CR>
+nnoremap <silent> <leader>t :NERDTreeToggle<CR>
+let g:fzf_action = {
+  \ 'ctrl-m': 'e',
+  \ 'ctrl-t': 'tabedit',
+  \ 'alt-j':  'botright split',
+  \ 'alt-k':  'topleft split',
+  \ 'alt-h':  'vertical topleft split',
+  \ 'alt-l':  'vertical botright split' }
 
 let g:deoplete#enable_at_startup = 1
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
@@ -36,10 +52,6 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 " Remappings
-let mapleader=","
-noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
-" ,s to search and replace word under cursor
-nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
