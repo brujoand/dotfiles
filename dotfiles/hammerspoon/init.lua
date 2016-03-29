@@ -34,11 +34,10 @@ end
 
 function enableModal()
   modalActive = true
-  windowMode = 'move'
+  toggleMode('move')
   for keyCount = 1, #modalKeys do
       modalKeys[ keyCount ]:enable()
   end
-  hs.alert.show( "Window manager active", 999999 )
 end
 
 function toggelModal()
@@ -55,6 +54,8 @@ function toggleMode(targetMode)
   else
     windowMode = targetMode
   end
+  hs.alert.closeAll()
+  hs.alert.show( "Window Manager: " .. windowMode, 999999 )
 end
 
 function windowDown()
