@@ -26,6 +26,7 @@ shopt -s cmdhist # Save multi-line commands as one command
 HISTSIZE=500000 # Much history
 HISTFILESIZE=100000 # Such size of it
 HISTTIMEFORMAT='%F %T ' # Useful timestamp format
+PS4='+\t ' # Place timestamp before debug output
 
 # Record each line as it gets issued
 [[ "$PROMPT_COMMAND" == *'history -a'* ]] ||  export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
