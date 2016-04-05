@@ -58,6 +58,16 @@ function toggleMode(targetMode)
   hs.alert.show( "Window Manager: " .. windowMode, 999999 )
 end
 
+function focusedWin()
+  local win = hs.window.frontmostWindow()
+  if (win == nil) then
+    hs.alert.show("Can't find a focused window")
+    return
+  else
+    return win
+  end
+end
+
 function windowDown()
   if (windowMode == 'extend') then
     stretch(0, 0, 0, 1)
@@ -65,6 +75,8 @@ function windowDown()
     stretch(0, 1, 0, -1)
   elseif (windowMode == 'move') then
     stretch(0, 1, 0, 0)
+  elseif (windowMode == 'window') then
+    focusedWin():moveOneScreenSouth()
   end
 end
 
@@ -75,6 +87,8 @@ function windowUp()
     stretch(0, 0, 0, -1)
   elseif (windowMode == 'move') then
     stretch(0, -1, 0, 0)
+  elseif (windowMode == 'window') then
+    focusedWin():moveOneScreenNorth()
   end
 end
 
@@ -85,6 +99,8 @@ function windowLeft()
     stretch(0, 0, -1, 0)
   elseif (windowMode == 'move') then
     stretch(-1, 0, 0, 0)
+  elseif (windowMode == 'window') then
+    focusedWin():moveOneScreenWest()
   end
 end
 
@@ -95,6 +111,8 @@ function windowRight()
     stretch(1, 0, -1, 0)
   elseif (windowMode == 'move') then
     stretch(1, 0, 0, 0)
+  elseif (windowMode == 'window') then
+    focusedWin():moveOneScreenEast()
   end
 end
 
@@ -113,70 +131,45 @@ modalBind( modNone, 'return', function() disableModal() end )
 modalBind( modNone, 'm', function() toggleMode('move') end )
 modalBind( modNone, 'e', function() toggleMode('extend') end )
 modalBind( modNone, 's', function() toggleMode('shrink') end )
+modalBind( modNone, 'w', function() toggleMode('window') end )
 
 modalBind( modNone, 'j', function() windowDown() end )
---modalBind( modNone, 'j', function() stretch(0, 0, 0, 1) end )
---modalBind( modShift, 'j', function() stretch(0, 1, 0, -1) end )
---modalBind( modCmd, 'j', function() stretch(0, -1, 0, 0) end )
-
 modalBind( modNone, 'k', function() windowUp() end )
---modalBind( modNone, 'k', function() stretch(0, -1, 0, 1) end )
---modalBind( modShift, 'k', function() stretch(0, 0, 0, -1) end )
---modalBind( modCmd, 'k', function() stretch(0, 1, 0, 0) end )
-
 modalBind( modNone, 'h', function() windowLeft() end )
---modalBind( modNone, 'h', function() stretch(-1, 0, 1, 0) end )
---modalBind( modShift, 'h', function() stretch(0, 0, -1, 0) end )
---modalBind( modCmd, 'h', function() stretch(-1, 0, 0, 0) end )
-
 modalBind( modNone, 'l', function() windowRight() end )
---modalBind( modNone, 'l', function() stretch(0, 0, 1, 0) end )
---modalBind( modShift, 'l', function() stretch(1, 0, -1, 0) end )
---modalBind( modCmd, 'l', function() stretch(1, 0, 0, 0) end )
-
 modalBind( modNone, 'z', function() windowResize() end )
---modalBind( modNone, 'z', function() stretch(-1, -1, 1, 1) end )
 modalBind( modShift, 'z', function() windowResize() end )
---modalBind( modShift, 'z', function() stretch(1, 1, -1, -1) end )
+
+function fuzzyWindowEquals(one, two)
+  if (math.floor(one.x) ~= math.floor(two.x)) then
+    return false
+  elseif (math.floor(one.y) ~= math.floor(two.y)) then
+    return false
+  elseif(math.floor(one.w/10) ~= math.floor(two.w/10)) then
+    return false
+  elseif(math.floor(one.h/10) ~= math.floor(two.h/10)) then
+    return false
+  else
+    return true
+  end
+end
 
 function stretch(x, y, w, h)
-  local win = hs.window.focusedWindow()
-  if (win == nil) then
-    hs.alert.show("Can't rezise nothing..")
-    do return end
-  end
-  
+  local win = focusedWin()
   local screen = win:screen()
   local screenRect = screen:frame()
   local windowRect = win:frame()
   local wSteps = math.floor(screenRect.w / 10)
   local hSteps = math.floor(screenRect.h / 10)
-  
+
   local windowsize = win:frame()
   local target_x = math.max(math.floor(windowRect.x + (x * wSteps)), 0)
   local target_y = math.max(math.floor(windowRect.y + (y * hSteps)), 0)
   local target_w = math.min(math.floor(windowRect.w + (w * wSteps)), screenRect.w)
   local target_h = math.min(math.floor(windowRect.h + (h * hSteps)), screenRect.h)
-  win:setFrame(hs.geometry.new(target_x, target_y, target_w, target_h))
+  local target = hs.geometry.new(target_x, target_y, target_w, target_h)
+  win:setFrame(target)
 end
-
-function throw()
-  if (#hs.screen.allScreens() > 1) then
-    local current = hs.screen.mainScreen()
-    local win = hs.window.focusedWindow()
-    if (win ~= nil) then
-      local target = win:screen():next()
-      win:moveToScreen(target)
-    end
-  end
-end
-
--- Renize and move windows. Same key twice throws to next display
---hs.hotkey.bind(move, "H", function() stretch(0,0,0.5,0.5) end)
---hs.hotkey.bind(move, "T", function() stretch(0,0.5,0.5,0.5) end)
---hs.hotkey.bind(move, "N", function() stretch(0.5,0.5,0.5,0.5) end)
---hs.hotkey.bind(move, "S", function() stretch(0.5,0,0.5,0.5) end)
---hs.hotkey.bind(move, "M", function() stretch(0,0,1,1) end)
 
 function brightness(change)
   local current = hs.brightness.get()
