@@ -1,3 +1,5 @@
+alias gg='git grep -n'
+
 function grebase() { # git pull rebase with stash
   if [ -z "$(git status --porcelain)" ]; then
     git pull --rebase
