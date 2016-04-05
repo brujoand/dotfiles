@@ -1,41 +1,46 @@
 [alias]
-       co = checkout
-       ci = commit
-       st = status
-       df = diff
-       who = shortlog --summary --numbered   
-       fileblame = log --diff-filter=A --pretty=short --
-       lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-       lol = log --pretty=oneline --abbrev-commit --graph --decorate	 
+   co = checkout
+   ci = commit
+   st = status
+   df = diff
+   who = shortlog --summary --numbered   
+   fileblame = log --diff-filter=A --pretty=short --
+   lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+   lol = log --pretty=oneline --abbrev-commit --graph --decorate   
 
 [apply]
-      whitespace = fix
+  whitespace = fix
 
 [color]
-      branch = auto
-      diff = auto
-      grep = auto
-      interactive = auto
-      showbranch = auto
-      ui = auto
+  branch = auto
+  diff = auto
+  grep = auto
+  interactive = auto
+  showbranch = auto
+  ui = auto
 
 [color "status"]
-      added = yellow
-      changed = green
-      untracked = cyan  
+  added = yellow
+  changed = green
+  untracked = cyan  
 
 [bash]
-      showDirtyState = true
-      showUnpushed = true
+  showDirtyState = true
+  showUnpushed = true
 
 [difftool]
-      prompt = true
-
+  prompt = true
+[merge]
+	tool = vimdiff
+[mergetool]
+  prompt = true
+	path = nvim
+[mergetool "vimdiff"]
+  cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [push]
-	default = simple
-      
+  default = simple
 [core]
-	editor = vim
+  editor = vim
 [user]
-	name = brujoand
-	email = anders@brujordet.no
+  name = brujoand
+  email = anders@brujordet.no

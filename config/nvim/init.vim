@@ -1,11 +1,14 @@
 call plug#begin('~/.config/nvim/plugged')
 
-
 Plug 'romainl/Apprentice'
 Plug 'chriskempson/vim-tomorrow-theme'
 Plug 'scrooloose/nerdtree'
 Plug 'bling/vim-airline'
+Plug 'benekastah/neomake'
+Plug 'Yggdroot/indentLine'
+Plug 'bronson/vim-trailing-whitespace'
 
+call plug#end()
 
 let mapleader=","
 map <Leader>/ :let @/ = ""<CR>
@@ -16,6 +19,7 @@ nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 set rtp+=/usr/local/Cellar/fzf/0.11.3/
 nnoremap <silent> <leader><space> :FZF<CR>
 nnoremap <silent> <leader>t :NERDTreeToggle<CR>
+let NERDTreeIgnore = ['\.pyc$']
 let g:fzf_action = {
   \ 'ctrl-m': 'e',
   \ 'ctrl-t': 'tabedit',
@@ -28,7 +32,7 @@ let g:deoplete#enable_at_startup = 1
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
 
-call plug#end()
+
 
 " Save often, cry less
 autocmd InsertLeave * write
@@ -51,18 +55,6 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
-" Remappings
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_sh_shellcheck_args = "-s bash -x"
-" Disable for puppet
-let g:syntastic_mode_map = {
-    \ "mode": "active",
-    \ "passive_filetypes": ["puppet", "eruby"] }
-
 " Allow color schemes to do bright colors without forcing bold.
 if &t_Co == 8 && $TERM !~# '^linux'
   set t_Co=16
@@ -70,9 +62,9 @@ endif
 
 set backspace=indent,eol,start " So that backspace will 'work'
 
-set tabstop=2           	" 4 space tab
-set expandtab           	" use spaces for tabs
-set softtabstop=2       	" 4 space tab
+set tabstop=2               " 4 space tab
+set expandtab               " use spaces for tabs
+set softtabstop=2           " 4 space tab
 set shiftwidth=2
 filetype plugin on          " detect filetype
 set number                  " show line numbers
@@ -89,3 +81,4 @@ autocmd BufReadPost *
   \   exe "normal! g`\"" |
   \ endif
 
+autocmd! BufWritePost * Neomake
