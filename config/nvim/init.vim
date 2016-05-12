@@ -5,6 +5,7 @@ Plug 'romainl/Apprentice'
 Plug 'chriskempson/vim-tomorrow-theme'
 Plug 'scrooloose/nerdtree'
 Plug 'bling/vim-airline'
+Plug 'benekastah/neomake'
 
 
 let mapleader=","
@@ -51,17 +52,6 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
-" Remappings
-
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
-let g:syntastic_sh_shellcheck_args = "-s bash -x"
-" Disable for puppet
-let g:syntastic_mode_map = {
-    \ "mode": "active",
-    \ "passive_filetypes": ["puppet", "eruby"] }
 
 " Allow color schemes to do bright colors without forcing bold.
 if &t_Co == 8 && $TERM !~# '^linux'
@@ -89,3 +79,4 @@ autocmd BufReadPost *
   \   exe "normal! g`\"" |
   \ endif
 
+autocmd! BufWritePost * Neomake

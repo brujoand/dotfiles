@@ -33,6 +33,7 @@ HISTTIMEFORMAT='%F %T ' # Useful timestamp format
 export GREP_OPTIONS='--color=auto' # Enable colored grep output.
 export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
 export EDITOR=nvim
+export VISUAL=nvim
 
 # Shell config
 export LANG=en_GB.UTF-8
