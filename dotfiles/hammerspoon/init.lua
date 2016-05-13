@@ -19,9 +19,20 @@ configFileWatcher:start()
 
 local modalKeys = {}
 local modalActive = false
+local windowMode = ""
 
 function modalBind( mods, key, callback )
   table.insert( modalKeys, hs.hotkey.new( mods, key, callback ) )
+end
+
+function toggleMode(targetMode)
+  if (targetMode == windowMode) then
+    windowMode = 'move'
+  else
+    windowMode = targetMode
+  end
+  hs.alert.closeAll()
+  hs.alert.show( "Window manager: " .. windowMode, 999999 )
 end
 
 function disableModal()
@@ -169,6 +180,17 @@ function stretch(x, y, w, h)
   local target_h = math.min(math.floor(windowRect.h + (h * hSteps)), screenRect.h)
   local target = hs.geometry.new(target_x, target_y, target_w, target_h)
   win:setFrame(target)
+end
+
+function throw()
+  if (#hs.screen.allScreens() > 1) then
+    local current = hs.screen.mainScreen()
+    local win = hs.window.focusedWindow()
+    if (win ~= nil) then
+      local target = win:screen():next()
+      win:moveToScreen(target)
+    end
+  end
 end
 
 function brightness(change)

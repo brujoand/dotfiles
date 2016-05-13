@@ -55,6 +55,10 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> 05e914857b067b550e7bcfcba57742b9a256d32a
 " Allow color schemes to do bright colors without forcing bold.
 if &t_Co == 8 && $TERM !~# '^linux'
   set t_Co=16

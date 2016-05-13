@@ -1,0 +1,42 @@
+" Save often, cry less
+autocmd InsertLeave * write
+
+" Fix broken clipboard
+set clipboard=unnamed
+
+set lcs=tab:▸\ ,trail:·,eol:¬,nbsp:_
+set list
+
+syntax enable
+set background=dark
+colorscheme apprentice
+set guifont=Source\ Code\ Pro\ for\ Powerline "make sure to escape the spaces in the name properly
+
+" Remappings
+let mapleader=","
+
+set backspace=indent,eol,start " So that backspace will 'work'
+
+set tabstop=2             " 4 space tab
+set expandtab             " use spaces for tabs
+set softtabstop=2         " 4 space tab
+set shiftwidth=2
+filetype plugin on          " detect filetype
+set number                  " show line numbers
+set ruler                   " show cursor position
+set showcmd                 " show command in bottom bar
+set cursorline              " highlight current line
+
+set foldmethod=syntax       " fold based on indent level
+set foldnestmax=10          " max 10 depth
+set nofoldenable            " fold files by default on open
+
+set backupdir=~/.vim/.backup// " don't make a mess
+set directory=~/.vim/.swp//    " not even for swap files
+
+" Have vim put the cursor where it was the last time we viewed this file
+autocmd BufReadPost *
+  \ if line("'\"") >= 1 && line("'\"") <= line("$") |
+  \   exe "normal! g`\"" |
+  \ endif
+
