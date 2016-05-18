@@ -86,7 +86,9 @@ function windowDown()
     stretch(0, 1, 0, -1)
   elseif (windowMode == 'move') then
     stretch(0, 1, 0, 0)
-  elseif (windowMode == 'window') then
+  elseif (windowMode == 'focus') then
+    focusedWin():focusWindowSouth()
+  elseif (windowMode == 'throw') then
     focusedWin():moveOneScreenSouth()
   end
 end
@@ -98,7 +100,9 @@ function windowUp()
     stretch(0, 0, 0, -1)
   elseif (windowMode == 'move') then
     stretch(0, -1, 0, 0)
-  elseif (windowMode == 'window') then
+  elseif (windowMode == 'focus') then
+    focusedWin():focusWindowNorth()
+  elseif (windowMode == 'throw') then
     focusedWin():moveOneScreenNorth()
   end
 end
@@ -110,7 +114,9 @@ function windowLeft()
     stretch(0, 0, -1, 0)
   elseif (windowMode == 'move') then
     stretch(-1, 0, 0, 0)
-  elseif (windowMode == 'window') then
+  elseif (windowMode == 'focus') then
+    focusedWin():focusWindowWest()
+  elseif (windowMode == 'throw') then
     focusedWin():moveOneScreenWest()
   end
 end
@@ -123,6 +129,10 @@ function windowRight()
   elseif (windowMode == 'move') then
     stretch(1, 0, 0, 0)
   elseif (windowMode == 'window') then
+    focusedWin():moveOneScreenEast()
+  elseif (windowMode == 'focus') then
+    focusedWin():focusWindowEast()
+  elseif (windowMode == 'throw') then
     focusedWin():moveOneScreenEast()
   end
 end
@@ -142,7 +152,8 @@ modalBind( modNone, 'return', function() disableModal() end )
 modalBind( modNone, 'm', function() toggleMode('move') end )
 modalBind( modNone, 'e', function() toggleMode('extend') end )
 modalBind( modNone, 's', function() toggleMode('shrink') end )
-modalBind( modNone, 'w', function() toggleMode('window') end )
+modalBind( modNone, 'p', function() toggleMode('focus') end )
+modalBind( modNone, 't', function() toggleMode('throw') end )
 
 modalBind( modNone, 'j', function() windowDown() end )
 modalBind( modNone, 'k', function() windowUp() end )
@@ -200,10 +211,6 @@ function brightness(change)
   hs.alert.show("Brightness: " .. target)
 end
 
--- Control brightness
---hs.hotkey.bind(control, "N", function() brightness(-10) end)
---hs.hotkey.bind(control, "S", function() brightness(10) end)
-
 function volume(change)
   local systemsound = hs.audiodevice.current().device
   local current = systemsound:volume()
@@ -222,11 +229,6 @@ function volume(change)
     hs.alert.show("Volume: " .. target)
   end
 end
-
--- Control volume
---hs.hotkey.bind(control, "H", function() volume(-10) end)
---hs.hotkey.bind(control, "T", function() volume(10) end)
---hs.hotkey.bind(control, "C", function() volume() end)
 
 
 hs.alert.show("Config loaded")
