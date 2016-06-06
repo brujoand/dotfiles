@@ -37,9 +37,9 @@ export EDITOR=nvim
 export VISUAL=nvim
 
 # Shell config
-export LANG=en_GB.UTF-8
-export LC_ALL=en_GB.UTF-8
-export LC_CTYPE=en_GB.UTF-8
+export LANG=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
 
 PATH=/usr/local/bin:$PATH
 [[ -d $HOME/bin ]] && PATH=$PATH:$HOME/bin

@@ -1,20 +1,24 @@
 call plug#begin('~/.config/nvim/plugged')
 
 Plug 'romainl/Apprentice'
-Plug 'chriskempson/vim-tomorrow-theme'
 Plug 'scrooloose/nerdtree'
 Plug 'bling/vim-airline'
 Plug 'benekastah/neomake'
 Plug 'Yggdroot/indentLine'
 Plug 'bronson/vim-trailing-whitespace'
+Plug 'vimwiki/vimwiki'
+Plug 'gabrielelana/vim-markdown'
 
 call plug#end()
+
+let g:vimwiki_list = [{'path': '~/Dropbox/wiki'}, {'path': '~/Dropbox/wiki/Schibsted/delivery'}, {'path': '~/Dropbox/wiki/Brujordet'}]
 
 let mapleader=","
 map <Leader>/ :let @/ = ""<CR>
 noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
 " ,s to search and replace word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
 
 set rtp+=/usr/local/Cellar/fzf/0.11.3/
 nnoremap <silent> <leader><space> :FZF<CR>
@@ -28,11 +32,44 @@ let g:fzf_action = {
   \ 'alt-h':  'vertical topleft split',
   \ 'alt-l':  'vertical botright split' }
 
+function! MarkdownLevel()
+    if getline(v:lnum) =~ '^# .*$'
+        return ">1"
+    endif
+    if getline(v:lnum) =~ '^## .*$'
+        return ">2"
+    endif
+    if getline(v:lnum) =~ '^### .*$'
+        return ">3"
+    endif
+    if getline(v:lnum) =~ '^#### .*$'
+        return ">4"
+    endif
+    if getline(v:lnum) =~ '^##### .*$'
+        return ">5"
+    endif
+    if getline(v:lnum) =~ '^###### .*$'
+        return ">6"
+    endif
+    return "="
+endfunction
+au BufEnter *.md setlocal foldexpr=MarkdownLevel()
+au BufEnter *.md setlocal foldmethod=expr
+
 let g:deoplete#enable_at_startup = 1
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
 
-
+" Let's make term mode better
+tnoremap <A-h> <C-\><C-n><C-w>h
+tnoremap <A-j> <C-\><C-n><C-w>j
+tnoremap <A-k> <C-\><C-n><C-w>k
+tnoremap <A-l> <C-\><C-n><C-w>l
+nnoremap <A-h> <C-w>h
+nnoremap <A-j> <C-w>j
+nnoremap <A-k> <C-w>k
+nnoremap <A-l> <C-w>l
+tnoremap <Esc> <C-\><C-n> " Let esc exit term mode
 
 " Save often, cry less
 autocmd InsertLeave * write
@@ -52,13 +89,12 @@ colorscheme apprentice
 set guifont=Source\ Code\ Pro\ for\ Powerline "make sure to escape the spaces in the name properly
 
 set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
+let g:neomake_sh_shellcheck_maker = {
+    \ 'args': ['-x'],
+    \ }
+let g:neomake_javascript_enabled_makers = ['jshint']
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 05e914857b067b550e7bcfcba57742b9a256d32a
 " Allow color schemes to do bright colors without forcing bold.
 if &t_Co == 8 && $TERM !~# '^linux'
   set t_Co=16
@@ -86,3 +122,7 @@ autocmd BufReadPost *
   \ endif
 
 autocmd! BufWritePost * Neomake
+autocmd! BufReadPost * Neomake
+augroup AutoCommands
+    autocmd BufWritePost init.vim source ~/.config/nvim/init.vim
+augroup END

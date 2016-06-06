@@ -50,7 +50,7 @@ function pvar() { # echo shell variable with tab-completion
 
 function _sourced_files(){ # Helper for sourced_files
   sed -En 's/^[.|source]+ (.*)/\1/p' "$1" | while IFS= read -r f; do
-    expanded=${f/#\~/$HOME}
+    expanded=$(echo ${f/#\~/$HOME} | envsubst | tr -d '"')
     echo "$expanded"
     _sourced_files "$expanded"
   done

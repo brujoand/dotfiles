@@ -3,10 +3,10 @@
    ci = commit
    st = status
    df = diff
-   who = shortlog --summary --numbered   
+   who = shortlog --summary --numbered
    fileblame = log --diff-filter=A --pretty=short --
    lg = log --graph --pretty=format:'%Cred%h%Creset %an -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-   lol = log --pretty=oneline --abbrev-commit --graph --decorate   
+   lol = log --pretty=oneline --abbrev-commit --graph --decorate
 
 [apply]
   whitespace = fix
@@ -22,7 +22,7 @@
 [color "status"]
   added = yellow
   changed = green
-  untracked = cyan  
+  untracked = cyan
 
 [bash]
   showDirtyState = true
@@ -40,7 +40,7 @@
 [push]
   default = simple
 [core]
-  editor = vim
+  editor = nvim
 [user]
   name = brujoand
   email = anders@brujordet.no

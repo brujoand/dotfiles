@@ -65,3 +65,8 @@ function gcp () { # Checkout a pull request as a branch locally, requires pull n
 
 }
 
+function gst() { # Show git staatus for all dirs in cwd
+  for f in "$(pwd)/"*; do
+    (cd "$f" && __git_ps1 "${f}: %s\n")
+  done  | column -t
+}

@@ -8,6 +8,12 @@ local modCmd   = {"⌘"}
 local modShift = {"⇧"}
 local modHyper = {"⌘", "⌃", "⇧"}
 
+-- init grid
+hs.grid.MARGINX = 0
+hs.grid.MARGINY = 0
+hs.grid.GRIDWIDTH = 7
+hs.grid.GRIDHEIGHT = 5
+
 function reloadConfig()
   configFileWatcher:stop()
   configFileWatcher = nil
@@ -81,11 +87,11 @@ end
 
 function windowDown()
   if (windowMode == 'extend') then
-    stretch(0, 0, 0, 1)
+    hs.grid.resizeWindowTaller().pushWindowDown()
   elseif (windowMode == 'shrink') then
-    stretch(0, 1, 0, -1)
+    hs.grid.resizeWindowShorter().pushWindowDown()
   elseif (windowMode == 'move') then
-    stretch(0, 1, 0, 0)
+    hs.grid.pushWindowDown()
   elseif (windowMode == 'focus') then
     focusedWin():focusWindowSouth()
   elseif (windowMode == 'throw') then
@@ -95,11 +101,11 @@ end
 
 function windowUp()
   if (windowMode == 'extend') then
-    stretch(0, -1, 0, 1)
+    hs.grid.resizeWindowTaller().pushWindowUp()
   elseif (windowMode == 'shrink') then
-    stretch(0, 0, 0, -1)
+    hs.grid.resizeWindowShorter().pushWindowUp()
   elseif (windowMode == 'move') then
-    stretch(0, -1, 0, 0)
+    hs.grid.pushWindowUp()
   elseif (windowMode == 'focus') then
     focusedWin():focusWindowNorth()
   elseif (windowMode == 'throw') then
@@ -109,11 +115,11 @@ end
 
 function windowLeft()
   if (windowMode == 'extend') then
-    stretch(-1, 0, 1, 0)
+    hs.grid.resizeWindowWider().pushWindowLeft()
   elseif (windowMode == 'shrink') then
-    stretch(0, 0, -1, 0)
+    hs.grid.resizeWindowThinner().pushWindowLeft()
   elseif (windowMode == 'move') then
-    stretch(-1, 0, 0, 0)
+    hs.grid.pushWindowLeft()
   elseif (windowMode == 'focus') then
     focusedWin():focusWindowWest()
   elseif (windowMode == 'throw') then
@@ -123,11 +129,11 @@ end
 
 function windowRight()
   if (windowMode == 'extend') then
-    stretch(0, 0, 1, 0)
+    hs.grid.resizeWindowWider().pushWindowRight()
   elseif (windowMode == 'shrink') then
-    stretch(1, 0, -1, 0)
+    hs.grid.resizeWindowThinner().pushWindowRight()
   elseif (windowMode == 'move') then
-    stretch(1, 0, 0, 0)
+    hs.grid.pushWindowRight()
   elseif (windowMode == 'window') then
     focusedWin():moveOneScreenEast()
   elseif (windowMode == 'focus') then
@@ -139,9 +145,9 @@ end
 
 function windowResize()
   if (windowMode == 'extend') then
-    stretch(-1, -1, 1, 1)
+    hs.grid.maximizeWindow()
   elseif (windowMode == 'shrink') then
-    stretch(1, 1, -1, -1)
+    hs.grid.hide()
   end
 end
 
@@ -152,7 +158,7 @@ modalBind( modNone, 'return', function() disableModal() end )
 modalBind( modNone, 'm', function() toggleMode('move') end )
 modalBind( modNone, 'e', function() toggleMode('extend') end )
 modalBind( modNone, 's', function() toggleMode('shrink') end )
-modalBind( modNone, 'p', function() toggleMode('focus') end )
+modalBind( modNone, 'f', function() toggleMode('focus') end )
 modalBind( modNone, 't', function() toggleMode('throw') end )
 
 modalBind( modNone, 'j', function() windowDown() end )
@@ -161,48 +167,6 @@ modalBind( modNone, 'h', function() windowLeft() end )
 modalBind( modNone, 'l', function() windowRight() end )
 modalBind( modNone, 'z', function() windowResize() end )
 modalBind( modShift, 'z', function() windowResize() end )
-
-function fuzzyWindowEquals(one, two)
-  if (math.floor(one.x) ~= math.floor(two.x)) then
-    return false
-  elseif (math.floor(one.y) ~= math.floor(two.y)) then
-    return false
-  elseif(math.floor(one.w/10) ~= math.floor(two.w/10)) then
-    return false
-  elseif(math.floor(one.h/10) ~= math.floor(two.h/10)) then
-    return false
-  else
-    return true
-  end
-end
-
-function stretch(x, y, w, h)
-  local win = focusedWin()
-  local screen = win:screen()
-  local screenRect = screen:frame()
-  local windowRect = win:frame()
-  local wSteps = math.floor(screenRect.w / 10)
-  local hSteps = math.floor(screenRect.h / 10)
-
-  local windowsize = win:frame()
-  local target_x = math.max(math.floor(windowRect.x + (x * wSteps)), 0)
-  local target_y = math.max(math.floor(windowRect.y + (y * hSteps)), 0)
-  local target_w = math.min(math.floor(windowRect.w + (w * wSteps)), screenRect.w)
-  local target_h = math.min(math.floor(windowRect.h + (h * hSteps)), screenRect.h)
-  local target = hs.geometry.new(target_x, target_y, target_w, target_h)
-  win:setFrame(target)
-end
-
-function throw()
-  if (#hs.screen.allScreens() > 1) then
-    local current = hs.screen.mainScreen()
-    local win = hs.window.focusedWindow()
-    if (win ~= nil) then
-      local target = win:screen():next()
-      win:moveToScreen(target)
-    end
-  end
-end
 
 function brightness(change)
   local current = hs.brightness.get()
