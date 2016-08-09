@@ -3,6 +3,7 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWUNPUSHED=1
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
 export MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=128m -Djava.awt.headless=true"
+export GOPATH='/opt/go'
 
 # Make less more awesome
 export LESS_TERMCAP_mb=$'\E[01;31m' # begin blinking

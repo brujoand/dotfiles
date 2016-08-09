@@ -22,5 +22,47 @@ if [[ "$(uname)" == "Darwin" ]]; then
       COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- "$cur"))
   }
 
-  complete -F _complete_ssh_hosts ssh
+  function _notifications_enabled() {
+    plutil -convert xml1 -o - ~/Library/Preferences/ByHost/com.apple.notificationcenterui.*.plist | grep -q false
+  }
+
+  function _toggle_notifications() {
+    osascript <<-EOD
+     tell application "System Events" to tell process "SystemUIServer"
+       key down option
+       click menu bar item 1 of menu bar 2
+       key up option
+     end tell
+		EOD
+  }
+
+  function _clear_notifications() {
+    osascript <<-EOD
+      tell application "System Events"
+        tell process "Notification Center"
+          set theWindows to every window
+          repeat with i from 1 to number of items in theWindows
+            set this_item to item i of theWindows
+              try
+                click button 1 of this_item
+              on error
+                -- do nothing just skip
+            end try
+          end repeat
+        end tell
+      end tell
+		EOD
+  }
+
+  alias stfu='_clear_notifications && _toggle_notifications'
+
+  function _last_result() {
+    osascript <<-EOD
+      tell application "iTerm"
+        tell current tab of current window
+        get text of current session
+      end tell
+    end tell
+		EOD
+  }
 fi

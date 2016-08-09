@@ -2,12 +2,14 @@ call plug#begin('~/.config/nvim/plugged')
 
 Plug 'romainl/Apprentice'
 Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
 Plug 'bling/vim-airline'
 Plug 'benekastah/neomake'
 Plug 'Yggdroot/indentLine'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'vimwiki/vimwiki'
 Plug 'gabrielelana/vim-markdown'
+Plug 'tpope/vim-fugitive'
 
 call plug#end()
 
@@ -19,6 +21,7 @@ noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
 " ,s to search and replace word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
+map <leader>ss :setlocal spell!<cr> " toggle spellchehck
 
 set rtp+=/usr/local/Cellar/fzf/0.11.3/
 nnoremap <silent> <leader><space> :FZF<CR>
@@ -53,8 +56,8 @@ function! MarkdownLevel()
     endif
     return "="
 endfunction
-au BufEnter *.md setlocal foldexpr=MarkdownLevel()
-au BufEnter *.md setlocal foldmethod=expr
+"au BufEnter *.md setlocal foldexpr=MarkdownLevel()
+"au BufEnter *.md setlocal foldmethod=expr
 
 let g:deoplete#enable_at_startup = 1
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"

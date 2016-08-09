@@ -160,6 +160,7 @@ modalBind( modNone, 'e', function() toggleMode('extend') end )
 modalBind( modNone, 's', function() toggleMode('shrink') end )
 modalBind( modNone, 'f', function() toggleMode('focus') end )
 modalBind( modNone, 't', function() toggleMode('throw') end )
+modalBind( modNone, 'f', function() hs.hints.windowHints() end )
 
 modalBind( modNone, 'j', function() windowDown() end )
 modalBind( modNone, 'k', function() windowUp() end )

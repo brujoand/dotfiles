@@ -1,9 +1,10 @@
 function tdy() { # The today todo list
+  category=${1:work}
   tdy_folder="$HOME"/Dropbox/tdy
-  tdy_date="$(date +'%Y.%m.%d')"
-  tdy_file="${tdy_folder}/${tdy_date}.md"
-  if [[ ! -f "$tdy_file" ]]; then
-    echo "# ${tdy_date}" > "$tdy_file"
+  tdy_date="$(date +'## %Y.%m.%d')"
+  tdy_file="${tdy_folder}/${category}.md"
+  if ! grep -q "$tdy_date" "$tdy_file"; then
+    echo -e "\n${tdy_date}" >> "$tdy_file"
   fi
   "$EDITOR" "$tdy_file"
 }
