@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 function bash_install() { # Takes one argument, a file to add to bashrc
   if [[ -z "$1" ]]; then
     echo "No file provided"
