@@ -35,31 +35,6 @@ let g:fzf_action = {
   \ 'alt-h':  'vertical topleft split',
   \ 'alt-l':  'vertical botright split' }
 
-function! MarkdownLevel()
-    if getline(v:lnum) =~ '^# .*$'
-        return ">1"
-    endif
-    if getline(v:lnum) =~ '^## .*$'
-        return ">2"
-    endif
-    if getline(v:lnum) =~ '^### .*$'
-        return ">3"
-    endif
-    if getline(v:lnum) =~ '^#### .*$'
-        return ">4"
-    endif
-    if getline(v:lnum) =~ '^##### .*$'
-        return ">5"
-    endif
-    if getline(v:lnum) =~ '^###### .*$'
-        return ">6"
-    endif
-    return "="
-endfunction
-"au BufEnter *.md setlocal foldexpr=MarkdownLevel()
-"au BufEnter *.md setlocal foldmethod=expr
-
-let g:deoplete#enable_at_startup = 1
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
 
@@ -94,8 +69,13 @@ set guifont=Source\ Code\ Pro\ for\ Powerline "make sure to escape the spaces in
 set statusline+=%#warningmsg#
 set statusline+=%*
 let g:neomake_sh_shellcheck_maker = {
-    \ 'args': ['-x'],
-    \ }
+    \ 'args': ['-x', '-fgcc'],
+      \ 'errorformat':
+          \ '%f:%l:%c: %trror: %m,' .
+          \ '%f:%l:%c: %tarning: %m,' .
+          \ '%I%f:%l:%c: Note: %m',
+      \ }
+
 let g:neomake_javascript_enabled_makers = ['jshint']
 
 " Allow color schemes to do bright colors without forcing bold.
