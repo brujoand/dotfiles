@@ -1,12 +1,35 @@
+#! /usr/bin/env bash
+
+function _get_last_tdy_file() {
+  category=${1:-work}
+  tdy_folder="$HOME/Dropbox/tdy/${category}"
+  find "$tdy_folder" -type f -print0 | xargs -0 stat -f "%m %N" | sort -nr | head -n 1 | cut -d ' ' -f 2
+}
+
 function tdy() { # The today todo list
-  category=${1:work}
-  tdy_folder="$HOME"/Dropbox/tdy
-  tdy_date="$(date +'## %Y.%m.%d')"
-  tdy_file="${tdy_folder}/${category}.md"
-  if ! grep -q "$tdy_date" "$tdy_file"; then
-    echo -e "\n${tdy_date}" >> "$tdy_file"
+  category=${1:-work}
+  tdy_folder="$HOME/Dropbox/tdy/${category}"
+  year="$(date +'%Y')"
+  month="$(date +'%m')"
+  day="$(date +'%d')"
+  date="${year}.${month}.${day}"
+  tdy_current_folder="${tdy_folder}/${year}/${month}"
+  tdy_current_file="${tdy_current_folder}/${date}.md"
+  tdy_previous_file=$(_get_last_tdy_file)
+  mkdir -p "$tdy_current_folder"
+  if [[ ! -f "$tdy_current_file" ]]; then
+    echo -e "# ${date}" >> "$tdy_current_file"
+    if [[ -f "$tdy_previous_file" ]]; then
+      grep '\[ \]' "$tdy_previous_file" | tee -a "$tdy_current_file" >/dev/null
+    fi
   fi
-  "$EDITOR" "$tdy_file"
+  cd "$tdy_folder" || exit 1
+
+  if [[ -t 1 ]]; then
+    "$EDITOR" "$tdy_current_file"
+  else
+    cat "$tdy_current_file"
+  fi
 }
 
 function standup() { # The today todo list
