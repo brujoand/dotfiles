@@ -4,16 +4,27 @@ Plug 'romainl/Apprentice'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'bling/vim-airline'
-Plug 'benekastah/neomake'
-Plug 'Yggdroot/indentLine'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+"Plug 'Yggdroot/indentLine'
+Plug 'vimwiki/vimwiki'
+"Plug 'tbabej/taskwiki'
+Plug 'powerman/vim-plugin-AnsiEsc' " This is for colors in charts for taskWiki
+Plug 'majutsushi/tagbar' " Provides taskWarrior file navigation
+Plug 'farseer90718/vim-taskwarrior' " Enables grid view
+Plug 'mattn/calendar-vim'
+Plug 'leafgarland/typescript-vim'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'vimwiki/vimwiki'
 Plug 'gabrielelana/vim-markdown'
 Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'benekastah/neomake'
+Plug 'fatih/vim-go'
 
 call plug#end()
 
 let g:vimwiki_list = [{'path': '~/Dropbox/wiki'}, {'path': '~/Dropbox/wiki/Schibsted/delivery'}, {'path': '~/Dropbox/wiki/Brujordet'}]
+let g:markdown_enable_spell_checking = 0
 
 let mapleader=","
 map <Leader>/ :let @/ = ""<CR>
@@ -21,7 +32,12 @@ noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
 " ,s to search and replace word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
-map <leader>ss :setlocal spell!<cr> " toggle spellchehck
+function! OpenSecretCalendar()
+  call vimwiki#base#goto_index(2)
+  execute ':Calendar'
+endfunction
+nnoremap <leader>c :call OpenSecretCalendar()<cr>
+map <leader>sc :setlocal spell!<cr> " toggle spellchehck
 
 set rtp+=/usr/local/Cellar/fzf/0.11.3/
 nnoremap <silent> <leader><space> :FZF<CR>
@@ -51,6 +67,25 @@ tnoremap <Esc> <C-\><C-n> " Let esc exit term mode
 
 " Save often, cry less
 autocmd InsertLeave * write
+
+" {{{ Vimwiki plugin settings and specific functions: "
+let g:vimwiki_list = [{
+          \ 'path': '~/Dropbox/vimwiki',
+          \ 'template_path': '~/Dropbox/vimwiki/templates/',
+          \ 'nested_syntaxes': {
+          \   'ruby': 'ruby',
+          \   'python': 'python',
+          \   'javascript': 'javascript',
+          \   'bash': 'sh'
+          \  },
+          \ 'template_default': 'default',
+          \ 'path_html': '~/Dropbox/vimwiki/site_html/',
+          \ 'template_ext': '.tpl'
+          \ }]
+
+autocmd FileType vimwiki set spell spelllang=en_gb
+" }}}
+
 
 " Fix broken clipboard
 set clipboard=unnamed

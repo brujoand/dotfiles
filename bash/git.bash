@@ -70,3 +70,9 @@ function gst() { # Show git staatus for all dirs in cwd
     (cd "$f" && __git_ps1 "${f}: %s\n")
   done  | column -t
 }
+
+function gpu() { # Fetch and fast forward upstream changes
+  git co master && \
+  git fetch upstream && \
+  git merge upstream/master --ff-only
+}

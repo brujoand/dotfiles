@@ -142,7 +142,7 @@ function wat() { # show help and location of a custom function or alias
 }
 
 function backto() { # Go back to folder in path
-  local path=${PWD%/*}
+  local path=${PWD}
   while [[ $path ]]; do
     if [[ "${path##*/}" == "$1" ]]; then
       cd "$path" || return 1

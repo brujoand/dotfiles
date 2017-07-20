@@ -1,5 +1,12 @@
-runtime bundle/vim-pathogen/autoload/pathogen.vim " Loading pathogen
-execute pathogen#infect()
+call plug#begin('~/.vim/plugged')
+Plug 'romainl/Apprentice'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
+Plug 'bling/vim-airline'
+Plug 'Yggdroot/indentLine'
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'tpope/vim-fugitive'
+call plug#end()
 
 " Save often, cry less
 autocmd InsertLeave * write

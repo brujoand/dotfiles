@@ -8,6 +8,7 @@ function _aws_get_profiles() {
     return 1
   fi
   sed -n 's/.* \(.*\)]/\1/p' "$AWS_CONFIG_FILE"
+  echo 'default'
 }
 
 function _aws_get_active_profile() {
@@ -18,15 +19,6 @@ function _aws_get_active_profile() {
   else
     echo "No profile could be found"
   fi
-}
-
-function _aws_show_active_profile() {
-  AWS_DEFAULT_PROFILE=$AWS_DEFAULT_PROFILE
-  AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
-  AWS_DEFAULT_OUTPUT=$AWS_DEFAULT_REGION
-  AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
-  AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
-  AWS_SESSION_TOKEN=$AWS_SESSION_TOKEN
 }
 
 function _aws_set_active_profile() {
@@ -43,12 +35,12 @@ function _aws_set_active_profile() {
 
   if grep -q ^"$target_profile"$ <<< "$(_aws_get_profiles)"; then
     set -a # Export the following variables
+    AWS_PROFILE="$target_profile"
     AWS_DEFAULT_PROFILE="$target_profile"
-    AWS_DEFAULT_REGION="$(aws configure --profile "${target_profile}" get region)"
-    AWS_DEFAULT_OUTPUT="$(aws configure --profile "${target_profile}" get output)"
+    AWS_DEFAULT_REGION="$(aws configure --profile "${target_profile}" get region || aws configure --profile default get region)"
+    AWS_DEFAULT_OUTPUT="$(aws configure --profile "${target_profile}" get output || aws configure --profile default get output)"
     AWS_ACCESS_KEY_ID="$(aws configure --profile "${target_profile}" get aws_access_key_id)"
     AWS_SECRET_ACCESS_KEY="$(aws configure --profile "${target_profile}" get aws_secret_access_key)"
-    AWS_SESSION_TOKEN="$(aws configure --profile "${target_profile}" get aws_session_token)"
     set +a
   fi
 }
