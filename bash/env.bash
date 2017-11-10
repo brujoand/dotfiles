@@ -30,7 +30,7 @@ HISTTIMEFORMAT='%F %T ' # Useful timestamp format
 PS4='+\t ' # Place timestamp before debug output
 
 # Record each line as it gets issued
-[[ "$PROMPT_COMMAND" == *'history -a'* ]] ||  export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+[[ "$PROMPT_COMMAND" == "*'history -a'*" ]] ||  export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 export GREP_OPTIONS='--color=auto' # Enable colored grep output.
 export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
@@ -43,7 +43,7 @@ export LC_ALL=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 
 PATH=/usr/local/bin:$PATH
-[[ -d $HOME/bin ]] && PATH=$PATH:$HOME/bin
+[[ -d $HOME/bin ]] && PATH=$HOME/bin:$PATH
 PATH=$PATH:$DOTFILES/bin
 PATH=$PATH:/usr/local/sbin
 
@@ -68,3 +68,5 @@ export PATH="$PYENV_ROOT/bin:$PATH"
 # Ruby
 [[ -d "$HOME/.rvm/bin" ]] && export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
 [[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
+
+alias path='echo "$PATH" | tr ":" "\n" | sort'

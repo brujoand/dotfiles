@@ -41,6 +41,7 @@
   default = simple
 [core]
   editor = nvim
+	excludesfile = /Users/anders.brujordet/.gitignore_global
 [user]
   name = brujoand
   email = anders@brujordet.no

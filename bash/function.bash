@@ -11,6 +11,7 @@ function bash_install() { # Takes one argument, a file to add to bashrc
 function timer() { # takes number of minutes + message and notifies you
   time_string=$1
   if [[ "$time_string" =~ ^[0-9]+[:][0-9]+$ ]]; then
+    time_stri
     hours=${time_string/:*/}
     minutes=${time_string/*:/}
     seconds=$(( ( (hours * 60) + minutes ) * 60 ))
@@ -112,9 +113,9 @@ complete -o nospace -F _esc esc
 
 function pp_bash() { # Pretty print bash script
   if [[ -n "$(type pygmentize 2> /dev/null)" ]]; then
-   echo "${1}" | pygmentize -f terminal -l bash
+    echo "$1" | pygmentize -f terminal -l bash
   else
-    echo "${1}"
+    echo "$1"
   fi
 }
 

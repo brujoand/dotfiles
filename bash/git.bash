@@ -1,4 +1,5 @@
 alias gg='git grep -n'
+alias gc='git clone'
 
 function grebase() { # git pull rebase with stash
   if [ -z "$(git status --porcelain)" ]; then

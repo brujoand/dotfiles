@@ -5,51 +5,47 @@ Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'bling/vim-airline'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-"Plug 'Yggdroot/indentLine'
-Plug 'vimwiki/vimwiki'
-"Plug 'tbabej/taskwiki'
-Plug 'powerman/vim-plugin-AnsiEsc' " This is for colors in charts for taskWiki
-Plug 'majutsushi/tagbar' " Provides taskWarrior file navigation
-Plug 'farseer90718/vim-taskwarrior' " Enables grid view
-Plug 'mattn/calendar-vim'
 Plug 'leafgarland/typescript-vim'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'vimwiki/vimwiki'
 Plug 'gabrielelana/vim-markdown'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-Plug 'benekastah/neomake'
 Plug 'fatih/vim-go'
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
+Plug 'benekastah/neomake'
+Plug 'ensime/ensime-vim', { 'do': ':UpdateRemotePlugins' }
+Plug 'derekwyatt/vim-scala'
+Plug 'dln/avro-vim'
+Plug 'spf13/vim-autoclose'
 
 call plug#end()
 
-let g:vimwiki_list = [{'path': '~/Dropbox/wiki'}, {'path': '~/Dropbox/wiki/Schibsted/delivery'}, {'path': '~/Dropbox/wiki/Brujordet'}]
+let g:vimwiki_list = [{'path': '~/Dropbox/wiki'}]
 let g:markdown_enable_spell_checking = 0
 
+nnoremap <silent> <leader><space> :FZF<CR>
+nnoremap <silent> <leader>t :NERDTreeToggle<CR>
+nnoremap <silent> <leader>f :NERDTreeFind<CR>
+let NERDTreeIgnore = ['\.pyc$']
+
+let g:deoplete#enable_at_startup = 1
+
 let mapleader=","
+
 map <Leader>/ :let @/ = ""<CR>
 noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
 " ,s to search and replace word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+"nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
+nnoremap <leader>sc :setlocal spell!<cr> " toggle spellchehck
 nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
-function! OpenSecretCalendar()
-  call vimwiki#base#goto_index(2)
-  execute ':Calendar'
-endfunction
-nnoremap <leader>c :call OpenSecretCalendar()<cr>
-map <leader>sc :setlocal spell!<cr> " toggle spellchehck
 
-set rtp+=/usr/local/Cellar/fzf/0.11.3/
-nnoremap <silent> <leader><space> :FZF<CR>
-nnoremap <silent> <leader>t :NERDTreeToggle<CR>
-let NERDTreeIgnore = ['\.pyc$']
-let g:fzf_action = {
-  \ 'ctrl-m': 'e',
-  \ 'ctrl-t': 'tabedit',
-  \ 'alt-j':  'botright split',
-  \ 'alt-k':  'topleft split',
-  \ 'alt-h':  'vertical topleft split',
-  \ 'alt-l':  'vertical botright split' }
+
+au FileType scala nnoremap <leader>d :EnDeclaration<CR>
+au FileType scala nnoremap <leader>b :EnDocBrowse<CR>
+au BufRead,BufNewFile *.avdl setlocal filetype=avro-idl
 
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
@@ -95,6 +91,10 @@ set list
 
 let g:airline_powerline_fonts = 1 " use powerline fonts
 set laststatus=2            " make airline show up with at once
+let g:airline#extensions#tabline#enabled = 1 " Show my buffers
+let g:airline#extensions#tabline#fnamemod = ':t' " But just the filename
+nmap <leader>l :bnext<CR>
+nmap <leader>h :bprevious<CR>
 
 syntax enable
 set background=dark
