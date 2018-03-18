@@ -18,13 +18,13 @@ alias strip='tr -d "\040\011\012\015"' # Remove spaces, newlines and tabs
 
 # Common applications autocomplete from complete -p <application>
 alias g='git' # Git
-complete -o bashdefault -o default -o nospace -F _fzf_path_completion g
+complete git v
 alias c='curl' # Curl
 complete -o nospace -F _longopt c
 alias v='vim' # Vim
-complete -o bashdefault -o default -F _fzf_file_completion v
+complete complete -F _filedir_xspec v
 alias nv='nvim'
-complete -o bashdefault -o default -F _fzf_file_completion nv
+complete -o bashdefault -o default nv
 
 # Application specific
 alias gwho='git log | sed -n "s/Author: \(.*\) <.*/\1/p" | sort | uniq -c | sort -nr | head' # Show most active commiters
