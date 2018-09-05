@@ -1,5 +1,6 @@
 call plug#begin('~/.config/nvim/plugged')
 
+
 Plug 'romainl/Apprentice'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
@@ -26,8 +27,6 @@ let g:vimwiki_list = [{'path': '~/Dropbox/wiki'}]
 let g:markdown_enable_spell_checking = 0
 
 nnoremap <silent> <leader><space> :FZF<CR>
-nnoremap <silent> <leader>t :NERDTreeToggle<CR>
-nnoremap <silent> <leader>f :NERDTreeFind<CR>
 let NERDTreeIgnore = ['\.pyc$']
 
 let g:deoplete#enable_at_startup = 1
@@ -144,3 +143,7 @@ autocmd! BufReadPost * Neomake
 augroup AutoCommands
     autocmd BufWritePost init.vim source ~/.config/nvim/init.vim
 augroup END
+
+nnoremap <silent> <leader>t :NERDTreeToggle<CR>
+nnoremap <silent> <leader>f :NERDTreeFind<CR>
+

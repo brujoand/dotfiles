@@ -31,17 +31,19 @@
 [difftool]
   prompt = true
 [merge]
-	tool = vimdiff
+  tool = vimdiff
 [mergetool]
   prompt = true
-	path = nvim
+  path = nvim
 [mergetool "vimdiff"]
   cmd = nvim -d $BASE $LOCAL $REMOTE $MERGED -c '$wincmd w' -c 'wincmd J'
 [push]
   default = simple
 [core]
   editor = nvim
-	excludesfile = /Users/anders.brujordet/.gitignore_global
-[user]
-  name = brujoand
-  email = anders@brujordet.no
+  excludesfile = /Users/anders.brujordet/.gitignore_global
+
+[includeIf "gitdir:~/src/schibsted/"]
+  path = .git/git-schibsted
+[includeIf "gitdir:~/src/brujoand/"]
+  path = .git/git-brujoand
