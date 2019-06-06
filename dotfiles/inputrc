@@ -1,0 +1,21 @@
+# Fancy menu like zsh
+set menu-complete-display-prefix on
+
+# Show menu at once if more than one matches
+set show-all-if-ambiguous on
+
+# Use colors when showing completion menu
+set colored-stats on
+
+# Highlight the matching parts
+set colored-completion-prefix on
+
+# Ignore case when completing
+set completion-ignore-case on
+
+# Append '/' to completed symlinks
+set mark-symlinked-directories on
+
+# Shut the bell up
+set bell-style none
+
