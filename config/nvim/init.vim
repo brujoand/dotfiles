@@ -17,7 +17,6 @@ Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'benekastah/neomake'
 Plug 'ensime/ensime-vim', { 'do': ':UpdateRemotePlugins' }
-Plug 'derekwyatt/vim-scala'
 Plug 'dln/avro-vim'
 Plug 'spf13/vim-autoclose'
 
@@ -28,6 +27,7 @@ let g:markdown_enable_spell_checking = 0
 
 nnoremap <silent> <leader><space> :FZF<CR>
 let NERDTreeIgnore = ['\.pyc$']
+let g:NERDTrimTrailingWhitespace = 1
 
 let g:deoplete#enable_at_startup = 1
 
