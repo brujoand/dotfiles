@@ -1,5 +1,8 @@
+#!/usr/bin/env bash
+
 alias gg='git grep -n'
 alias gc='git clone'
+alias gcb='git co "$(git branch -a | sed "s/  //" | grep -v "^*" | fzf)"'
 
 function grebase() { # git pull rebase with stash
   if [ -z "$(git status --porcelain)" ]; then
