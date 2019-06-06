@@ -2,3 +2,4 @@
 config/nvim/plugged
 config/nvim/spell
 .DS_Store
+dotfiles/vim/plugged/
