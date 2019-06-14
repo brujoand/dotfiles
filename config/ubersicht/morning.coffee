@@ -1,7 +1,7 @@
 # Heavily inspired by https://github.com/imRohan/ubersicht-morning.widget
 
 # Get my todos
-command: "cat \"$HOME/Dropbox/tdy/work/$(date +'%Y')/$(date +'%m')/$(date +'%Y').$(date +'%m').$(date +'%d').md\" 2>/dev/null | grep -v '^#'"
+command: "source ${DOTFILES}/bash/gtd.bash && tdy | grep -v '^#'"
 
 refreshFrequency: 30000
 
