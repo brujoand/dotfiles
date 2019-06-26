@@ -7,7 +7,20 @@ fi
 
 brew update
 brew upgrade --all
-brew install pyenv ansible
+
+source brew_config.sh
+
+for tap in "${taps[@]}"; do
+  brew tap "$tap"
+done
+
+for package in "${packages[@]}"; do
+  brew install "$package"
+done
+
+for cask in "${casks[@]}"; do
+  brew cask install "$casks"
+done
 
 ssh_folder="$HOME"/.ssh
 [[ -d "$ssh_folder" ]] || mkdir -p "$ssh_folder"
@@ -16,12 +29,9 @@ if [[ ! -f "$ssh_folder"/id_rsa ]]; then
   ssh-keygen -N "" -f "$ssh_folder"/id_rsa
 fi
 
-ansible-playbook -i osx.yml
-
 brew cleanup
 brew cask cleanup
 
 ./set_sane_defaults.sh
 
-../karabiner/karabiner_import
 ../bin/install_dotfiles

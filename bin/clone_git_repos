@@ -1,6 +1,0 @@
-#! /usr/bin/env bash
- 
-for repo in $(curl -s https://api.github.com/users/brujoand/repos | sed -n 's/.*"git_url": "\(git:.*.git\)",/\1/p'); do
-  cd "$SRC_DIR" 
-  git clone "$repo"
-done

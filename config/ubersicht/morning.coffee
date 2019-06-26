@@ -1,7 +1,7 @@
 # Heavily inspired by https://github.com/imRohan/ubersicht-morning.widget
 
 # Get my todos
-command: "source ${DOTFILES}/bash/gtd.bash && tdy | grep -v '^#'"
+command: "source ${DOTFILES}/bash/gtd.bash && tdy"
 
 refreshFrequency: 30000
 
@@ -85,7 +85,7 @@ update: (output, domEl) ->
 
   #Grab the name of the current user.
   name = "Anders"
-  todo = "Todo:\n" + output
+  todo = output
 
   #Creating a new Date object
   date = new Date()

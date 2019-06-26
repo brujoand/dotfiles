@@ -1,6 +1,0 @@
-#! /usr/bin/env bash
-wd=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-karabiner_import="$wd"/karabiner_import
-echo "writing import script to $karabiner_import"
-/Applications/Karabiner.app/Contents/Library/bin/karabiner export > "$karabiner_import"
-chmod +x "$karabiner_import" 
