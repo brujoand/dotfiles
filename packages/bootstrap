@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo 'Installing brew'
 if ! type brew &>/dev/null; then
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
   (crontab -l 2>/dev/null; echo "* 5 * * * /usr/local/bin/brew update && /usr/local/bin/brew cask update > /dev/null") | crontab -
@@ -10,6 +11,7 @@ brew upgrade --all
 
 source brew_config.sh
 
+echo 'Installing packages'
 for tap in "${taps[@]}"; do
   brew tap "$tap"
 done
@@ -22,6 +24,14 @@ for cask in "${casks[@]}"; do
   brew cask install "$casks"
 done
 
+brew cleanup
+brew cask cleanup
+
+echo 'Setting up bash'
+echo '/usr/local/bin/bas' | sude tee -a /etc/shells
+chsh -s /usr/local/bin/bas
+
+echo 'Adding ssh key'
 ssh_folder="$HOME"/.ssh
 [[ -d "$ssh_folder" ]] || mkdir -p "$ssh_folder"
 
@@ -29,9 +39,8 @@ if [[ ! -f "$ssh_folder"/id_rsa ]]; then
   ssh-keygen -N "" -f "$ssh_folder"/id_rsa
 fi
 
-brew cleanup
-brew cask cleanup
-
+echo 'Setting sane defaults'
 ./set_sane_defaults.sh
 
+echo 'Setting up dotfiles'
 ../bin/install_dotfiles
