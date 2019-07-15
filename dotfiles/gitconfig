@@ -41,9 +41,9 @@
   default = simple
 [core]
   editor = nvim
-  excludesfile = /Users/anders.brujordet/.gitignore_global
+  hookspath = ~/.git/hooks
 
 [includeIf "gitdir:~/src/schibsted/"]
-  path = .git/git-schibsted
+  path = ~/.git/git-schibsted
 [includeIf "gitdir:~/src/brujoand/"]
-  path = .git/git-brujoand
+  path = ~/.git/git-brujoand
