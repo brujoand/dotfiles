@@ -48,4 +48,4 @@
   path = ~/.gitrc/git-brujoand
 
 [init]
-  templatedir = ~/.gitrc/hooks
+  templatedir = ~/.gitrc/template
