@@ -41,9 +41,11 @@
   default = simple
 [core]
   editor = nvim
-  hookspath = ~/.git/hooks
 
-[includeIf "gitdir:~/src/schibsted/"]
-  path = ~/.git/git-schibsted
+[includeIf "gitdir:~/src/dnb/"]
+  path = ~/.gitrc/git-dnb
 [includeIf "gitdir:~/src/brujoand/"]
-  path = ~/.git/git-brujoand
+  path = ~/.gitrc/git-brujoand
+
+[init]
+  templatedir = ~/.gitrc/hooks
