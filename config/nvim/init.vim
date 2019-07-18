@@ -130,7 +130,7 @@ set showcmd                 " show command in bottom bar
 set cursorline              " highlight current line
 
 set backupdir=~/.config/nvim/.backup// " don't make a mess
-set directory=~/.config./nvim/.swp//    " not even for swap files
+set directory=~/.config/nvim/.swp//    " not even for swap files
 
 " Have vim put the cursor where it was the last time we viewed this file
 autocmd BufReadPost *
