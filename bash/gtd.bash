@@ -23,12 +23,11 @@ function tdy() { # The today todo list
       grep '\[ \]' "$tdy_previous_file" | tee -a "$tdy_current_file" >/dev/null
     fi
   fi
-  cd "$tdy_folder" || exit 1
 
   if [[ -t 1 ]]; then
-    "$EDITOR" "$tdy_current_file"
+    "$EDITOR" "${tdy_current_file}"
   else
-    cat "$tdy_current_file"
+    cat "${tdy_current_file}"
   fi
 }
 
