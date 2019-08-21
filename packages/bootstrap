@@ -21,14 +21,14 @@ for package in "${packages[@]}"; do
 done
 
 for cask in "${casks[@]}"; do
-  brew cask install "$casks"
+  brew cask install "$cask"
 done
 
 brew cleanup
 brew cask cleanup
 
 echo 'Setting up bash'
-echo '/usr/local/bin/bas' | sude tee -a /etc/shells
+echo '/usr/local/bin/bash' | sudo tee -a /etc/shells
 chsh -s /usr/local/bin/bas
 
 echo 'Adding ssh key'

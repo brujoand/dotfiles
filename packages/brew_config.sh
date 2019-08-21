@@ -1,4 +1,4 @@
- #!/usr/bin/env bash
+#!/usr/bin/env bash
 
 # export all variables
 set -a
@@ -15,21 +15,15 @@ packages=(
   ack
   autoconf
   automake
-  aws-iam-authenticator
-  awscli
   bash
   bash-completion@2
   bat
-  brew-cask
   coreutils
   cowsay
   curl
   dateutils
   docker
-  docker-machine
-  enable-iri
   fd
-  ffmpeg
   findutils
   fzf
   gettext
@@ -39,60 +33,39 @@ packages=(
   go
   gradle
   httpie
-  imagemagick
-  irssi
-  jemalloc
   jq
   lua
   moreutils
-  mpv
-  msgpack
-  ncurses
   neovim
   nmap
   node
-  oniguruma
   openssh
   openssl
   perl
-  pinentry
-  pixman
-  pkg-config
-  pstree
   python
-  readline
-  rename
   ruby
   sbt
   shellcheck
   shfmt
-  snappy
   socat
   sox
   speedtest-cli
-  speedtest_cli
   sqlite
   ssh-copy-id
   telnet
   terminal-notifier
-  terraform
   thefuck
   tldr
   tmux
   tree
   unrar
   vim
-  watch
-  webp
   wget
-  with-lua
   wtf
   xz
   yarn
   youtube-dl
   z
-  zlib
-  zsh
 )
 
 casks=(
@@ -100,26 +73,19 @@ casks=(
   alfred
   bartender
   caffeine
-  cutter
   dash
   dropbox
-  font-source-code-pro
   gimp
-  google-cloud-sdk
   hammerspoon
-  intellij
   iterm2
   java
   karabiner-elements
   little-snitch
-  oversight
   qbserve
   rescuetime
-  signal
   slack
   spotify
   ubersicht
-  vagrant
   virtualbox
 )
 
