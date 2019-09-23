@@ -5,14 +5,6 @@ if [[ "$(uname)" == "Darwin" ]]; then
     . "$(brew --prefix)/share/bash-completion/bash_completion"
   fi
 
-  function tac() { # A hack to have tac
-    awk '1 { last = NR; line[last] = $0; } END { for (i = last; i > 0; i--) { print line[i]; } }' "$1"
-  }
-
-  function woke() { # When this machine woke last
-      gtac /var/log/system.log | grep -m1 "System Wake" | sed "s/\(.*\) ${HOSTNAME/.*} .*/\1/"
-  }
-
   function _complete_ssh_hosts() { # ssh tab-completion sux on osx.
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
@@ -20,10 +12,6 @@ if [[ "$(uname)" == "Darwin" ]]; then
       defined=$( [[ -f $HOME/.ssh/config ]] && sed -n 's/^Host \(.*\)/\1/p' ~/.ssh/config)
       comp_ssh_hosts="$defined\n$known"
       COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- "$cur"))
-  }
-
-  function _notifications_enabled() {
-    plutil -convert xml1 -o - ~/Library/Preferences/ByHost/com.apple.notificationcenterui.*.plist | grep -q false
   }
 
   function _toggle_notifications() {
@@ -65,4 +53,22 @@ if [[ "$(uname)" == "Darwin" ]]; then
     end tell
 		EOD
   }
+
+  function status(){
+    # Display brew information
+    brew_upgrade=/Users/vsasanb/.brew_upgrade
+
+    if [[ -s "$brew_upgrade" ]]; then
+      printf '%s\n\n' "$(tput setaf 1)The following packages are out of date"
+      cat "$brew_upgrade"
+    else
+      printf '%s%s\n' "$(tput sgr 2)" 'System packages are up to date!'
+    fi
+
+    printf '%s\n' "$(tput sgr 0)"
+
+    curl wttr.in/{Oslo,Nerdrum}?format="%l:+%c+%t+%p+%w"
+  }
+  status
+
 fi
