@@ -6,6 +6,8 @@ function _get_last_tdy_file() {
   find "$tdy_folder" -type f -print0 | xargs -0 stat -f "%m %N" | sort -nr | head -n 1 | cut -d ' ' -f 2
 }
 
+alias noise='play -q -c 2 --null synth $len brownnoise band -n 2500 4000 tremolo 20 .1 reverb 50'
+
 function tdy() { # The today todo list
   category=${1:-work}
   tdy_folder="$HOME/Dropbox/tdy/${category}"
