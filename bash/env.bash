@@ -24,15 +24,15 @@ shopt -s checkwinsize # Update window size after every command
 shopt -s histappend # Append to the history file, don't overwrite it
 shopt -s cmdhist # Save multi-line commands as one command
 
-HISTSIZE=500000 # Much history
-HISTFILESIZE=100000 # Such size of it
-HISTTIMEFORMAT='%F %T ' # Useful timestamp format
-PS4='+\t ' # Place timestamp before debug output
+export HISTSIZE=500000 # Much history
+export HISTFILESIZE=100000 # Such size of it
+export HISTTIMEFORMAT='%F %T ' # Useful timestamp format
+export HISTCONTROL=ignoreboth:erasedups
+export PS4='+\t ' # Place timestamp before debug output
 
 # Record each line as it gets issued
 [[ "$PROMPT_COMMAND" == "*'history -a'*" ]] ||  export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
-export GREP_OPTIONS='--color=auto' # Enable colored grep output.
 export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
 export EDITOR=nvim
 export VISUAL=nvim
@@ -42,7 +42,6 @@ export LANG=en_US.UTF-8
 export LC_ALL=en_US.UTF-8
 export LC_CTYPE=en_US.UTF-8
 
-PATH=/usr/local/bin:$PATH
 [[ -d $HOME/bin ]] && PATH=$HOME/bin:$PATH
 PATH=$PATH:$DOTFILES/bin
 PATH=$PATH:/usr/local/sbin
@@ -59,14 +58,5 @@ else
     sshd|*/sshd) export SESSION_TYPE=ssh;;
   esac
 fi
-
-# Python
-if which pyenv > /dev/null; then eval "$(pyenv init -)"; fi
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-
-# Ruby
-[[ -d "$HOME/.rvm/bin" ]] && export PATH="$PATH:$HOME/.rvm/bin" # Add RVM to PATH for scripting
-[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm" # Load RVM into a shell session *as a function*
 
 alias path='echo "$PATH" | tr ":" "\n" | sort'
