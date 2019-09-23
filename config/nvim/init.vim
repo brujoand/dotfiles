@@ -1,14 +1,12 @@
 call plug#begin('~/.config/nvim/plugged')
 
-
 Plug 'romainl/Apprentice'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'bling/vim-airline'
-Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'leafgarland/typescript-vim'
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'vimwiki/vimwiki'
+"Plug 'vimwiki/vimwiki'
 Plug 'gabrielelana/vim-markdown'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
@@ -16,35 +14,26 @@ Plug 'fatih/vim-go'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'benekastah/neomake'
-Plug 'ensime/ensime-vim', { 'do': ':UpdateRemotePlugins' }
-Plug 'dln/avro-vim'
-Plug 'spf13/vim-autoclose'
 
 call plug#end()
 
 let g:vimwiki_list = [{'path': '~/Dropbox/wiki'}]
 let g:markdown_enable_spell_checking = 0
 
-nnoremap <silent> <leader><space> :FZF<CR>
 let NERDTreeIgnore = ['\.pyc$']
 let g:NERDTrimTrailingWhitespace = 1
 
-let g:deoplete#enable_at_startup = 1
-
 let mapleader=","
+
+" Search for file in current dir
+nmap <leader>f :Files<CR>
+nmap <leader>; :Buffers<CR>
 
 map <Leader>/ :let @/ = ""<CR>
 noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
 " ,s to search and replace word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
-"nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
 nnoremap <leader>sc :setlocal spell!<cr> " toggle spellchehck
-nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
-
-
-au FileType scala nnoremap <leader>d :EnDeclaration<CR>
-au FileType scala nnoremap <leader>b :EnDocBrowse<CR>
-au BufRead,BufNewFile *.avdl setlocal filetype=avro-idl
 
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
@@ -145,5 +134,3 @@ augroup AutoCommands
 augroup END
 
 nnoremap <silent> <leader>t :NERDTreeToggle<CR>
-nnoremap <silent> <leader>f :NERDTreeFind<CR>
-

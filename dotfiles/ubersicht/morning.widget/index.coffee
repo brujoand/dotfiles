@@ -1,7 +1,7 @@
 # Heavily inspired by https://github.com/imRohan/ubersicht-morning.widget
 
 # Get my todos
-command: "source ${DOTFILES}/bash/gtd.bash && tdy"
+command: "source /Users/vsasanb/src/brujoand/dotfiles/bash/gtd.bash && tdy"
 
 refreshFrequency: 30000
 
@@ -21,15 +21,15 @@ style: """
    top: 50%
    left: 50%
    transform: translate(-50%, -50%)
-   height:300px
+   height:500px
    width:800px
    font-weight: lighter
    font-smoothing: antialiased
    text-align:center
-   text-shadow:0px 0px 20px rgba(0,0,0,2);
+   text-shadow: 0px 0px 30px #000, -2px -2px 1px #000;
 
   .time
-   font-size: 10em
+   font-size: 13em
    color:#fff
    font-weight:700
    text-align:center
@@ -41,7 +41,7 @@ style: """
   .text
    font-size: 4em
    color:#fff
-   font-weight:700
+   font-weight:800
    margin-top:-3%
 
   .hour

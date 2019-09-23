@@ -42,8 +42,8 @@
 [core]
   editor = nvim
 
-[includeIf "gitdir:~/src/dnb/"]
-  path = ~/.gitrc/git-dnb
+[includeIf "gitdir:~/src/vps/"]
+  path = ~/.gitrc/git-vps
 [includeIf "gitdir:~/src/brujoand/"]
   path = ~/.gitrc/git-brujoand
 
