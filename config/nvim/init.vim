@@ -6,7 +6,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'bling/vim-airline'
 Plug 'bronson/vim-trailing-whitespace'
-"Plug 'vimwiki/vimwiki'
+Plug 'vimwiki/vimwiki'
 Plug 'gabrielelana/vim-markdown'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
@@ -17,11 +17,13 @@ Plug 'benekastah/neomake'
 
 call plug#end()
 
-let g:vimwiki_list = [{'path': '~/Dropbox/wiki'}]
+let g:vimwiki_list = [{'path': '~/Documents/wiki'}]
 let g:markdown_enable_spell_checking = 0
 
 let NERDTreeIgnore = ['\.pyc$']
 let g:NERDTrimTrailingWhitespace = 1
+
+let g:coc_node_path = '/usr/local/bin/node'
 
 let mapleader=","
 
@@ -31,6 +33,7 @@ nmap <leader>; :Buffers<CR>
 
 map <Leader>/ :let @/ = ""<CR>
 noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
+nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
 " ,s to search and replace word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 nnoremap <leader>sc :setlocal spell!<cr> " toggle spellchehck
@@ -54,8 +57,8 @@ autocmd InsertLeave * write
 
 " {{{ Vimwiki plugin settings and specific functions: "
 let g:vimwiki_list = [{
-          \ 'path': '~/Dropbox/vimwiki',
-          \ 'template_path': '~/Dropbox/vimwiki/templates/',
+          \ 'path': '~/Documents/vimwiki',
+          \ 'template_path': '~/Documents/vimwiki/templates/',
           \ 'nested_syntaxes': {
           \   'ruby': 'ruby',
           \   'python': 'python',
@@ -63,7 +66,7 @@ let g:vimwiki_list = [{
           \   'bash': 'sh'
           \  },
           \ 'template_default': 'default',
-          \ 'path_html': '~/Dropbox/vimwiki/site_html/',
+          \ 'path_html': '~/Documents/vimwiki/site_html/',
           \ 'template_ext': '.tpl'
           \ }]
 

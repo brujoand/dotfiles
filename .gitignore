@@ -3,5 +3,7 @@ config/nvim/plugged
 config/nvim/spell
 .DS_Store
 dotfiles/vim/plugged/
+dotfiles/vim/.swp
+dotfiles/vim/.backup
 config/karabiner/automatic_backups/
 dotfiles/gitrc/git-vps

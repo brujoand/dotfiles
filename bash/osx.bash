@@ -14,49 +14,10 @@ if [[ "$(uname)" == "Darwin" ]]; then
       COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- "$cur"))
   }
 
-  function _toggle_notifications() {
-    osascript <<-EOD
-     tell application "System Events" to tell process "SystemUIServer"
-       key down option
-       click menu bar item 1 of menu bar 2
-       key up option
-     end tell
-		EOD
-  }
-
-  function _clear_notifications() {
-    osascript <<-EOD
-      tell application "System Events"
-        tell process "Notification Center"
-          set theWindows to every window
-          repeat with i from 1 to number of items in theWindows
-            set this_item to item i of theWindows
-              try
-                click button 1 of this_item
-              on error
-                -- do nothing just skip
-            end try
-          end repeat
-        end tell
-      end tell
-		EOD
-  }
-
-  alias stfu='_clear_notifications && _toggle_notifications'
-
-  function _last_result() {
-    osascript <<-EOD
-      tell application "iTerm"
-        tell current tab of current window
-        get text of current session
-      end tell
-    end tell
-		EOD
-  }
-
   function status(){
     # Display brew information
-    brew_upgrade=/Users/vsasanb/.brew_upgrade
+    brew_upgrade=$HOME/.brew_upgrade
+    weather_upgrade=$HOME/.weather_update
 
     if [[ -s "$brew_upgrade" ]]; then
       printf '%s\n\n' "$(tput setaf 1)The following packages are out of date"
@@ -67,8 +28,15 @@ if [[ "$(uname)" == "Darwin" ]]; then
 
     printf '%s\n' "$(tput sgr 0)"
 
-    curl wttr.in/{Oslo,Nerdrum}?format="%l:+%c+%t+%p+%w"
+    if [[ -f "$weather_upgrade" ]]; then
+      cat "$weather_upgrade"
+    fi
+
+    echo
+
+    cal
   }
-  status
+
+ status
 
 fi

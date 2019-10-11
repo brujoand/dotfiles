@@ -3,7 +3,7 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWUNPUSHED=1
 export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
 export MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=128m -Djava.awt.headless=true"
-export GOPATH='/opt/go'
+export GOPATH="$HOME/opt/go"
 
 # Make less more awesome
 export LESS_TERMCAP_mb=$'\E[01;31m' # begin blinking
@@ -58,5 +58,11 @@ else
     sshd|*/sshd) export SESSION_TYPE=ssh;;
   esac
 fi
+
+# Enable 1337 mode
+set -o vi
+bind 'set show-mode-in-prompt on'
+bind 'set vi-cmd-mode-string "\1\e[38;5;4m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
+bind 'set vi-ins-mode-string "\1\e[38;5;8m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
 
 alias path='echo "$PATH" | tr ":" "\n" | sort'
