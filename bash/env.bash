@@ -61,6 +61,10 @@ fi
 
 # Enable 1337 mode
 set -o vi
+bind -m vi-insert "\C-l":clear-screen
+bind -m vi-insert "\C-a":beginning-of-line
+bind -m vi-insert "\C-e":end-of-line
+bind -m vi-insert "\C-w":delete-word
 bind 'set show-mode-in-prompt on'
 bind 'set vi-cmd-mode-string "\1\e[38;5;4m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
 bind 'set vi-ins-mode-string "\1\e[38;5;8m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
