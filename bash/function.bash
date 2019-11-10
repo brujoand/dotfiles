@@ -1,13 +1,5 @@
 #! /usr/bin/env bash
 
-function bash_install() { # Takes one argument, a file to add to bashrc
-  if [[ -z "$1" ]]; then
-    echo "No file provided"
-  else
-    echo "source $(realpath "$1")" >> "$HOME/.bashrc"
-  fi
-}
-
 function timer() { # takes number of minutes + message and notifies you
   time_string=$1
   if [[ "$time_string" =~ ^[0-9]+[:][0-9]+$ ]]; then
@@ -106,17 +98,19 @@ function _esc() { # Fuzzy tabcompletion for esc
   if [[ -z "$cur" ]]; then
     COMPREPLY=( $( compgen -W "$config_files" ) )
   else
-    COMPREPLY=( $(for file in $(sourced_files); do echo "${file##*/}"; done | grep -i "$cur") )
+    COMPREPLY=( $(grep -i "$cur" <<< "$config_files" ) )
   fi
 }
 complete -o nospace -F _esc esc
 
 function pp_bash() { # Pretty print bash script
-  if [[ -n "$(type pygmentize 2> /dev/null)" ]]; then
-    echo "$1" | pygmentize -f terminal -l bash
-  else
-    echo "$1"
-  fi
+  while read data; do
+    if [[ -n "$(type bat 2> /dev/null)" ]]; then
+      printf '%s\n' "$data" | bat -l bash -p
+    else
+      printf '%s\n' "$data"
+    fi
+  done
 }
 
 function _wat() { # Completion for wat
@@ -129,21 +123,23 @@ function _wat() { # Completion for wat
 complete -o nospace -F _wat wat
 
 function wat() { # show help and location of a custom function or alias
-  local query
+  local query pp
   query="$1"
+  pp="cat"
+  if [[ -n "$(type bat 2> /dev/null)" ]]; then
+    pp="bat -l bash -p"
+  fi
+
   for file in $(sourced_files); do
-    f_body=$(awk '/^function '"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file")
-    [[ ! -z "${f_body// }" ]] && pp_bash "${f_body}"
-    f_helper=$(awk '/^function \_'"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file")
-    [[ ! -z "${f_helper// }" ]] && pp_bash "${f_helper}"
-    a_body=$(awk '/^alias '"$query"'=/,/$/ {print "# " FILENAME ":" FNR RS $0 RS;}' "$file")
-    [[ ! -z "${a_body// }" ]] && pp_bash "${a_body}"
-  done
+    awk '/^function '"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file"
+    awk '/^function \_'"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file"
+    awk '/^alias '"$query"'=/,/$/ {print "# " FILENAME ":" FNR RS $0 RS;}' "$file"
+  done | $pp
   complete -p "$query" 2> /dev/null
 }
 
 function backto() { # Go back to folder in path
-  local path=${PWD}
+  local path=${PWD%/*}
   while [[ $path ]]; do
     if [[ "${path##*/}" == "$1" ]]; then
       cd "$path" || return 1
@@ -157,8 +153,7 @@ function backto() { # Go back to folder in path
 function _backto() { # completion for backto
   local cur dir all
   _get_comp_words_by_ref cur
-  dir=${PWD##*/}
-  all=$(PWD | cut -c 2- | tr '/' '\n')
+  all=$(cut -c 2- <<< "${PWD%/*}" | tr '/' '\n')
   if [[ -z "$cur" ]]; then
     COMPREPLY=( $( compgen -W "$all") )
   else
@@ -166,8 +161,6 @@ function _backto() { # completion for backto
   fi
 }
 complete -o nospace -F _backto backto
-
-
 
 function src() { # cd into $SRC
   cd "$SRC_DIR/$1" || return 1
