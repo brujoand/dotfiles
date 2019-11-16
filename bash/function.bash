@@ -1,5 +1,16 @@
 #! /usr/bin/env bash
 
+function set_secret() { # set a secret environment variable
+  local variable_name=$1
+  if [[ -z "$variable_name" ]]; then
+    read -r -p "Variable name: " variable_name
+  fi
+
+  read -s -r -p "Password: " variable_value
+  command="${variable_name}=${variable_value}"
+  export "${command?}"
+}
+
 function timer() { # takes number of minutes + message and notifies you
   time_string=$1
   if [[ "$time_string" =~ ^[0-9]+[:][0-9]+$ ]]; then
@@ -137,6 +148,24 @@ function wat() { # show help and location of a custom function or alias
   done | $pp
   complete -p "$query" 2> /dev/null
 }
+
+function b() { # cd to a folder in current path
+  cd $(_b | fzf)
+}
+
+function _b() { # generate list of sub paths to current path
+  local path=${PWD%/*}
+  while [[ $path ]]; do
+    if [[ "${path##*/}" == "$1" ]]; then
+      cd "$path" || return 1
+      break
+    else
+      printf '%s\n' "$path"
+      path=${path%/*}
+    fi
+  done
+}
+
 
 function backto() { # Go back to folder in path
   local path=${PWD%/*}
