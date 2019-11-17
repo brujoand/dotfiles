@@ -11,10 +11,9 @@ function set_secret() { # set a secret environment variable
   export "${command?}"
 }
 
-function timer() { # takes number of minutes + message and notifies you
+function timer() { # takes number of hours and minutes + message and notifies you
   time_string=$1
   if [[ "$time_string" =~ ^[0-9]+[:][0-9]+$ ]]; then
-    time_stri
     hours=${time_string/:*/}
     minutes=${time_string/*:/}
     seconds=$(( ( (hours * 60) + minutes ) * 60 ))
