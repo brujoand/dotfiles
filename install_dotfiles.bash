@@ -46,7 +46,7 @@ link_source_to_target "config" "$config_folder/"
 link_source_to_target "dotfiles" "$HOME/."
 link_source_to_target "bin" "$bin_folder/"
 
-if [[ -f $bashrc ]]; then
+if [[ -f "$bashrc" ]]; then
   mv "$bashrc" "$bashrc.$(date +%s)" || exit 1
   echo "Moved your old ~/.bashrc to ~/.bashrc.bac.[timestamp]"
 fi
@@ -78,6 +78,22 @@ fi
 if ! grep -q "source ${HOME}/.bashrc" "$HOME/.bash_profile"; then
   echo "Sourcing ~/.bashrc in ~/.bash_profile to handle login shells as well."
   echo "source $HOME/.bashrc" >> "$HOME"/.bash_profile
+fi
+
+crontab=$(crontab -l 2>/dev/null)
+
+if ! grep -q 'weather_update.sh' <<< "$crontab"; then
+  echo 'Installing weather_update as crontab'
+  (crontab -l 2>/dev/null; echo "0 * * * * $HOME/bin/weather_update.sh &> /dev/null") | crontab -
+else
+  echo 'weather_update already installed, skipping'
+fi
+
+if ! grep -q 'brew_update.sh' <<< "$crontab"; then
+  echo 'Installing brew_update as crontab'
+  (crontab -l 2>/dev/null; echo "0 * * * * $HOME/bin/brew_update.sh &> /dev/null") | crontab -
+else
+  echo 'brew_update already installed, skipping'
 fi
 
 echo -e "\nReload the shell for changes to take effect"
