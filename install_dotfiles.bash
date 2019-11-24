@@ -1,34 +1,50 @@
 #! /usr/bin/env bash
 
-dotfiles=$( cd "$( dirname "${BASH_SOURCE[0]}" )"/.. && pwd )
+dotfiles=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 bashrc=$HOME/.bashrc
 src_dir=$(cd "$dotfiles/.." && pwd)
-
 config_folder="$HOME"/.config
-[[ -d "$config_folder" ]] || mkdir -p "$config_folder"
+bin_folder="$HOME"/bin
+private_bash="$HOME"/.bash_private
 
 function ensure_symlink_exists() {
-  local source="$1"
-  local target="$2"
+  local source target current_link
+  source="$1"
+  target="$2"
 
-  if [[ -L "$target" ]]; then
+  current_link="$(readlink "$target")"
+
+  if [[ "$current_link" == "$source" ]]; then
     echo "Symlink from $source to $target already exists, skipping.."
   else
+    if [[ "$current_link" != "" ]]; then
+      echo "Current symlink at ${target} is broken, removing"
+      rm -rf "$target"
+    fi
     echo "Creating symlink from $source to $target"
     ln -sfn "$source" "$target" || exit 1
   fi
 }
 
-# Creating symlinks
-for file in "$dotfiles"/config/*; do
-  link="$config_folder/${file##*/}"
-  ensure_symlink_exists "$file" "$link"
-done
+function link_source_to_target() {
+  local source="${dotfiles}/${1}"
+  local target=$2
 
-for file in "$dotfiles"/dotfiles/*; do
-  link="$HOME/.${file##*/}"
-  ensure_symlink_exists "$file" "$link"
-done
+  if [[ ! -d "$target" ]]; then
+    echo "${target} does not exist, creating it.."
+    mkdir -p "$target"
+  fi
+
+  for file in "$source"/*; do
+    link="$target${file##*/}"
+    ensure_symlink_exists "$file" "$link"
+  done
+}
+
+
+link_source_to_target "config" "$config_folder/"
+link_source_to_target "dotfiles" "$HOME/."
+link_source_to_target "bin" "$bin_folder/"
 
 if [[ -f $bashrc ]]; then
   mv "$bashrc" "$bashrc.$(date +%s)" || exit 1
@@ -40,7 +56,6 @@ for file in "$dotfiles"/bash/*; do
   echo "source $file" >> "$bashrc" || exit 1
 done
 
-private_bash="$HOME"/.bash_private
 
 if [[ ! -f "$private_bash" ]]; then
   echo "Creating $private_bash for all your personal needs."
@@ -53,8 +68,7 @@ echo -e "SRC_DIR=$src_dir\nDOTFILES=$dotfiles" >> "$private_bash" || exit 1
 echo "source $private_bash" >> "$bashrc" || exit 1
 
 if [[ -d "$src_dir"/sbp ]];then
-  echo "SPB already present, skipping clone.."
-  "$src_dir"/sbp/install
+  echo "SPB already present, skipping"
 else
   echo "Installing SPB"
   git clone git@github.com:brujoand/brujoand/sbp.git "$src_dir"/sbp

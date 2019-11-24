@@ -13,7 +13,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'fatih/vim-go'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'benekastah/neomake'
+Plug 'neomake/neomake'
 
 call plug#end()
 
@@ -31,9 +31,11 @@ let mapleader=","
 nmap <leader>f :Files<CR>
 nmap <leader>; :Buffers<CR>
 
+" Remove search highlights
 map <Leader>/ :let @/ = ""<CR>
 noremap <leader>W :w !sudo tee % > /dev/null<CR> " save with sudo
 nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
+
 " ,s to search and replace word under cursor
 nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 nnoremap <leader>sc :setlocal spell!<cr> " toggle spellchehck
@@ -43,17 +45,6 @@ au BufRead,BufNewFile *.md setlocal spell spelllang=en_us
 
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
-
-" Let's make term mode better
-tnoremap <A-h> <C-\><C-n><C-w>h
-tnoremap <A-j> <C-\><C-n><C-w>j
-tnoremap <A-k> <C-\><C-n><C-w>k
-tnoremap <A-l> <C-\><C-n><C-w>l
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
-tnoremap <Esc> <C-\><C-n> " Let esc exit term mode
 
 " Save often, cry less
 autocmd InsertLeave * write
@@ -127,16 +118,15 @@ set cursorline              " highlight current line
 set backupdir=~/.config/nvim/.backup// " don't make a mess
 set directory=~/.config/nvim/.swp//    " not even for swap files
 
-" Have vim put the cursor where it was the last time we viewed this file
-autocmd BufReadPost *
-  \ if line("'\"") >= 1 && line("'\"") <= line("$") |
-  \   exe "normal! g`\"" |
-  \ endif
-
 autocmd! BufWritePost * Neomake
 autocmd! BufReadPost * Neomake
 augroup AutoCommands
     autocmd BufWritePost init.vim source ~/.config/nvim/init.vim
 augroup END
+
+" Have vim put the cursor where it was the last time we viewed this file
+if has("autocmd")
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
 
 nnoremap <silent> <leader>t :NERDTreeToggle<CR>
