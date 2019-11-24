@@ -15,13 +15,13 @@ function ensure_symlink_exists() {
   current_link="$(readlink "$target")"
 
   if [[ "$current_link" == "$source" ]]; then
-    echo "Symlink from $source to $target already exists, skipping.."
+    echo "Symlink from ${target} to ${source} already exists, skipping.."
   else
     if [[ "$current_link" != "" ]]; then
       echo "Current symlink at ${target} is broken, removing"
       rm -rf "$target"
     fi
-    echo "Creating symlink from $source to $target"
+    echo "Creating symlink from $target to $source"
     ln -sfn "$source" "$target" || exit 1
   fi
 }
@@ -75,8 +75,8 @@ else
   "$src_dir"/sbp/install
 fi
 
-if ! grep -q 'source /Users/brujoand/.bashrc' "$HOME/.bash_profile"; then
-  echo "Sourcing ~/.bashrc in ~/.profile to handle login shells as well."
+if ! grep -q "source ${HOME}/.bashrc" "$HOME/.bash_profile"; then
+  echo "Sourcing ~/.bashrc in ~/.bash_profile to handle login shells as well."
   echo "source $HOME/.bashrc" >> "$HOME"/.bash_profile
 fi
 
