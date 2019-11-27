@@ -45,6 +45,7 @@ export LC_CTYPE=en_US.UTF-8
 [[ -d $HOME/bin ]] && PATH=$HOME/bin:$PATH
 PATH=$PATH:$DOTFILES/bin
 PATH=$PATH:/usr/local/sbin
+PATH=$PATH:$GOPATH/bin
 
 bind 'set completion-ignore-case on' # Case-insensitive autocompletion
 shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
