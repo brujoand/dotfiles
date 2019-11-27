@@ -149,7 +149,10 @@ function wat() { # show help and location of a custom function or alias
 }
 
 function b() { # cd to a folder in current path
-  cd $(_b | fzf)
+  local dir=$(_b | tac | fzf)
+  if [[ -n "$dir" ]]; then
+    cd "${dir}"
+  fi
 }
 
 function _b() { # generate list of sub paths to current path
