@@ -41,7 +41,9 @@ nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
 nnoremap <leader>sc :setlocal spell!<cr> " toggle spellchehck
 
 au BufRead,BufNewFile *.md setlocal textwidth=80
+au BufRead,BufNewFile *.wiki setlocal textwidth=80
 au BufRead,BufNewFile *.md setlocal spell spelllang=en_us
+au BufRead,BufNewFile *.wiki setlocal spell spelllang=en_us
 
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"
