@@ -37,6 +37,6 @@ if [[ "$(uname)" == "Darwin" ]]; then
     cal
   }
 
- status
+ #status
 
 fi

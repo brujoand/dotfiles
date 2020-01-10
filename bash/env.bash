@@ -31,7 +31,7 @@ export HISTCONTROL=ignoreboth:erasedups
 export PS4='+\t ' # Place timestamp before debug output
 
 # Record each line as it gets issued
-[[ "$PROMPT_COMMAND" == "*'history -a'*" ]] ||  export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+[[ "$PROMPT_COMMAND" =~ 'history -a;' ]] ||  PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
 export EDITOR=nvim
@@ -69,8 +69,13 @@ bind -m vi-insert "\C-w":delete-word
 bind -m vi-insert "\C-p":history-search-backward
 bind -m vi-insert "\C-n":history-search-next
 bind '"\C-u":"b \C-m"'
-bind 'set show-mode-in-prompt on'
-bind 'set vi-cmd-mode-string "\1\e[38;5;4m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
-bind 'set vi-ins-mode-string "\1\e[38;5;8m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
+bind '"\C-s":"s \C-m"'
+#bind 'set show-mode-in-prompt on'
+#bind 'set vi-cmd-mode-string "\1\e[38;5;4m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
+#bind 'set vi-ins-mode-string "\1\e[38;5;8m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
 
 alias path='echo "$PATH" | tr ":" "\n" | sort'
+
+if type kubectl &>/dev/null; then
+  source <(kubectl completion bash)
+fi

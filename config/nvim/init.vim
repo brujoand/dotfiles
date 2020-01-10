@@ -2,18 +2,19 @@ call plug#begin('~/.config/nvim/plugged')
 
 Plug 'romainl/Apprentice'
 Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/nerdcommenter'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'bling/vim-airline'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'vimwiki/vimwiki'
 Plug 'gabrielelana/vim-markdown'
-Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
-Plug 'fatih/vim-go'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
 Plug 'neomake/neomake'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-fugitive'
+Plug 'rust-lang/rust.vim'
 
 call plug#end()
 
@@ -24,6 +25,8 @@ let NERDTreeIgnore = ['\.pyc$']
 let g:NERDTrimTrailingWhitespace = 1
 
 let g:coc_node_path = '/usr/local/bin/node'
+
+let g:rustfmt_autosave = 1
 
 let mapleader=","
 
@@ -85,6 +88,7 @@ nmap <leader>h :bprevious<CR>
 
 syntax enable
 set background=dark
+set t_Co=256
 colorscheme apprentice
 set guifont=Source\ Code\ Pro\ for\ Powerline "make sure to escape the spaces in the name properly
 
@@ -99,11 +103,6 @@ let g:neomake_sh_shellcheck_maker = {
       \ }
 
 let g:neomake_javascript_enabled_makers = ['jshint']
-
-" Allow color schemes to do bright colors without forcing bold.
-if &t_Co == 8 && $TERM !~# '^linux'
-  set t_Co=16
-endif
 
 set backspace=indent,eol,start " So that backspace will 'work'
 
@@ -130,5 +129,8 @@ augroup END
 if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
+
+set guifont=Meslo\ LG\ S\ DZ\ for\ Powerline "make sure to escape the spaces in the name properly
+
 
 nnoremap <silent> <leader>t :NERDTreeToggle<CR>

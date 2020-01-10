@@ -1,9 +1,14 @@
+config/nvim/autoload
 .netrwhist
 config/nvim/plugged
 config/nvim/spell
 .DS_Store
-dotfiles/vim/plugged/
+dotfiles/vim/plugged
 dotfiles/vim/.swp
 dotfiles/vim/.backup
-config/karabiner/automatic_backups/
+config/karabiner/automatic_backups
 dotfiles/gitrc/git-vps
+dotfiles/gitrc/git-vps
+config/sbp/cache
+config/sbp/peekabook
+

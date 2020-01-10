@@ -26,6 +26,9 @@ complete complete -F _filedir_xspec v
 alias nv='nvim'
 complete -o bashdefault -o default nv
 
+# Tmux
+alias tx='tmux new-session \; split-window -h \; split-window -d \; select-pane -L \; split-window -d \;'
+
 # Application specific
 alias gwho='git log | sed -n "s/Author: \(.*\) <.*/\1/p" | sort | uniq -c | sort -nr | head' # Show most active commiters
 alias gpb='git push origin $(git symbolic-ref HEAD | sed -e "s,.*/\(.*\),\1,")' # Push changes to current branch
@@ -43,5 +46,4 @@ alias halp='echo -e "Sourced files:\n$(sourced_files | sed "s#$HOME/#~/#")\n # \
 alias :q='exit'
 
 # Environment
-alias s='bash_install'
 alias vimrc="nvim ${HOME}/.config/nvim/init.vim"

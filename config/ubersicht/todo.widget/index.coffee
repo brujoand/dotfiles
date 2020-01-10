@@ -3,7 +3,7 @@
 # Get my todos
 command: "source /Users/vsasanb/src/brujoand/dotfiles/bash/gtd.bash && tdy"
 
-refreshFrequency: 30000
+refreshFrequency: 10000
 
 #Body Style
 style: """
@@ -15,14 +15,15 @@ style: """
    position: relative
    width: 100vw
    height: 100vh
+   background: rgba(0, 0, 0, 0.2);
 
   .container
    position: absolute
    top: 50%
    left: 50%
    transform: translate(-50%, -50%)
-   height:500px
-   width:800px
+   height:800px
+   width:1200px
    font-weight: lighter
    font-smoothing: antialiased
    text-align:center
@@ -55,6 +56,7 @@ style: """
 
   .todo
    font-size: 0.4em
+   text-align:left
 
 """
 

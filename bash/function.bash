@@ -140,6 +140,8 @@ function wat() { # show help and location of a custom function or alias
     pp="bat -l bash -p"
   fi
 
+  type="$(type -t "$query")"
+
   for file in $(sourced_files); do
     awk '/^function '"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file"
     awk '/^function \_'"$query"'\(\)/,/^}/ { i++; if(i==1){print "# " FILENAME ":" FNR RS $0;} else {print $0;}}' "$file"
@@ -192,6 +194,20 @@ function _backto() { # completion for backto
   fi
 }
 complete -o nospace -F _backto backto
+
+function s() { # use fzf to cd into src d ir
+  if [[ -n "$1" ]]; then
+    search_dir="${SRC_DIR}/${1}"
+  else
+    search_dir="$SRC_DIR"
+  fi
+
+  result=$(find "$search_dir" -type d -maxdepth 4 -name *.git | sed -e 's/\/.git//' -e "s|${search_dir}\/||g" | fzf --border --height 20)
+  dir="${search_dir}/${result}"
+  if [[ -n "$result" ]]; then
+    cd "${dir}"
+  fi
+}
 
 function src() { # cd into $SRC
   cd "$SRC_DIR/$1" || return 1
