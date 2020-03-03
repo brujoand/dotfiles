@@ -21,7 +21,7 @@ function tdy() { # The today todo list
     # Replace the path and '.wiki' with equal signs
     printf '%s\n' "= $(date +'%Y.%m.%d') =" >> "$tdy_current_file"
     if [[ -f "$tdy_previous_file" ]]; then
-      grep '\- \[[o ]' "$tdy_previous_file" | sed 's/\[o\]/[ ]/' >> "$tdy_current_file"
+      grep -v '[X]' "$tdy_previous_file" | grep -v '^=' | sed 's/\[o\]/[ ]/' >> "$tdy_current_file"
     fi
   fi
 

@@ -18,6 +18,9 @@ Plug 'rust-lang/rust.vim'
 
 call plug#end()
 
+" Ruby coc
+let g:coc_global_extensions = ['coc-solargraph']
+
 let g:vimwiki_list = [{'path': '~/Documents/wiki'}]
 let g:markdown_enable_spell_checking = 0
 
