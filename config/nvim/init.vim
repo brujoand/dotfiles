@@ -34,8 +34,10 @@ let g:rustfmt_autosave = 1
 let mapleader=","
 
 " Search for file in current dir
-nmap <leader>f :Files<CR>
-nmap <leader>; :Buffers<CR>
+nmap <leader>ff :Files<CR>
+nmap <leader>fb :Buffers<CR>
+nmap <leader>fs :Ag
+
 
 " Remove search highlights
 map <Leader>/ :let @/ = ""<CR>

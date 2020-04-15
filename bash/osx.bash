@@ -5,6 +5,8 @@ if [[ "$(uname)" == "Darwin" ]]; then
     . "$(brew --prefix)/share/bash-completion/bash_completion"
   fi
 
+  alias bump='brew upgrade && brew cask upgrade'
+
   function _complete_ssh_hosts() { # ssh tab-completion sux on osx.
       COMPREPLY=()
       cur="${COMP_WORDS[COMP_CWORD]}"
@@ -37,6 +39,6 @@ if [[ "$(uname)" == "Darwin" ]]; then
     cal
   }
 
- #status
+ status
 
 fi

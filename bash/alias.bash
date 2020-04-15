@@ -31,7 +31,7 @@ alias tx='tmux new-session \; split-window -h \; split-window -d \; select-pane 
 
 # Application specific
 alias gwho='git log | sed -n "s/Author: \(.*\) <.*/\1/p" | sort | uniq -c | sort -nr | head' # Show most active commiters
-alias gpb='git push origin $(git symbolic-ref HEAD | sed -e "s,.*/\(.*\),\1,")' # Push changes to current branch
+alias gpb='git push -u origin $(git symbolic-ref HEAD | sed -e "s,.*/\(.*\),\1,")' # Push changes to current branch
 
 alias colors='printf "\e[%dm%d dark\e[0m  \e[%d;1m%d bold\e[0m\n" {30..37}{,,,}' # Show possible shell colors
 
