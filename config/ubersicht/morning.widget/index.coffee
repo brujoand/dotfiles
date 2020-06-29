@@ -1,7 +1,7 @@
 # Heavily inspired by https://github.com/imRohan/ubersicht-morning.widget
 
 # Get my todos
-command: "source /Users/vsasanb/src/brujoand/dotfiles/bash/gtd.bash && tdy"
+command: "source ${DOTFILES}/bash/gtd.bash && tdy"
 
 refreshFrequency: 10000
 
