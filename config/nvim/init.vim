@@ -2,7 +2,6 @@ call plug#begin('~/.config/nvim/plugged')
 
 Plug 'romainl/Apprentice'
 Plug 'scrooloose/nerdtree'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'bling/vim-airline'
 Plug 'bronson/vim-trailing-whitespace'
 Plug 'vimwiki/vimwiki'
@@ -15,19 +14,24 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
 Plug 'rust-lang/rust.vim'
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'neovim/nvim-lsp'
+Plug 'aliou/bats.vim'
 
 call plug#end()
 
-" Ruby coc
-let g:coc_global_extensions = ['coc-solargraph']
+lua << EOF
+local nvim_lsp = require'nvim_lsp'
+nvim_lsp.bashls.setup{
+  filetypes = { "sh", "bash" }
+}
+EOF
 
 let g:vimwiki_list = [{'path': '~/Documents/wiki'}]
 let g:markdown_enable_spell_checking = 0
 
 let NERDTreeIgnore = ['\.pyc$']
 let g:NERDTrimTrailingWhitespace = 1
-
-let g:coc_node_path = '/usr/local/bin/node'
 
 let g:rustfmt_autosave = 1
 
@@ -52,6 +56,7 @@ au BufRead,BufNewFile *.md setlocal textwidth=80
 au BufRead,BufNewFile *.wiki setlocal textwidth=80
 au BufRead,BufNewFile *.md setlocal spell spelllang=en_us
 au BufRead,BufNewFile *.wiki setlocal spell spelllang=en_us
+au FileType vimwiki set syntax=markdown
 
 inoremap <expr> <Down> pumvisible() ? "\<C-n>" : "\<Down>"
 inoremap <expr> <Up> pumvisible() ? "\<C-p>" : "\<Up>"

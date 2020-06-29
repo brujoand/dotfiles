@@ -49,3 +49,5 @@
 
 [init]
   templatedir = ~/.gitrc/template
+[pull]
+	rebase = false

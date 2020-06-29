@@ -196,13 +196,9 @@ function _backto() { # completion for backto
 complete -o nospace -F _backto backto
 
 function s() { # use fzf to cd into src d ir
-  if [[ -n "$1" ]]; then
-    search_dir="${SRC_DIR}/${1}"
-  else
-    search_dir="$SRC_DIR"
-  fi
+  search_dir="$SRC_DIR"
 
-  result=$(find "$search_dir" -type d -maxdepth 4 -name *.git | sed -e 's/\/.git//' -e "s|${search_dir}\/||g" | fzf --border --height 20)
+  result=$(find "$search_dir" -type d -maxdepth 4 -name '*.git' | sed -e 's/\/.git//' -e "s|${search_dir}\/||g" | fzf --border --height 20)
   dir="${search_dir}/${result}"
   if [[ -n "$result" ]]; then
     cd "${dir}"
