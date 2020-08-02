@@ -3,14 +3,6 @@
 # export all variables
 set -a
 
-taps=(
-  'caskroom/cask'
-  'caskroom/versions'
-  'homebrew/versions'
-  'homebrew/binary'
-  'neovim/neovim'
-)
-
 packages=(
   ack
   autoconf
@@ -45,6 +37,7 @@ packages=(
   python
   ruby
   sbt
+  brujoand/sbp/sbp
   shellcheck
   shfmt
   socat

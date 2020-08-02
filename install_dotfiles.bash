@@ -67,14 +67,6 @@ fi
 echo -e "SRC_DIR=$src_dir\nDOTFILES=$dotfiles" >> "$private_bash" || exit 1
 echo "source $private_bash" >> "$bashrc" || exit 1
 
-if [[ -d "$src_dir"/sbp ]];then
-  echo "SPB already present, skipping"
-else
-  echo "Installing SPB"
-  git clone git@github.com:brujoand/brujoand/sbp.git "$src_dir"/sbp
-  "$src_dir"/sbp/install
-fi
-
 if ! grep -q "source ${HOME}/.bashrc" "$HOME/.bash_profile"; then
   echo "Sourcing ~/.bashrc in ~/.bash_profile to handle login shells as well."
   echo "source $HOME/.bashrc" >> "$HOME"/.bash_profile

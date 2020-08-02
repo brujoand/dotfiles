@@ -42,12 +42,12 @@
 [core]
   editor = nvim
 
-[includeIf "gitdir:~/src/vps/"]
-  path = ~/.gitrc/git-vps
+[includeIf "gitdir:~/src/piano/"]
+  path = ~/.gitrc/git-piano
 [includeIf "gitdir:~/src/brujoand/"]
   path = ~/.gitrc/git-brujoand
 
 [init]
   templatedir = ~/.gitrc/template
 [pull]
-	rebase = false
+  rebase = false
