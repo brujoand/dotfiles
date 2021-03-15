@@ -34,6 +34,7 @@ let g:markdown_enable_spell_checking = 1
 let g:markdown_enable_folding = 0
 
 let NERDTreeIgnore = ['\.pyc$']
+let NERDTreeShowHidden=1
 let g:NERDTrimTrailingWhitespace = 1
 
 let g:rustfmt_autosave = 1

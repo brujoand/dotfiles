@@ -67,12 +67,12 @@ casks=(
   bartender
   caffeine
   dash
-  dropbox
+  firefox
   gimp
   hammerspoon
-  iterm2
   java
   karabiner-elements
+  kitty
   little-snitch
   qbserve
   rescuetime

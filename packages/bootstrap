@@ -3,10 +3,7 @@
 echo 'Installing brew'
 if ! type brew &>/dev/null; then
   ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-  (crontab -l 2>/dev/null; echo "0 * * * * /usr/local/bin/brew upgrade --dry-run 2>/dev/null | grep '\->' | tr ',' '\n' | sed 's/^ //' > /Users/vsasanb/.brew_upgrade") | crontab -
 fi
-
-(crontab -l 2>/dev/null; echo "0 * * * * /usr/local/bin/curl wttr.in/{Oslo,Nerdrum}?format="%l:+%c+%t+%p+%w" > /Users/vsasanb/.weather_update 2> /dev/null") | crontab -
 
 brew update
 brew upgrade --all

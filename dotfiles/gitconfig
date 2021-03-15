@@ -42,7 +42,7 @@
 [core]
   editor = nvim
 
-[includeIf "gitdir:~/src/piano/"]
+[includeIf "gitdir:~/src/cxense/"]
   path = ~/.gitrc/git-piano
 [includeIf "gitdir:~/src/brujoand/"]
   path = ~/.gitrc/git-brujoand

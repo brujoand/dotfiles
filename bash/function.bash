@@ -1,5 +1,21 @@
 #! /usr/bin/env bash
 
+function emoji() {
+  term=$1
+  if [[ -z $term ]]; then
+    printf '%s\n' "We need a search term"
+    return 1
+  fi
+
+  if [[ -z $EMOJI_TOKEN ]]; then
+    printf '%s\n' "No \$EMOJI_TOKEN has been set"
+    return 1
+  fi
+
+  curl -s "https://emoji-api.com/emojis?search=${term}&access_key=${EMOJI_TOKEN}" | jq -r '.[] | "\(.character)" ' | fzf | pbcopy
+
+}
+
 function set_secret() { # set a secret environment variable
   local variable_name=$1
   if [[ -z "$variable_name" ]]; then
