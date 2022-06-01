@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-
 today=$(date +%d)
 today=${today#0}
 

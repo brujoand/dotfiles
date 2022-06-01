@@ -7,9 +7,12 @@ dotfiles/vim/plugged
 dotfiles/vim/.swp
 dotfiles/vim/.backup
 config/karabiner/automatic_backups
+config/alfredapp/Alfred.alfredpreferences/remote/
 dotfiles/gitrc/git-vps
 dotfiles/gitrc/git-vps
 config/sbp/cache
 config/sbp/peekabook
-
+config/sbp/hook.log
 dotfiles/gitrc/git-piano
+.ssh/
+dotfiles/vim/autoload/plug.vim

@@ -19,6 +19,8 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'aliou/bats.vim'
 Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
+Plug 'towolf/vim-helm'
+Plug 'vimwiki/vimwiki'
 
 call plug#end()
 
@@ -56,6 +58,9 @@ nnoremap <Leader>d :r! date +'\%Y.\%m.\%d'<CR> " insert timestamp
 nnoremap <Leader>sr :%s/\<<C-r><C-w>\>/
 nnoremap <leader>sc :setlocal spell!<cr> " toggle spellchehck
 
+let g:vimwiki_list = [{'path': '~/src/brujoand/wiki/', 'syntax': 'markdown', 'ext': '.md'}]
+let g:vimwiki#nested_syntaxes = {'ruby': 'ruby', 'python': 'python', 'c++': 'cpp', 'sh': 'sh', 'racket': 'racket'}
+let g:vimwiki_hl_headers = 1
 au BufRead,BufNewFile *.md setlocal textwidth=80
 au BufRead,BufNewFile *.wiki setlocal textwidth=80
 au BufRead,BufNewFile *.md setlocal spell spelllang=en_us
@@ -99,6 +104,13 @@ let g:neomake_sh_shellcheck_maker = {
 
 let g:neomake_javascript_enabled_makers = ['jshint']
 
+if executable('yamllint')
+  let g:neomake_yaml_yamllint_maker = {
+    \ 'args': ['-f', 'parsable'],
+    \ 'errorformat': '%E%f:%l:%c: [error] %m,%W%f:%l:%c: [warning] %m' }
+  let g:neomake_yaml_enabled_makers = ['yamllint']
+endif
+
 set backspace=indent,eol,start " So that backspace will 'work'
 
 set tabstop=2               " 4 space tab
@@ -129,3 +141,4 @@ set guifont=Meslo\ LG\ S\ DZ\ for\ Powerline "make sure to escape the spaces in 
 
 
 nnoremap <silent> <leader>t :NERDTreeToggle<CR>
+nnoremap <silent> <leader>T :NERDTreeFind<CR>

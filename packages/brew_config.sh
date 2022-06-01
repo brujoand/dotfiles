@@ -14,7 +14,6 @@ packages=(
   cowsay
   curl
   dateutils
-  docker
   fd
   findutils
   fzf
@@ -37,17 +36,14 @@ packages=(
   python
   ruby
   sbt
-  brujoand/sbp/sbp
   shellcheck
   shfmt
   socat
   sox
   speedtest-cli
-  sqlite
   ssh-copy-id
   telnet
   terminal-notifier
-  thefuck
   tldr
   tmux
   tree
@@ -57,7 +53,6 @@ packages=(
   wtf
   xz
   yarn
-  youtube-dl
   z
 )
 

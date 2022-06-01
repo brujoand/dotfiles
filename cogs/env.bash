@@ -75,13 +75,19 @@ bind '"\C-s":"s \C-m"'
 #bind 'set vi-cmd-mode-string "\1\e[38;5;4m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
 #bind 'set vi-ins-mode-string "\1\e[38;5;8m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
 
-alias path='echo "$PATH" | tr ":" "\n" | sort'
-
+alias path='tr ":" "\n" <<< "$PATH" | sort'
 
 # Setup fzf
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 
-if type kubectl &>/dev/null; then
-  source <(kubectl completion bash)
-fi
+function try {
+  shopt -s expand_aliases
+  while ! "${@}"; do
+    echo "Failed, retrying in 3.."
+    sleep 1
+    echo "2.."
+    sleep 1
+    echo "1.."
+  done
+}

@@ -44,7 +44,7 @@ function _nts_open() {
   fi
 }
 
-function _nts_build() {
+function never_run_nts_build() {
   local search_dir="$NTS_PATH"
   local output_dir="${search_dir}/output"
   local index="${output_dir}/index.html"

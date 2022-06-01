@@ -20,7 +20,7 @@ for package in "${packages[@]}"; do
 done
 
 for cask in "${casks[@]}"; do
-  brew cask install "$cask"
+  brew install --cask "$cask"
 done
 
 brew cleanup
@@ -39,7 +39,7 @@ if [[ ! -f "$ssh_folder"/id_rsa ]]; then
 fi
 
 echo 'Setting sane defaults'
-./set_sane_defaults.sh
+#./set_sane_defaults.sh
 
 echo 'Setting up dotfiles'
 ../bin/install_dotfiles
