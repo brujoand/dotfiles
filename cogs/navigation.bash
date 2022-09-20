@@ -52,10 +52,13 @@ complete -o nospace -F _backto backto
 function s() { # use fzf to cd into src d ir
   search_dir="$SRC_DIR"
 
-  result=$(find "$search_dir" -type d -maxdepth 4 -name '*.git' | sed -e 's/\/.git//' -e "s|${search_dir}\/||g" | fzf --border --height 20)
+  git_dirs=$(find "$search_dir" -type d -maxdepth 4 -name '*.git')
+  source_dirs=$(sed -e 's/\/.git//' -e "s|${search_dir}\/||g" <<< "$git_dirs")
+  result=$(echo "$source_dirs" | fzf --border --height 20)
   dir="${search_dir}/${result}"
-  if [[ -n "$result" ]]; then
-    cd "${dir}"
+
+  if [[ -d "$dir" ]]; then
+    cd "$dir" || echo "Could not enter path ${dir}"
   fi
 }
 

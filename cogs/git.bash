@@ -4,7 +4,13 @@ export GIT_PS1_SHOWDIRTYSTATE=1
 export GIT_PS1_SHOWUNPUSHED=1
 
 alias g='git' # Git
-complete -o bashdefault -o default -o nospace -F __git_wrap__git_main g
+complete -o default -F _alias_completion_wrapper g
+alias gs='git status' # Git status
+complete -o default -F _alias_completion_wrapper gs
+alias gc='git commit' # Git commit
+complete -o default -F _alias_completion_wrapper gc
+alias gp='git pull' # Git pull
+complete -o default -F _alias_completion_wrapper gp
 
 alias gwho='git log | sed -n "s/Author: \(.*\) <.*/\1/p" | sort | uniq -c | sort -nr | head' # Show most active commiters
 alias gpb='git push -u origin $(git symbolic-ref HEAD | sed -e "s,.*/\(.*\),\1,")' # Push changes to current branch
@@ -65,4 +71,3 @@ function gpu() { # Fetch and fast forward upstream changes
   git fetch upstream && \
   git merge upstream/master --ff-only
 }
-

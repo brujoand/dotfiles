@@ -1,19 +1,18 @@
 # Exports
-export GIT_PS1_SHOWDIRTYSTATE=1
-export GIT_PS1_SHOWUNPUSHED=1
-export JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
-export MAVEN_OPTS="-Xmx512m -XX:MaxPermSize=128m -Djava.awt.headless=true"
+GIT_PS1_SHOWDIRTYSTATE=1
+GIT_PS1_SHOWUNPUSHED=1
+JAVA_TOOL_OPTIONS="-Dfile.encoding=UTF-8"
 export GOPATH="$HOME/opt/go"
 export GOBIN="${GOPATH}/bin"
 
 # Make less more awesome
-export LESS_TERMCAP_mb=$'\E[01;31m' # begin blinking
-export LESS_TERMCAP_md=$'\E[0;34m' # begin bold
-export LESS_TERMCAP_me=$'\E[0m' # end bold
-export LESS_TERMCAP_so=$'\E[01;40;33m' # begin standout mode
-export LESS_TERMCAP_se=$'\E[0m' # end standout mode
-export LESS_TERMCAP_us=$'\E[0;36m' #begin underline
-export LESS_TERMCAP_ue=$'\E[0m' # end underline
+LESS_TERMCAP_mb=$'\E[01;31m' # begin blinking
+LESS_TERMCAP_md=$'\E[0;34m' # begin bold
+LESS_TERMCAP_me=$'\E[0m' # end bold
+LESS_TERMCAP_so=$'\E[01;40;33m' # begin standout mode
+LESS_TERMCAP_se=$'\E[0m' # end standout mode
+LESS_TERMCAP_us=$'\E[0;36m' #begin underline
+LESS_TERMCAP_ue=$'\E[0m' # end underline
 
 if [[ $COLORTERM = gnome-* && $TERM = xterm ]] && infocmp gnome-256color >/dev/null 2>&1; then
   export TERM='gnome-256color';
@@ -34,7 +33,7 @@ export PS4='+\t ' # Place timestamp before debug output
 # Record each line as it gets issued
 [[ "$PROMPT_COMMAND" =~ 'history -a;' ]] ||  PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
-export MANPAGER='less -X' # Don’t clear the screen after quitting a manual page.
+export MANPAGER='less -X' # Don't clear the screen after quitting a manual page.
 export EDITOR=nvim
 export VISUAL=nvim
 
@@ -76,12 +75,16 @@ bind '"\C-s":"s \C-m"'
 #bind 'set vi-ins-mode-string "\1\e[38;5;8m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
 
 alias path='tr ":" "\n" <<< "$PATH" | sort'
+alias reload='exec $SHELL $([[ $- == *i* ]] && echo -l)' # Reload the shell
+
 
 # Setup fzf
 
-[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+if type fzf &>/dev/null; then
+  [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+fi
 
-function try {
+function try() { # Retry until successfull
   shopt -s expand_aliases
   while ! "${@}"; do
     echo "Failed, retrying in 3.."
@@ -90,4 +93,22 @@ function try {
     sleep 1
     echo "1.."
   done
+}
+
+function _pvar() { # case-incensitive tab-completion for pvar
+  local cur vars
+  _get_comp_words_by_ref cur
+  vars=$(compgen -A variable | grep -v '^_')
+
+  if [[ -z "$cur" ]]; then
+    COMPREPLY=( $( compgen -W "$vars" ) )
+  else
+    COMPREPLY=( $( grep -i ^"$cur" <(echo "${vars}") ) )
+  fi
+}
+complete -F _pvar pvar
+
+function pvar() { # echo shell variable with tab-completion
+  local var="$1"
+  echo "${!var}"
 }

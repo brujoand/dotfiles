@@ -9,27 +9,39 @@ Plug 'airblade/vim-gitgutter'
 Plug 'zivyangll/git-blame.vim'
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
-Plug 'neomake/neomake'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-fugitive'
 Plug 'rust-lang/rust.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'neovim/nvim-lspconfig'
+Plug 'williamboman/nvim-lsp-installer'
 Plug 'aliou/bats.vim'
 Plug 'google/vim-maktaba'
 Plug 'bazelbuild/vim-bazel'
 Plug 'towolf/vim-helm'
 Plug 'vimwiki/vimwiki'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'folke/trouble.nvim'
+Plug 'folke/lsp-colors.nvim'
 
 call plug#end()
 
 lua << EOF
+local nvim_lsp_installer = require'nvim-lsp-installer'
 local nvim_lsp = require'lspconfig'
+
+nvim_lsp_installer.setup {
+  automatic_installation = true
+}
+
+require'trouble'.setup{}
 nvim_lsp.bashls.setup{
   filetypes = { "sh", "bash" }
 }
+
 nvim_lsp.jdtls.setup{}
+nvim_lsp.eslint.setup{}
 EOF
 
 let g:markdown_enable_spell_checking = 1
@@ -94,22 +106,6 @@ set guifont=Source\ Code\ Pro\ for\ Powerline "make sure to escape the spaces in
 
 set statusline+=%#warningmsg#
 set statusline+=%*
-let g:neomake_sh_shellcheck_maker = {
-    \ 'args': ['-x', '-fgcc'],
-      \ 'errorformat':
-          \ '%f:%l:%c: %trror: %m,' .
-          \ '%f:%l:%c: %tarning: %m,' .
-          \ '%I%f:%l:%c: Note: %m',
-      \ }
-
-let g:neomake_javascript_enabled_makers = ['jshint']
-
-if executable('yamllint')
-  let g:neomake_yaml_yamllint_maker = {
-    \ 'args': ['-f', 'parsable'],
-    \ 'errorformat': '%E%f:%l:%c: [error] %m,%W%f:%l:%c: [warning] %m' }
-  let g:neomake_yaml_enabled_makers = ['yamllint']
-endif
 
 set backspace=indent,eol,start " So that backspace will 'work'
 
@@ -126,8 +122,8 @@ set cursorline              " highlight current line
 set backupdir=~/.config/nvim/.backup// " don't make a mess
 set directory=~/.config/nvim/.swp//    " not even for swap files
 
-autocmd! BufWritePost * Neomake
-autocmd! BufReadPost * Neomake
+autocmd! BufWritePost *
+autocmd! BufReadPost *
 augroup AutoCommands
     autocmd BufWritePost init.vim source ~/.config/nvim/init.vim
 augroup END
