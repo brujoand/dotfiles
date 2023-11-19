@@ -41,8 +41,13 @@
   default = simple
 [core]
   editor = nvim
+  fsmonitor = false
 
+[includeIf "gitdir:~/src/piano/cxense/platform/cx"]
+  path = ~/.gitrc/git-cx
 [includeIf "gitdir:~/src/cxense/"]
+  path = ~/.gitrc/git-piano
+[includeIf "gitdir:~/src/piano/"]
   path = ~/.gitrc/git-piano
 [includeIf "gitdir:~/src/brujoand/"]
   path = ~/.gitrc/git-brujoand
@@ -52,7 +57,7 @@
 [pull]
   rebase = false
 [filter "lfs"]
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
-	process = git-lfs filter-process
-	required = true
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f
+  process = git-lfs filter-process
+  required = true

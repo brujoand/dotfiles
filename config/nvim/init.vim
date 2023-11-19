@@ -101,6 +101,7 @@ nmap <leader>h :bprevious<CR>
 syntax enable
 set background=dark
 set t_Co=256
+set termguicolors
 colorscheme apprentice
 set guifont=Source\ Code\ Pro\ for\ Powerline "make sure to escape the spaces in the name properly
 
@@ -118,6 +119,7 @@ set number                  " show line numbers
 set ruler                   " show cursor position
 set showcmd                 " show command in bottom bar
 set cursorline              " highlight current line
+set cursorcolumn            " highlight current line
 
 set backupdir=~/.config/nvim/.backup// " don't make a mess
 set directory=~/.config/nvim/.swp//    " not even for swap files
@@ -138,3 +140,5 @@ set guifont=Meslo\ LG\ S\ DZ\ for\ Powerline "make sure to escape the spaces in 
 
 nnoremap <silent> <leader>t :NERDTreeToggle<CR>
 nnoremap <silent> <leader>T :NERDTreeFind<CR>
+
+let g:python_recommended_style = 0
