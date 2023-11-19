@@ -52,10 +52,6 @@ if [[ -f "$bashrc" ]]; then
 fi
 
 echo "# Added by install_dotfiles.sh - $(date +"%d/%m/%y %H:%M")" > "$HOME"/.bashrc
-for file in "$dotfiles"/bash/*; do
-  echo "source $file" >> "$bashrc" || exit 1
-done
-
 
 if [[ ! -f "$private_bash" ]]; then
   echo "Creating $private_bash for all your personal needs."
