@@ -51,15 +51,6 @@ bind 'set completion-ignore-case on' # Case-insensitive autocompletion
 shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
 shopt -s cdspell # Autocorrect typos in path names when using `cd`
 
-# Check if this if we are logged in via ssh
-if [ -n "$SSH_CLIENT" ] || [ -n "$SSH_TTY" ]; then
-  export SESSION_TYPE=ssh
-else
-  case $(ps -o comm= -p $PPID) in
-    sshd|*/sshd) export SESSION_TYPE=ssh;;
-  esac
-fi
-
 # Enable 1337 mode
 set -o vi
 bind -m vi-insert "\C-l":clear-screen
@@ -76,13 +67,6 @@ bind '"\C-s":"s \C-m"'
 
 alias path='tr ":" "\n" <<< "$PATH" | sort'
 alias reload='exec $SHELL $([[ $- == *i* ]] && echo -l)' # Reload the shell
-
-
-# Setup fzf
-
-if type fzf &>/dev/null; then
-  [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-fi
 
 function try() { # Retry until successfull
   shopt -s expand_aliases

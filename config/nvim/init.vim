@@ -1,47 +1,53 @@
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'romainl/Apprentice'
-Plug 'scrooloose/nerdtree'
+Plug '/usr/bin/fzf'
+Plug 'airblade/vim-gitgutter'
+Plug 'aliou/bats.vim'
+Plug 'bazelbuild/vim-bazel'
 Plug 'bling/vim-airline'
 Plug 'bronson/vim-trailing-whitespace'
-Plug 'gabrielelana/vim-markdown'
-Plug 'airblade/vim-gitgutter'
-Plug 'zivyangll/git-blame.vim'
-Plug '/usr/local/opt/fzf'
-Plug 'junegunn/fzf.vim'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-fugitive'
-Plug 'rust-lang/rust.vim'
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
-Plug 'neovim/nvim-lspconfig'
-Plug 'williamboman/nvim-lsp-installer'
-Plug 'aliou/bats.vim'
-Plug 'google/vim-maktaba'
-Plug 'bazelbuild/vim-bazel'
-Plug 'towolf/vim-helm'
-Plug 'vimwiki/vimwiki'
-Plug 'kyazdani42/nvim-web-devicons'
-Plug 'folke/trouble.nvim'
 Plug 'folke/lsp-colors.nvim'
+Plug 'folke/trouble.nvim'
+Plug 'gabrielelana/vim-markdown'
+Plug 'google/vim-maktaba'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'mhartington/formatter.nvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'romainl/Apprentice'
+Plug 'rust-lang/rust.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'towolf/vim-helm'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-surround'
+Plug 'vimwiki/vimwiki'
+Plug 'williamboman/mason.nvim'
+Plug 'williamboman/mason-lspconfig.nvim'
+Plug 'zivyangll/git-blame.vim'
 
 call plug#end()
 
-lua << EOF
-local nvim_lsp_installer = require'nvim-lsp-installer'
-local nvim_lsp = require'lspconfig'
 
-nvim_lsp_installer.setup {
-  automatic_installation = true
+lua << EOF
+local nvim_lsp = require('lspconfig')
+
+require("mason").setup()
+require("mason-lspconfig").setup {
+  ensure_installed = { "lua_ls", "bashls", "ansiblels", "dockerls", "eslint", "html", "helm_ls", "jsonls", "jdtls", "tsserver", "marksman", "puppet", "pylsp"},
+  automatic_installation = True,
 }
 
-require'trouble'.setup{}
+require('trouble').setup{}
 nvim_lsp.bashls.setup{
   filetypes = { "sh", "bash" }
 }
 
 nvim_lsp.jdtls.setup{}
 nvim_lsp.eslint.setup{}
+
 EOF
 
 let g:markdown_enable_spell_checking = 1

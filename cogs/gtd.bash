@@ -14,7 +14,7 @@ function tdy() { # The today todo list
   tdy_folder="${TDY_PATH}/${category}"
   tdy_current_file="${tdy_folder}/$(date +'%Y/%m/%Y.%m.%d').md"
   tdy_current_folder="${tdy_current_file%/*}"
-  tdy_previous_file=$(find "$tdy_folder" -type f -exec stat -f "%m %N" {} \; | sort -nr | head -n1 | cut -d ' '  -f 2)
+  tdy_previous_file=$(find "$tdy_folder" -type f -exec stat -c "%m %N" {} \; | sort -nr | head -n1 | cut -d ' '  -f 2)
 
   mkdir -p "${tdy_current_folder}"
 

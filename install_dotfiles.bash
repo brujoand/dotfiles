@@ -1,33 +1,53 @@
 #! /usr/bin/env bash
 
-dotfiles=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-bashrc=$HOME/.bashrc
-src_dir=$(cd "$dotfiles/.." && pwd)
-config_folder="$HOME"/.config
-bin_folder="$HOME"/bin
-private_bash="$HOME"/.bash_private
+set -e
 
-function ensure_symlink_exists() {
+DOTFILES=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+SRC_DIR=$(cd "$DOTFILES/.." && pwd)
+BASHRC=$HOME/.bashrc
+CONFIG_FOLDER="$HOME"/.config
+BIN_FOLDER="$HOME"/bin
+PRIVATE_BASHRC="$HOME"/.bash_private
+
+function catch_error {
+  echo "oh no we died"
+}
+
+trap 'catch_error' ERR
+
+function fetch_from_git {
+  local repo_name=$1
+  echo "Fetching ${repo_name}"
+  local repo_location="${SRC_DIR}/${repo_name}"
+  if [[ -d "$repo_location" ]]; then
+    echo "${repo_location} already exists"
+  else
+    git clone "https://github.com/brujoand/${repo_name}.git" "$repo_location"
+    "${repo_location}/bin/install"
+  fi
+}
+
+function ensure_symlink_from_to {
   local source target current_link
   source="$1"
   target="$2"
 
-  current_link="$(readlink "$target")"
+  current_link="$(readlink "$target" || true)"
 
   if [[ "$current_link" == "$source" ]]; then
     echo "Symlink from ${target} to ${source} already exists, skipping.."
   else
-    if [[ "$current_link" != "" ]]; then
+    if [[ -n "$current_link" ]]; then
       echo "Current symlink at ${target} is broken, removing"
-      rm -rf "$target"
+      rm "$target"
     fi
     echo "Creating symlink from $target to $source"
-    ln -sfn "$source" "$target" || exit 1
+    ln -sfn "$source" "$target"
   fi
 }
 
-function link_source_to_target() {
-  local source="${dotfiles}/${1}"
+function link_source_to_target {
+  local source="${DOTFILES}/${1}"
   local target=$2
 
   if [[ ! -d "$target" ]]; then
@@ -35,59 +55,92 @@ function link_source_to_target() {
     mkdir -p "$target"
   fi
 
+  if [[ ! -d "$source" ]]; then
+    echo "${source} doesn't exist, nothing to do"
+    return 1
+  fi
+
   for file in "$source"/*; do
     link="$target${file##*/}"
-    ensure_symlink_exists "$file" "$link"
+    ensure_symlink_from_to "$file" "$link"
   done
 }
 
+function create_bashrc {
+  local timestamp backuprc
+  if [[ -n "$BASHRC_LOADED" ]]; then
+    echo "dotfiles already loaded"
+    return 0
+  fi
 
-link_source_to_target "config" "$config_folder/"
-link_source_to_target "dotfiles" "$HOME/."
-link_source_to_target "bin" "$bin_folder/"
+  if [[ -f "$BASHRC" ]]; then
+    timestamp="$(date +%s)"
+    backuprc="${BASHRC}${timestamp}"
+    mv "$BASHRC" "$backuprc"
+    echo "Moved your old ${BASHRC} to ${backuprc}"
+  fi
 
-if [[ -f "$bashrc" ]]; then
-  mv "$bashrc" "$bashrc.$(date +%s)" || exit 1
-  echo "Moved your old ~/.bashrc to ~/.bashrc.bac.[timestamp]"
-fi
+  printf '%s\n' "# Added by install_dotfiles.sh - ${timestamp}" > "$BASHRC"
+  printf '%s\n' "source ${BASHRC}" >> "$HOME"/.bash_profile
 
-echo "# Added by install_dotfiles.sh - $(date +"%d/%m/%y %H:%M")" > "$HOME"/.bashrc
+}
 
-if [[ ! -f "$private_bash" ]]; then
-  echo "Creating $private_bash for all your personal needs."
-  touch "$private_bash"
-else
-  echo "$private_bash already exists, skipping.."
-fi
+function create_private_bashrc {
+  echo "creating bashrc"
+  if [[ ! -f "$PRIVATE_BASHRC" ]]; then
+    echo "Creating $PRIVATE_BASHRC for all your personal needs."
+  else
+    echo "$PRIVATE_BASHRC already exists, skipping.."
+    return 0
+  fi
 
-echo -e "SRC_DIR=$src_dir\nDOTFILES=$dotfiles" >> "$private_bash" || exit 1
-echo "source $private_bash" >> "$bashrc" || exit 1
+  printf '%s\n' "SRC_DIR=${SRC_DIR}" > "$PRIVATE_BASHRC"
+  printf '%s\n' "DOTFILES=${DOTFILES}" >> "$BASHRC"
+  printf '%s\n' "source ${PRIVATE_BASHRC}" >> "$BASHRC"
 
-if ! grep -q "source ${HOME}/.bashrc" "$HOME/.bash_profile"; then
-  echo "Sourcing ~/.bashrc in ~/.bash_profile to handle login shells as well."
-  echo "source $HOME/.bashrc" >> "$HOME"/.bash_profile
-fi
+}
+function install_vim_plug {
+  echo "installing vim plug"
+  local plug_dir="${HOME}/.local/share/nvim/site/autoload/plug.vim"
+  local plug_url="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
 
-crontab=$(crontab -l 2>/dev/null)
+  if [[ -d "$plug_dir" ]]; then
+    echo "${plug_dir} already exists"
+  else
+    curl -sfLo "$plug_dir" --create-dirs "$plug_url"
+  fi
+}
 
-if ! grep -q 'weather_update.sh' <<< "$crontab"; then
-  echo 'Installing weather_update as crontab'
-  (crontab -l 2>/dev/null; echo "0 * * * * $HOME/bin/weather_update.sh &> /dev/null") | crontab -
-else
-  echo 'weather_update already installed, skipping'
-fi
+function install_neovim {
+  echo "installing neovim"
+  local url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz"
+  curl -s -L "$url" | tar xz -C "${HOME}/opt/"
+  chmod +x "${HOME}/opt/nvim-linux64/bin/nvim"
+  ln -s "${HOME}/opt/nvim-linux64/bin/nvim" "${HOME}/bin/nvim"
+}
 
-if ! grep -q 'brew_update.sh' <<< "$crontab"; then
-  echo 'Installing brew_update as crontab'
-  (crontab -l 2>/dev/null; echo "0 * * * * $HOME/bin/brew_update.sh &> /dev/null") | crontab -
-else
-  echo 'brew_update already installed, skipping'
-fi
+function install_dependencies {
+  install_neovim
+  install_vim_plug
+  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+  ~/.fzf/install
+  git clone https://github.com/pyenv/pyenv.git ~/.pyenv
+  ./.pyenv/bin/pyenv init 2>&1 | grep -v '#' | grep -v '^$'
+  nvim +PlugInstall +qall
+}
 
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+mkdir "${HOME}/bin"
+mkdir "${HOME}/opt"
 
-curl -fLo ~/.local/share/nvim/site/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+link_source_to_target 'config' "${CONFIG_FOLDER}/"
+link_source_to_target 'dotfiles' "${HOME}/."
+link_source_to_target 'bin' "${BIN_FOLDER}/"
+
+create_bashrc
+create_private_bashrc
+install_dependencies
+
+fetch_from_git sbc
+fetch_from_git sbp
 
 echo -e "\nReload the shell for changes to take effect"

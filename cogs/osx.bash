@@ -41,4 +41,3 @@ function status(){ # Display system status
   cal
 }
 
-status

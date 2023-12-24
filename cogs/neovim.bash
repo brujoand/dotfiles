@@ -2,8 +2,8 @@
 
 type nvim &>/dev/null || return
 
-alias n='nvim' # Run kubectl
-complete -o bashdefault -o default -F _fzf_path_completion n
+alias n="$(which nvim)"
+# complete -o bashdefault -o default
 
 function nf {
   result=$(fzf)

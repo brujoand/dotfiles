@@ -61,3 +61,5 @@
   smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
+[safe]
+	directory = /builds/piano/cxense/infra-core/config
