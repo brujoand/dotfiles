@@ -26,16 +26,13 @@ function _mrg_1v1_template() { # Create 1v1 template
   cat <<EOF
 # ${date} - 1:1 with ${employee}
 
-## How are you doing?
+## What is on your mind
 -
 
-## What's going well?
+## Comments from me
 -
 
-## What's challenging?
--
-
-## Goals and development
+## Career progression
 -
 
 ## Action items
