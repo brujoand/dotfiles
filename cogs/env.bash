@@ -47,23 +47,27 @@ PATH=$PATH:$DOTFILES/bin
 PATH=$PATH:/usr/local/sbin
 PATH=$PATH:$GOPATH/bin
 
-bind 'set completion-ignore-case on' # Case-insensitive autocompletion
-shopt -s nocaseglob                  # Case-insensitive globbing (used in pathname expansion)
-shopt -s cdspell                     # Autocorrect typos in path names when using `cd`
+shopt -s nocaseglob # Case-insensitive globbing (used in pathname expansion)
+shopt -s cdspell    # Autocorrect typos in path names when using `cd`
 
-# Enable 1337 mode
-set -o vi
-bind -m vi-insert "\C-l":clear-screen
-bind -m vi-insert "\C-a":beginning-of-line
-bind -m vi-insert "\C-e":end-of-line
-bind -m vi-insert "\C-w":delete-word
-bind -m vi-insert "\C-p":history-search-backward
-bind -m vi-insert "\C-n":history-search-next
-bind '"\C-u":"b \C-m"'
-bind '"\C-s":"s \C-m"'
-#bind 'set show-mode-in-prompt on'
-#bind 'set vi-cmd-mode-string "\1\e[38;5;4m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
-#bind 'set vi-ins-mode-string "\1\e[38;5;8m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
+# Interactive shell configurations (bind commands only work in interactive shells)
+if [[ $- == *i* ]]; then
+  bind 'set completion-ignore-case on' # Case-insensitive autocompletion
+
+  # Enable 1337 mode
+  set -o vi
+  bind -m vi-insert "\C-l":clear-screen
+  bind -m vi-insert "\C-a":beginning-of-line
+  bind -m vi-insert "\C-e":end-of-line
+  bind -m vi-insert "\C-w":delete-word
+  bind -m vi-insert "\C-p":history-search-backward
+  bind -m vi-insert "\C-n":history-search-next
+  bind '"\C-u":"b \C-m"'
+  bind '"\C-s":"s \C-m"'
+  #bind 'set show-mode-in-prompt on'
+  #bind 'set vi-cmd-mode-string "\1\e[38;5;4m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
+  #bind 'set vi-ins-mode-string "\1\e[38;5;8m\e[49m\2 ➜ \1\e[39m\e[00m\2"'
+fi
 
 alias path='tr ":" "\n" <<< "$PATH" | sort'
 alias reload='exec $SHELL $([[ $- == *i* ]] && echo -l)' # Reload the shell
