@@ -2,7 +2,7 @@
 
 function set_secret() { # set a secret environment variable
   local variable_name=$1
-  if [[ -z "$variable_name" ]]; then
+  if [[ -z $variable_name ]]; then
     read -r -p "Variable name: " variable_name
   fi
 
@@ -10,4 +10,3 @@ function set_secret() { # set a secret environment variable
   command="${variable_name}=${variable_value}"
   export "${command?}"
 }
-

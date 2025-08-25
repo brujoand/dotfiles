@@ -44,6 +44,3 @@ function kcn() { # Switch between k8s namespaces
     kubectl config set-context --current --namespace="$namespace"
   fi
 }
-
-
-

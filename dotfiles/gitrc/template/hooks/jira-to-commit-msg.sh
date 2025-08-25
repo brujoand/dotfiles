@@ -5,4 +5,4 @@
 msg=$(cat "$1")
 branch=$(git branch | sed -n 's/* \(.*\)/\1/p')
 jira_nr=${branch%%_*}
-echo "$jira_nr $msg" > "$1"
+echo "$jira_nr $msg" >"$1"

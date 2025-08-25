@@ -1,0 +1,14 @@
+[tools]
+# Shell linting and formatting tools
+shellcheck = "latest"
+shfmt = "latest"
+
+# Security scanning
+gitleaks = "latest"
+
+# General development tools
+pre-commit = "latest"
+
+[env]
+# Ensure tools are available in PATH
+_.path = ["{{ config_root }}/bin"]

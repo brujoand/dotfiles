@@ -2,7 +2,7 @@
 
 set -e
 
-DOTFILES=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+DOTFILES=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 SRC_DIR=$(cd "$DOTFILES/.." && pwd)
 BASHRC=$HOME/.bashrc
 CONFIG_FOLDER="$HOME"/.config
@@ -19,7 +19,7 @@ function fetch_from_git {
   local repo_name=$1
   echo "Fetching ${repo_name}"
   local repo_location="${SRC_DIR}/${repo_name}"
-  if [[ -d "$repo_location" ]]; then
+  if [[ -d $repo_location ]]; then
     echo "${repo_location} already exists"
   else
     git clone "https://github.com/brujoand/${repo_name}.git" "$repo_location"
@@ -34,10 +34,10 @@ function ensure_symlink_from_to {
 
   current_link="$(readlink "$target" || true)"
 
-  if [[ "$current_link" == "$source" ]]; then
+  if [[ $current_link == "$source" ]]; then
     echo "Symlink from ${target} to ${source} already exists, skipping.."
   else
-    if [[ -n "$current_link" ]]; then
+    if [[ -n $current_link ]]; then
       echo "Current symlink at ${target} is broken, removing"
       rm "$target"
     fi
@@ -50,12 +50,12 @@ function link_source_to_target {
   local source="${DOTFILES}/${1}"
   local target=$2
 
-  if [[ ! -d "$target" ]]; then
+  if [[ ! -d $target ]]; then
     echo "${target} does not exist, creating it.."
     mkdir -p "$target"
   fi
 
-  if [[ ! -d "$source" ]]; then
+  if [[ ! -d $source ]]; then
     echo "${source} doesn't exist, nothing to do"
     return 1
   fi
@@ -68,38 +68,37 @@ function link_source_to_target {
 
 function create_bashrc {
   local timestamp backuprc
-  if [[ -n "$BASHRC_LOADED" ]]; then
+  if [[ -n $BASHRC_LOADED ]]; then
     echo "dotfiles already loaded"
     return 0
   fi
 
-  if [[ -f "$BASHRC" ]]; then
+  if [[ -f $BASHRC ]]; then
     timestamp="$(date +%s)"
     backuprc="${BASHRC}${timestamp}"
     mv "$BASHRC" "$backuprc"
     echo "Moved your old ${BASHRC} to ${backuprc}"
   fi
 
-  printf '%s\n' "# Added by install_dotfiles.sh - ${timestamp}" > "$BASHRC"
-  printf '%s\n' "source ${BASHRC}" >> "$HOME"/.bash_profile
+  printf '%s\n' "# Added by install_dotfiles.sh - ${timestamp}" >"$BASHRC"
+  printf '%s\n' "source ${BASHRC}" >>"$HOME"/.bash_profile
 
 }
 
 function create_private_bashrc {
   echo "creating bashrc"
-  if [[ ! -f "$PRIVATE_BASHRC" ]]; then
+  if [[ ! -f $PRIVATE_BASHRC ]]; then
     echo "Creating $PRIVATE_BASHRC for all your personal needs."
   else
     echo "$PRIVATE_BASHRC already exists, skipping.."
     return 0
   fi
 
-  printf '%s\n' "SRC_DIR=${SRC_DIR}" > "$PRIVATE_BASHRC"
-  printf '%s\n' "DOTFILES=${DOTFILES}" >> "$BASHRC"
-  printf '%s\n' "source ${PRIVATE_BASHRC}" >> "$BASHRC"
+  printf '%s\n' "SRC_DIR=${SRC_DIR}" >"$PRIVATE_BASHRC"
+  printf '%s\n' "DOTFILES=${DOTFILES}" >>"$BASHRC"
+  printf '%s\n' "source ${PRIVATE_BASHRC}" >>"$BASHRC"
 
 }
-
 
 mkdir "${HOME}/bin"
 mkdir "${HOME}/opt"

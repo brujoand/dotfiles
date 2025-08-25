@@ -1,0 +1,47 @@
+# Gitleaks configuration for dotfiles repository
+title = "Gitleaks Config for Dotfiles"
+
+[extend]
+# Use the default gitleaks configuration as base
+useDefault = true
+
+[[rules]]
+description = "SSH Private Key"
+id = "ssh-private-key"
+regex = '''(?i)-----BEGIN[ A-Z0-9_-]*PRIVATE KEY-----'''
+tags = ["key", "ssh"]
+
+[[rules]]
+description = "API Key"
+id = "generic-api-key"
+regex = '''(?i)(api[_-]?key|apikey)['"]*\s*[:=]\s*['"][a-z0-9]{32,}['"]'''
+tags = ["key", "api"]
+
+[[rules]]
+description = "Password in configuration"
+id = "password"
+regex = '''(?i)(password|passwd)['"]*\s*[:=]\s*['"][^'"\s]{8,}['"]'''
+tags = ["password"]
+
+[[rules]]
+description = "Token"
+id = "generic-token"
+regex = '''(?i)(token|access[_-]?token)['"]*\s*[:=]\s*['"][a-z0-9]{16,}['"]'''
+tags = ["token"]
+
+[allowlist]
+description = "Allowlist for dotfiles"
+regexes = [
+  '''placeholder.*''',
+  '''example.*''',
+  '''test.*''',
+  '''dummy.*''',
+  '''fake.*''',
+  '''PLACEHOLDER.*''',
+  '''EXAMPLE.*''',
+]
+
+paths = [
+  '''(.*)?\.md$''',
+  '''(.*)?\.txt$''',
+]

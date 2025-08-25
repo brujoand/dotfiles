@@ -12,4 +12,3 @@ function pbcopy {
 function pbpaste {
   xclip -selection clipboard -o
 }
-

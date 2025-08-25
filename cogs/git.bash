@@ -13,16 +13,16 @@ alias gp='git pull' # Git pull
 complete -o default -F _alias_completion_wrapper gp
 
 alias gwho='git log | sed -n "s/Author: \(.*\) <.*/\1/p" | sort | uniq -c | sort -nr | head' # Show most active commiters
-alias gpb='git push -u origin $(git symbolic-ref HEAD | sed -e "s,.*/\(.*\),\1,")' # Push changes to current branch
+alias gpb='git push -u origin $(git symbolic-ref HEAD | sed -e "s,.*/\(.*\),\1,")'           # Push changes to current branch
 alias gg='git grep -n'
 alias gc='git clone'
 alias gcb='git co "$(git branch -a | sed "s/  //" | grep -v "^*" | fzf)"'
 
 function gshow() { # git show commits from search filter
   filter=$1
-  if [[ -n "$filter" ]]; then
+  if [[ -n $filter ]]; then
     commits=$(git log --pretty=format:'%h - %s' --reverse | grep -i "$filter" | cut -d ' ' -f 1 | tr '\n' ' ')
-    if [[ -n "$commits" ]]; then
+    if [[ -n $commits ]]; then
       git show "$commits"
     else
       echo 'Sorry, no commits match that filter'
@@ -42,15 +42,15 @@ function gpdate() { # do git update on master with stash for all repos in $SRC
     if [ -z "$(git status --porcelain)" ]; then
       echo -e "\033[1;30mBranch is clean, pulling master\033[0m"
       git checkout master -q
-      git pull  > /dev/null
+      git pull >/dev/null
       git checkout - -q
     fi
   done
   cd "$old_wd" || return 1
 }
 
-function gcp () { # Checkout a pull request as a branch locally, requires pull number
-  if [[ -z "$1" ]]; then
+function gcp() { # Checkout a pull request as a branch locally, requires pull number
+  if [[ -z $1 ]]; then
     echo "We need a pull request number"
     return 1
   fi
@@ -63,11 +63,11 @@ function gcp () { # Checkout a pull request as a branch locally, requires pull n
 function gst() { # Show git status for all dirs in cwd
   for f in "$(pwd)/"*; do
     (cd "$f" && __git_ps1 "${f}: %s\n")
-  done  | column -t
+  done | column -t
 }
 
 function gpu() { # Fetch and fast forward upstream changes
-  git co master && \
-  git fetch upstream && \
-  git merge upstream/master --ff-only
+  git co master &&
+    git fetch upstream &&
+    git merge upstream/master --ff-only
 }

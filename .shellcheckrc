@@ -1,0 +1,20 @@
+# Shellcheck configuration for dotfiles
+# Disable some checks that are common in dotfiles
+
+# SC1090: ShellCheck can't follow non-constant source (dynamic completions)
+# SC1091: Not following sourced files (common in dotfiles)
+# SC2034: Variables that appear unused (common for exports)
+# SC2039: In POSIX sh, 'local' is undefined (we use bash)
+# SC2119: Use func "$@" if function's $1 should mean script's $1 (internal helper functions)
+# SC2120: func references arguments, but none are ever passed (internal helper functions)
+# SC2207: Prefer mapfile or read -a (bash completion patterns)
+# SC2206: Quote to prevent word splitting (bash completion patterns)
+# SC2250: Prefer putting braces around variable references (style preference)
+# SC2068: Double quote array expansions (common pattern in dotfiles)
+# SC2086: Double quote to prevent globbing (intentional in some cases)
+disable=SC1090,SC1091,SC2034,SC2039,SC2119,SC2120,SC2155,SC2164,SC2207,SC2206,SC2250,SC2068
+
+# Keep important checks enabled:
+# SC2016: Expressions don't expand in single quotes
+# SC2046: Quote this to prevent word splitting
+# SC2006: Use $(...) notation instead of legacy backticked `...`

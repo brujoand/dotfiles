@@ -12,14 +12,14 @@ function tdy() { # The today todo list
   tdy_folder="${TDY_PATH}/${category}"
   tdy_current_file="${tdy_folder}/$(date +'%Y/%m/%Y.%m.%d').md"
   tdy_current_folder="${tdy_current_file%/*}"
-  tdy_previous_file=$(find "$tdy_folder" -type f -exec stat -c "%m %N" {} \; | sort -nr | cut -d "'" -f 2 |head -n 1)
+  tdy_previous_file=$(find "$tdy_folder" -type f -exec stat -c "%m %N" {} \; | sort -nr | cut -d "'" -f 2 | head -n 1)
 
   mkdir -p "${tdy_current_folder}"
 
-  if [[ ! -f "$tdy_current_file" ]]; then
-    printf '%s\n' "# $(date +'%Y.%m.%d')" >> "$tdy_current_file"
-    if [[ -f "$tdy_previous_file" ]]; then
-      grep  -- '^- \[ \]' "$tdy_previous_file" >> "$tdy_current_file"
+  if [[ ! -f $tdy_current_file ]]; then
+    printf '%s\n' "# $(date +'%Y.%m.%d')" >>"$tdy_current_file"
+    if [[ -f $tdy_previous_file ]]; then
+      grep -- '^- \[ \]' "$tdy_previous_file" >>"$tdy_current_file"
     fi
   fi
 
@@ -37,7 +37,7 @@ function _nts_open() {
   local result
   result=$(find "$search_dir" -type f -maxdepth 4 -name '*.md' -o -name '*.dot' | sed -e "s|${search_dir}\/||g" | fzf --border --height 20)
   local path="${search_dir}/${result}"
-  if [[ -n "$result" ]]; then
+  if [[ -n $result ]]; then
     $EDITOR "$path" || return 1
   fi
 }
@@ -61,16 +61,16 @@ function never_run_nts_build() {
       extention="${file##*.}"
       output_file="${output_dir}/${type}/${nts_name}"
       case "$extention" in
-        md)
-          output_file="${output_file}.html"
-          pandoc -f markdown -t html5 "$source_file" > "$output_file"
-          ;;
-        dot)
-          output_file="${output_file}.png"
-          dot -Tpng -o"$output_file" "$source_file"
-          ;;
+      md)
+        output_file="${output_file}.html"
+        pandoc -f markdown -t html5 "$source_file" >"$output_file"
+        ;;
+      dot)
+        output_file="${output_file}.png"
+        dot -Tpng -o"$output_file" "$source_file"
+        ;;
       esac
-      echo "<li><a href='${output_file}'> ${nts_name}</a></li>" >> "$index"
+      echo "<li><a href='${output_file}'> ${nts_name}</a></li>" >>"$index"
       echo "${source_file} -> ${output_file}"
     done
   done
@@ -79,9 +79,9 @@ function never_run_nts_build() {
 
 function _nts_note_template() {
   shift # ignore the timestamp
-  local name=$@
+  local name="$*"
 
-  cat << EOF
+  cat <<EOF
 # ${name}
 
 EOF
@@ -91,9 +91,9 @@ EOF
 function _nts_meeting_template() {
   local timestamp=$1
   shift
-  local name=$@
+  local name="$*"
 
-  cat << EOF
+  cat <<EOF
 # ${timestamp} - ${name}
 
 ## Present
@@ -114,9 +114,9 @@ EOF
 
 function _nts_graph_template() {
   shift
-  local name=$@
+  local name="$*"
 
-  cat << EOF
+  cat <<EOF
 digraph ${name} {
 
 }
@@ -130,7 +130,7 @@ function nts() { # The notes helper
   shift
   nts_args="$*"
 
-  if [[ -n "$nts_args" ]]; then
+  if [[ -n $nts_args ]]; then
     timestamp=$(date +'%Y.%m.%d')
     file_dir="${NTS_PATH}/${nts_type}/"
     file_extention='md'
@@ -148,8 +148,8 @@ function nts() { # The notes helper
 
     file_path="${file_dir}/${file_name}"
 
-    if [[ ! -f "$file_path" ]]; then
-      "_nts_${nts_type}_template" "${timestamp}" "$nts_args" > "$file_path"
+    if [[ ! -f $file_path ]]; then
+      "_nts_${nts_type}_template" "${timestamp}" "$nts_args" >"$file_path"
     else
       echo "$file_path already exists"
     fi
@@ -171,8 +171,7 @@ _nts() {
     words=()
   fi
 
-  COMPREPLY=( $( compgen -W "${words[*]}" -- "$cur") )
+  COMPREPLY=($(compgen -W "${words[*]}" -- "$cur"))
 }
 
 complete -F _nts nts
-

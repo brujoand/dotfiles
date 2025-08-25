@@ -5,4 +5,4 @@ function dry_run() {
   /usr/local/bin/brew --dry-run 2>/dev/null
 }
 
-dry_run | grep '\->' | tr ',' '\n' | sed 's/^ //' > ${HOME}/.brew_upgrade
+dry_run | grep '\->' | tr ',' '\n' | sed 's/^ //' >"${HOME}/.brew_upgrade"

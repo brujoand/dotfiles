@@ -11,19 +11,19 @@ fi
 alias bump='brew upgrade && brew upgrade --cask'
 
 function _complete_ssh_hosts() { # ssh tab-completion sux on osx.
-    COMPREPLY=()
-    cur="${COMP_WORDS[COMP_CWORD]}"
-    known=$(cut -d ' ' -f 1 ~/.ssh/known_hosts | sed -e s/,.*//g | sed 's/\[\(.*\)\].*/\1/' | sort -u)
-    defined=$( [[ -f $HOME/.ssh/config ]] && sed -n 's/^Host \(.*\)/\1/p' ~/.ssh/config)
-    comp_ssh_hosts="$defined\n$known"
-    COMPREPLY=( $(compgen -W "${comp_ssh_hosts}" -- "$cur"))
+  COMPREPLY=()
+  cur="${COMP_WORDS[COMP_CWORD]}"
+  known=$(cut -d ' ' -f 1 ~/.ssh/known_hosts | sed -e s/,.*//g | sed 's/\[\(.*\)\].*/\1/' | sort -u)
+  defined=$([[ -f $HOME/.ssh/config ]] && sed -n 's/^Host \(.*\)/\1/p' ~/.ssh/config)
+  comp_ssh_hosts="$defined\n$known"
+  COMPREPLY=($(compgen -W "${comp_ssh_hosts}" -- "$cur"))
 }
 
-function status(){ # Display system status
+function status() { # Display system status
   brew_upgrade=$HOME/.brew_upgrade
   weather_upgrade=$HOME/.weather_update
 
-  if [[ -s "$brew_upgrade" ]]; then
+  if [[ -s $brew_upgrade ]]; then
     printf '%s\n\n' "$(tput setaf 1)The following packages are out of date"
     cat "$brew_upgrade"
   else
@@ -32,7 +32,7 @@ function status(){ # Display system status
 
   printf '%s\n' "$(tput sgr 0)"
 
-  if [[ -f "$weather_upgrade" ]]; then
+  if [[ -f $weather_upgrade ]]; then
     cat "$weather_upgrade"
   fi
 
@@ -40,4 +40,3 @@ function status(){ # Display system status
 
   cal
 }
-

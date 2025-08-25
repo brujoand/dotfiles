@@ -18,4 +18,3 @@ set mark-symlinked-directories on
 
 # Shut the bell up
 set bell-style none
-
