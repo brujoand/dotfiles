@@ -57,9 +57,7 @@
 [pull]
   rebase = false
 [filter "lfs"]
-  clean = git-lfs clean -- %f
-  smudge = git-lfs smudge -- %f
   process = git-lfs filter-process
   required = true
-[safe]
-	directory = /builds/piano/cxense/infra-core/config
+  clean = git-lfs clean -- %f
+  smudge = git-lfs smudge -- %f

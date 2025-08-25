@@ -1,3 +1,7 @@
 [user]
   name = brujoand
   email = anders@brujordet.no
+
+[core]
+  sshCommand = ssh -i ~/.ssh/id_rsa
+

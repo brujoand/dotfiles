@@ -36,7 +36,7 @@ local nvim_lsp = require('lspconfig')
 
 require("mason").setup()
 require("mason-lspconfig").setup {
-  ensure_installed = { "lua_ls", "bashls", "ansiblels", "dockerls", "eslint", "html", "helm_ls", "jsonls", "jdtls", "tsserver", "marksman", "puppet", "pylsp"},
+  ensure_installed = { "lua_ls", "bashls", "ansiblels", "dockerls", "eslint", "html", "helm_ls", "jsonls", "jdtls", "tsserver", "marksman", "puppet", "pylsp", "yamlls"},
   automatic_installation = True,
 }
 

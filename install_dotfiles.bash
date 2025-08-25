@@ -99,35 +99,7 @@ function create_private_bashrc {
   printf '%s\n' "source ${PRIVATE_BASHRC}" >> "$BASHRC"
 
 }
-function install_vim_plug {
-  echo "installing vim plug"
-  local plug_dir="${HOME}/.local/share/nvim/site/autoload/plug.vim"
-  local plug_url="https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
 
-  if [[ -d "$plug_dir" ]]; then
-    echo "${plug_dir} already exists"
-  else
-    curl -sfLo "$plug_dir" --create-dirs "$plug_url"
-  fi
-}
-
-function install_neovim {
-  echo "installing neovim"
-  local url="https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz"
-  curl -s -L "$url" | tar xz -C "${HOME}/opt/"
-  chmod +x "${HOME}/opt/nvim-linux64/bin/nvim"
-  ln -s "${HOME}/opt/nvim-linux64/bin/nvim" "${HOME}/bin/nvim"
-}
-
-function install_dependencies {
-  install_neovim
-  install_vim_plug
-  git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-  ~/.fzf/install
-  git clone https://github.com/pyenv/pyenv.git ~/.pyenv
-  ./.pyenv/bin/pyenv init 2>&1 | grep -v '#' | grep -v '^$'
-  nvim +PlugInstall +qall
-}
 
 mkdir "${HOME}/bin"
 mkdir "${HOME}/opt"
@@ -138,7 +110,6 @@ link_source_to_target 'bin' "${BIN_FOLDER}/"
 
 create_bashrc
 create_private_bashrc
-install_dependencies
 
 fetch_from_git sbc
 fetch_from_git sbp

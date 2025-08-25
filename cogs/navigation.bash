@@ -52,7 +52,7 @@ complete -o nospace -F _backto backto
 function s() { # use fzf to cd into src d ir
   search_dir="$SRC_DIR"
 
-  git_dirs=$(fdfind --base-directory "$SRC_DIR" -t d --prune --exec echo {//} \; -H --max-depth 5 '^\.git$' )
+  git_dirs=$(find "$SRC_DIR" -type d -name ".git" -maxdepth 5 -exec dirname {} \; | sed "s|$SRC_DIR||")
   result=$(fzf --border --height 20 <<< "$git_dirs")
   dir="${search_dir}/${result}"
 

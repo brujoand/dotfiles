@@ -9,3 +9,4 @@ config/sbp/peekabook
 config/sbp/hook.log
 dotfiles/gitrc/git-piano
 dotfiles/config/nvim/plugged/*
+config/sbc/repos

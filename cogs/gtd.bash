@@ -3,10 +3,8 @@
 export TDY_PATH="$HOME/Documents/tdy"
 export NTS_PATH="$HOME/Documents/nts"
 
-alias noise='play -q -c 2 --null synth $len brownnoise band -n 2500 4000 tremolo 20 .1 reverb 50'
-
 function tdy_done() {
-  grep -R -i "$1" ${TDY_PATH} | grep '\- \[X\]'
+  grep -R -i "$1" "$TDY_PATH" | grep -- '^- \[x\]'
 }
 
 function tdy() { # The today todo list
@@ -14,14 +12,14 @@ function tdy() { # The today todo list
   tdy_folder="${TDY_PATH}/${category}"
   tdy_current_file="${tdy_folder}/$(date +'%Y/%m/%Y.%m.%d').md"
   tdy_current_folder="${tdy_current_file%/*}"
-  tdy_previous_file=$(find "$tdy_folder" -type f -exec stat -c "%m %N" {} \; | sort -nr | head -n1 | cut -d ' '  -f 2)
+  tdy_previous_file=$(find "$tdy_folder" -type f -exec stat -c "%m %N" {} \; | sort -nr | cut -d "'" -f 2 |head -n 1)
 
   mkdir -p "${tdy_current_folder}"
 
   if [[ ! -f "$tdy_current_file" ]]; then
     printf '%s\n' "# $(date +'%Y.%m.%d')" >> "$tdy_current_file"
     if [[ -f "$tdy_previous_file" ]]; then
-      grep -v '[x]' "$tdy_previous_file" | grep -v '^#' >> "$tdy_current_file"
+      grep  -- '^- \[ \]' "$tdy_previous_file" >> "$tdy_current_file"
     fi
   fi
 
