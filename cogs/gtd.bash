@@ -124,11 +124,65 @@ EOF
 
 }
 
+function _nts_sync_template() {
+  local timestamp=$1
+  shift
+  local name="$*"
+
+  cat <<EOF
+# ${timestamp} - Sync with ${name}
+
+## Discussion Points
+- Point
+- Point
+
+## Action Items
+- Action
+- Action
+
+## Follow-up
+- Item
+- Item
+
+EOF
+
+}
+
 function nts() { # The notes helper
-  local nts_args timestamp
+  local nts_args timestamp target
   nts_type="$1"
   shift
   nts_args="$*"
+
+  if [[ $nts_type == 'sync' ]]; then
+    if [[ -n $nts_args ]]; then
+      target="$nts_args"
+    else
+      # Use fzf to select existing sync targets or allow typing new one
+      if [[ -d "${NTS_PATH}/sync" ]]; then
+        target=$(find "${NTS_PATH}/sync" -mindepth 1 -maxdepth 1 -type d -exec basename {} \; | sort | fzf --border --height 20 --prompt="Select sync target: " --print-query | tail -1)
+      else
+        read -rp "Enter sync target: " target
+      fi
+      [[ -z $target ]] && return 1
+    fi
+
+    timestamp=$(date +'%d.%m.%y')
+    file_dir="${NTS_PATH}/sync/${target}"
+    file_name="${timestamp}.md"
+    file_path="${file_dir}/${file_name}"
+
+    mkdir -p "$file_dir"
+
+    if [[ ! -f $file_path ]]; then
+      _nts_sync_template "${timestamp}" "$target" >"$file_path"
+    else
+      echo "$file_path already exists"
+    fi
+
+    $EDITOR "$file_path"
+    return
+  fi
 
   if [[ -n $nts_args ]]; then
     timestamp=$(date +'%Y.%m.%d')
@@ -166,7 +220,7 @@ _nts() {
   cur="${COMP_WORDS[COMP_CWORD]}"
 
   if [[ $COMP_CWORD -lt 2 ]]; then
-    words=('note' 'meeting' 'graph')
+    words=('note' 'meeting' 'graph' 'sync')
   else
     words=()
   fi
