@@ -11,7 +11,6 @@ pre-commit = "latest"
 
 # Required by dotfiles cogs
 fzf = "latest"
-git = "latest"
 neovim = "latest"
 
 [env]
