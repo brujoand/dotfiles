@@ -3,7 +3,14 @@
 alias dirstat='find . -type f -not -path ".git/*" | sed "s/.*\.\(.*\)/\1/p" | grep -v "/" | sort | uniq -c | sort' # Show most common files in dir
 alias top15='cut -d " " -f 1 ~/.bash_history | sort | uniq -c | sort -n |  sed "s/^ *[0-9]* //" | tail -n 15'      # Show your top 15 bash commands
 
+_SRC_MAX_DEPTH="${_SRC_MAX_DEPTH:-5}"
+
 function b() { # cd to a folder in current path
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "fzf is required but not installed. Run 'mise install' to install dependencies."
+    return 1
+  fi
+
   local dir
   dir=$(_b | tac | fzf)
   if [[ -n $dir ]]; then
@@ -48,10 +55,19 @@ function _backto() { # completion for backto
 }
 complete -o nospace -F _backto backto
 
-function s() { # use fzf to cd into src d ir
-  search_dir="$SRC_DIR"
+function s() { # use fzf to cd into src dir
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "fzf is required but not installed. Run 'mise install' to install dependencies."
+    return 1
+  fi
 
-  git_dirs=$(find "$SRC_DIR" -type d -name ".git" -maxdepth 5 -exec dirname {} \; | sed "s|$SRC_DIR||")
+  if [[ -z $SRC_DIR ]]; then
+    echo "SRC_DIR environment variable is not set"
+    return 1
+  fi
+
+  search_dir="$SRC_DIR"
+  git_dirs=$(find "$SRC_DIR" -maxdepth "$_SRC_MAX_DEPTH" -type d -name ".git" -exec dirname {} \; | sed "s|$SRC_DIR||")
   result=$(fzf --border --height 20 <<<"$git_dirs")
   dir="${search_dir}/${result}"
 
@@ -61,6 +77,10 @@ function s() { # use fzf to cd into src d ir
 }
 
 function src() { # cd into $SRC
+  if [[ -z $SRC_DIR ]]; then
+    echo "SRC_DIR environment variable is not set"
+    return 1
+  fi
   cd "$SRC_DIR/$1" || return 1
 }
 

@@ -10,7 +10,9 @@ BIN_FOLDER="$HOME"/bin
 PRIVATE_BASHRC="$HOME"/.bash_private
 
 function catch_error {
-  echo "oh no we died"
+  echo "Error occurred on line ${BASH_LINENO[0]} in ${BASH_SOURCE[1]}"
+  echo "Failed command: $BASH_COMMAND"
+  exit 1
 }
 
 trap 'catch_error' ERR
@@ -32,14 +34,17 @@ function ensure_symlink_from_to {
   source="$1"
   target="$2"
 
-  current_link="$(readlink "$target" || true)"
+  current_link="$(readlink "$target" 2>/dev/null || true)"
 
   if [[ $current_link == "$source" ]]; then
     echo "Symlink from ${target} to ${source} already exists, skipping.."
   else
-    if [[ -n $current_link ]]; then
+    if [[ -L $target && ! -e $target ]]; then
       echo "Current symlink at ${target} is broken, removing"
       rm "$target"
+    elif [[ -e $target && ! -L $target ]]; then
+      echo "File exists at ${target} but is not a symlink, backing up"
+      mv "$target" "${target}.backup.$(date +%s)"
     fi
     echo "Creating symlink from $target to $source"
     ln -sfn "$source" "$target"
@@ -81,7 +86,7 @@ function create_bashrc {
   fi
 
   printf '%s\n' "# Added by install_dotfiles.sh - ${timestamp}" >"$BASHRC"
-  printf '%s\n' "source ${BASHRC}" >>"$HOME"/.bash_profile
+  printf '%s\n' "source ${HOME}/.bashrc" >>"$HOME"/.bash_profile
 
 }
 
@@ -95,7 +100,7 @@ function create_private_bashrc {
   fi
 
   printf '%s\n' "SRC_DIR=${SRC_DIR}" >"$PRIVATE_BASHRC"
-  printf '%s\n' "DOTFILES=${DOTFILES}" >>"$BASHRC"
+  printf '%s\n' "DOTFILES=${DOTFILES}" >>"$PRIVATE_BASHRC"
   printf '%s\n' "source ${PRIVATE_BASHRC}" >>"$BASHRC"
 
 }

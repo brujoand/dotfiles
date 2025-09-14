@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install mise
+      uses: jdx/mise-action@v2
+      with:
+        version: latest
+
+    - name: Install dependencies with mise
+      run: mise install
+
+    - name: Set up pre-commit cache
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pre-commit
+        key: pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+
+    - name: Install pre-commit hooks
+      run: pre-commit install
+
+    - name: Run pre-commit hooks
+      run: pre-commit run --all-files
+
+    - name: Test installation script
+      run: |
+        # Test that install script doesn't crash
+        bash -n install_dotfiles.bash
+        echo "Installation script syntax is valid"

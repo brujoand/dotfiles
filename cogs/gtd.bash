@@ -8,6 +8,11 @@ function tdy_done() {
 }
 
 function tdy() { # The today todo list
+  if [[ -z $TDY_PATH ]]; then
+    echo "TDY_PATH environment variable is not set"
+    return 1
+  fi
+
   category=${1:-work}
   tdy_folder="${TDY_PATH}/${category}"
   tdy_current_file="${tdy_folder}/$(date +'%Y/%m/%Y.%m.%d').md"
@@ -32,8 +37,17 @@ function tdy() { # The today todo list
 }
 
 function _nts_open() {
-  local search_dir="$NTS_PATH"
+  if ! command -v fzf >/dev/null 2>&1; then
+    echo "fzf is required but not installed. Run 'mise install' to install dependencies."
+    return 1
+  fi
 
+  if [[ -z $NTS_PATH ]]; then
+    echo "NTS_PATH environment variable is not set"
+    return 1
+  fi
+
+  local search_dir="$NTS_PATH"
   local result
   result=$(find "$search_dir" -type f -maxdepth 4 -name '*.md' -o -name '*.dot' | sed -e "s|${search_dir}\/||g" | fzf --border --height 20)
   local path="${search_dir}/${result}"

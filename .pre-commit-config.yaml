@@ -20,14 +20,23 @@ repos:
     rev: v8.18.4
     hooks:
       - id: gitleaks
-  - repo: https://github.com/shellcheck-py/shellcheck-py
-    rev: v0.9.0.6
+  - repo: https://github.com/koalaman/shellcheck-precommit
+    rev: v0.10.0
     hooks:
       - id: shellcheck
-        files: \.(bash|sh)$
+        files: '\.bash$|install_dotfiles\.bash'
   - repo: https://github.com/scop/pre-commit-shfmt
-    rev: v3.8.0-1
+    rev: v3.10.0-1
     hooks:
       - id: shfmt
         args: [-w, -s, -i, '2']
-        files: \.(bash|sh)$
+        files: '\.bash$|install_dotfiles\.bash'
+
+  - repo: local
+    hooks:
+      - id: bash-syntax
+        name: Check bash syntax
+        entry: bash -n
+        language: system
+        files: '\.bash$|install_dotfiles\.bash'
+        types: [text]
