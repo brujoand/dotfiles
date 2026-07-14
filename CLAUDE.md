@@ -43,9 +43,9 @@ There is no test suite.
 
 ## Gotchas
 
-- **17 vim-plugin submodules** under `nvim/bundle/`, all with `git@github.com:`
-  SSH URLs — `git submodule update --init` needs working SSH, not the HTTPS
-  credential helper.
+- **There are no submodules.** nvim plugins are vim-plug managed: declared in
+  `config/nvim/init.vim`, cloned at runtime into `config/nvim/plugged/`, which
+  is gitignored. Third-party plugin code is never tracked in this repo.
 - The README says `bin/install_dotfiles.sh`; the tracked file is
   `install_dotfiles.bash`.
 - Bash standards, enforced by pre-commit: `#!/usr/bin/env bash`, `set -e`, `[[`
